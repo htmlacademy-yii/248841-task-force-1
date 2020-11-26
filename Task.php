@@ -3,14 +3,15 @@
 
 namespace TaskForce;
 
-
-use http\QueryString;
-
+/** Класс для управления действиями(кнопками) и статусами
+ * Class Task
+ * @package TaskForce
+ */
 class Task
 {
     // Стастусы задания
     const STATUS_NEW = 'new'; // Новое
-    const STATUS_IN_WORK= 'in_work'; // В работе
+    const STATUS_IN_WORK = 'in_work'; // В работе
     const STATUS_DONE = 'done'; // Выполнено
     const STATUS_FAILED = 'failed'; // Провалено
     const STATUS_CANCEL = 'cancel'; // Отменено
@@ -21,45 +22,51 @@ class Task
     const ACTION_DECLINE = 'decline'; // Отказаться от задания(Исполнитель)
     const ACTION_ACCEPT = 'accept'; // Принять отклик от исполнителя(Заказчик)
 
-    protected $arMapActionAndStatus = [
+    const ROLE_IMPLEMENT = 'implementer'; // Исполнитель
+    const ROLE_CUSTOMER = 'customer'; // Заказчик
+    protected $statusNames = [
         self::STATUS_NEW => 'Новое',
         self::STATUS_IN_WORK => 'В работе',
         self::STATUS_DONE => 'Выполнено',
         self::STATUS_FAILED => 'Провалено',
         self::STATUS_CANCEL => 'Отменено',
+    ];
+    protected $actionNames = [
         self::ACTION_CANCEL => 'Отменить',
         self::ACTION_ANSWER => 'Откликнуться',
         self::ACTION_FINISHED => 'Выполнено',
         self::ACTION_DECLINE => 'Отказаться',
         self::ACTION_ACCEPT => 'Принять'
     ];
-    protected $arNextActionAndNextStatus = [
+
+    protected $nextActionAndNextStatus = [
         self::ACTION_CANCEL => self::STATUS_CANCEL,
         self::ACTION_ANSWER => null,
         self::ACTION_FINISHED => self::STATUS_DONE,
         self::ACTION_DECLINE => self::STATUS_FAILED,
         self::ACTION_ACCEPT => self::STATUS_IN_WORK,
         self::STATUS_NEW => [
-            'implementer' => self::ACTION_ANSWER,
-            'customer' => self::ACTION_CANCEL
+            self::ROLE_IMPLEMENT => self::ACTION_ANSWER,
+            self::ROLE_CUSTOMER => self::ACTION_CANCEL
         ],
         self::STATUS_IN_WORK => [
-            'implementer' => self::ACTION_DECLINE,
-            'customer' => self::ACTION_FINISHED
+            self::ROLE_IMPLEMENT => self::ACTION_DECLINE,
+            self::ROLE_CUSTOMER => self::ACTION_FINISHED
         ],
         self::STATUS_DONE => null,
         self::STATUS_FAILED => null,
         self::STATUS_CANCEL => null,
     ];
-    public $strUser = ''; // Исполнитель или Заказчик implementer|customer
+    public $user = ''; // Исполнитель или Заказчик implementer|customer
 
-    protected $intIdTask = null;
-    protected $intIdStatus = null;
 
-    public function __construct(int $intIdTask,int $intIdStatus)
+    protected $idTask = null;
+    protected $idStatus = null;
+
+    public function __construct(int $idTask, int $idStatus)
     {
-        $this->intIdTask = $intIdTask;
-        $this->intIdStatus = $intIdStatus;
+        $this->idTask = $idTask;
+        $this->idStatus = $idStatus;
     }
 
     /**
@@ -68,10 +75,10 @@ class Task
      */
     public function getNextStatus(string $action)
     {
-        if(strlen($action) < 1){
+        if (!$action) {
             return null;
         }
-        return $this->arNextActionAndNextStatus[$action];
+        return $this->nextActionAndNextStatus[$action];
     }
 
     /**
@@ -80,10 +87,10 @@ class Task
      */
     public function getNextAction(string $status)
     {
-        if(strlen($status) < 1){
+        if (!$status) {
             return null;
         }
-        return $this->arNextActionAndNextStatus[$status][$this->strUser];
+        return $this->nextActionAndNextStatus[$status][$this->user];
     }
 }
 

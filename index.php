@@ -4,9 +4,9 @@ use TaskForce\Task;
 
 require 'Task.php';
 $obTask = new Task(1,2);
-$strNextStatus = $obTask->getNextStatus(Task::ACTION_CANCEL);
-$obTask->strUser = 'implementer';
-$strNextAction = $obTask->getNextAction(Task::STATUS_IN_WORK);
+$NextStatus = $obTask->getNextStatus(Task::ACTION_CANCEL);
+$obTask->user = Task::ROLE_IMPLEMENT;
+$NextAction = $obTask->getNextAction(Task::STATUS_IN_WORK);
 ?>
-<div><?=$strNextStatus?></div>
-<div><?=$strNextAction?></div>
+<div><?=$NextStatus?></div>
+<div><?=$NextAction?></div>
