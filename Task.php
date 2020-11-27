@@ -16,7 +16,7 @@ class Task
     const STATUS_FAILED = 'failed'; // Провалено
     const STATUS_CANCEL = 'cancel'; // Отменено
     // Действия с заданием
-    const ACTION_CANCEL = 'cancel_task'; // Отменить задание( Заказчик)
+    const ACTION_CANCEL = 'cancel'; // Отменить задание( Заказчик)
     const ACTION_ANSWER = 'answer'; // Откликнуться на задание(Исполнитель)
     const ACTION_FINISHED = 'finished'; //  Задание выполнено(Заказчик)
     const ACTION_DECLINE = 'decline'; // Отказаться от задания(Исполнитель)
@@ -39,12 +39,14 @@ class Task
         self::ACTION_ACCEPT => 'Принять'
     ];
 
-    protected $nextActionAndNextStatus = [
+    protected $NextStatus = [
         self::ACTION_CANCEL => self::STATUS_CANCEL,
         self::ACTION_ANSWER => null,
         self::ACTION_FINISHED => self::STATUS_DONE,
         self::ACTION_DECLINE => self::STATUS_FAILED,
         self::ACTION_ACCEPT => self::STATUS_IN_WORK,
+        ];
+    protected $nextAction = [
         self::STATUS_NEW => [
             self::ROLE_IMPLEMENT => self::ACTION_ANSWER,
             self::ROLE_CUSTOMER => self::ACTION_CANCEL
@@ -57,8 +59,6 @@ class Task
         self::STATUS_FAILED => null,
         self::STATUS_CANCEL => null,
     ];
-    public $user = ''; // Исполнитель или Заказчик implementer|customer
-
 
     protected $idTask = null;
     protected $idStatus = null;
@@ -75,22 +75,24 @@ class Task
      */
     public function getNextStatus(string $action)
     {
+
         if (!$action) {
             return null;
         }
-        return $this->nextActionAndNextStatus[$action];
+        return $this->NextStatus[$action];
     }
 
     /**
      * @param string $status
+     * @param string $user
      * @return string|null
      */
-    public function getNextAction(string $status)
+    public function getNextAction(string $status, $user)
     {
-        if (!$status) {
+        if (!$status && !$user) {
             return null;
         }
-        return $this->nextActionAndNextStatus[$status][$this->user];
+        return $this->nextAction[$status][$user];
     }
 }
 
