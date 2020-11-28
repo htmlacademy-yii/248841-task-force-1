@@ -1,7 +1,6 @@
 <?php
 
-
-namespace TaskForce;
+namespace Lobochkin\TaskForce;
 
 /** Класс для управления действиями(кнопками) и статусами
  * Class Task
