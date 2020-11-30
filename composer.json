@@ -1,5 +1,5 @@
 {
-    "name": "root/taskforce",
+    "name": "lobochkin/taskforce",
     "require": {
         "symfony/var-dumper": "^5.1"
     },
@@ -11,7 +11,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Lobochkin\\": "src/"
+            "Lobochkin\\TaskForce\\": "src/"
         }
     }
 }
