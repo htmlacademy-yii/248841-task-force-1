@@ -1,8 +1,8 @@
 <?php
+require_once 'vendor/autoload.php';
+use Lobochkin\TaskForce\Task;
 
-use TaskForce\Task;
 
-require 'Task.php';
 $obTask = new Task(1,2);
 $NextStatus = $obTask->getNextStatus(Task::ACTION_CANCEL);
 
