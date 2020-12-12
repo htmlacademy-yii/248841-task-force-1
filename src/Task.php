@@ -2,15 +2,6 @@
 
 namespace Lobochkin\TaskForce;
 
-use Lobochkin\TaskForce\{
-    Cancel,
-//    Answer,
-    Finished,
-    Accept,
-    Decline
-};
-use Lobochkin\TaskForce\Answer;
-
 /** Класс для управления действиями(кнопками) и статусами
  * Class Task
  * @package TaskForce
@@ -101,7 +92,7 @@ class Task
 
         foreach ($this->nextAction[$status] as $obName) {
             $ob = new $obName;
-            if ($ob->checkingRights($idImplement, $idCustomer, $idUser)){
+                if (call_user_func_array([new $obName,'checkingRights'],[$idImplement, $idCustomer, $idUser])){
                 return $ob;
             }
         }
