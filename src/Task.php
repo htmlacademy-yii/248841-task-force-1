@@ -2,6 +2,15 @@
 
 namespace Lobochkin\TaskForce;
 
+use Lobochkin\TaskForce\{
+    Cancel,
+//    Answer,
+    Finished,
+    Accept,
+    Decline
+};
+use Lobochkin\TaskForce\Answer;
+
 /** Класс для управления действиями(кнопками) и статусами
  * Class Task
  * @package TaskForce
@@ -44,19 +53,19 @@ class Task
         self::ACTION_FINISHED => self::STATUS_DONE,
         self::ACTION_DECLINE => self::STATUS_FAILED,
         self::ACTION_ACCEPT => self::STATUS_IN_WORK,
-        ];
+    ];
     protected $nextAction = [
         self::STATUS_NEW => [
-            self::ROLE_IMPLEMENT => self::ACTION_ANSWER,
-            self::ROLE_CUSTOMER => self::ACTION_CANCEL
+            'Lobochkin\TaskForce\Answer',
+            'Lobochkin\TaskForce\Cancel'
         ],
         self::STATUS_IN_WORK => [
-            self::ROLE_IMPLEMENT => self::ACTION_DECLINE,
-            self::ROLE_CUSTOMER => self::ACTION_FINISHED
+            'Lobochkin\TaskForce\Decline',
+            'Lobochkin\TaskForce\Finished',
         ],
         self::STATUS_DONE => null,
         self::STATUS_FAILED => null,
-        self::STATUS_CANCEL => null,
+        self::STATUS_CANCEL => null
     ];
 
     protected $idTask = null;
@@ -82,16 +91,22 @@ class Task
     }
 
     /**
+     * метод получения действий для статуса
      * @param string $status
      * @param string $user
      * @return string|null
      */
-    public function getNextAction(string $status, $user)
+    public function getNextAction(string $status, int $idImplement, int $idCustomer, int $idUser)
     {
-        if (!$status && !$user) {
-            return null;
+
+        foreach ($this->nextAction[$status] as $obName) {
+            $ob = new $obName;
+            if ($ob->checkingRights($idImplement, $idCustomer, $idUser)){
+                return $ob;
+            }
         }
-        return $this->nextAction[$status][$user];
+
+        return null;
     }
 }
 
