@@ -92,7 +92,7 @@ class Task
 
         foreach ($this->nextAction[$status] as $obName) {
             $ob = new $obName;
-                if (call_user_func_array([new $obName,'checkingRights'],[$idImplement, $idCustomer, $idUser])){
+                if (call_user_func_array([$ob,'checkingRights'],[$idImplement, $idCustomer, $idUser])){
                 return $ob;
             }
         }
