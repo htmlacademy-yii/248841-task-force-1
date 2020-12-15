@@ -6,9 +6,6 @@ namespace Lobochkin\TaskForce;
 
 class Decline extends Action
 {
-    protected $name = 'Отказаться';
-    protected $innerName = 'decline';
-
     /**
      * @param int $idImplement
      * @param int $idCustomer
@@ -26,7 +23,7 @@ class Decline extends Action
      */
     public function getName(): string
     {
-        return $this->name;
+        return 'Отказаться';
     }
 
     /**
@@ -34,6 +31,6 @@ class Decline extends Action
      */
     public function getInnerName(): string
     {
-        return $this->innerName;
+        return 'decline';
     }
 }

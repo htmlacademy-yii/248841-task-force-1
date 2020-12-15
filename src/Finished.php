@@ -6,9 +6,6 @@ namespace Lobochkin\TaskForce;
 
 class Finished extends Action
 {
-    protected $name = 'Выполнено';
-    protected $innerName = 'finished';
-
     /**
      * @param int $idImplement
      * @param int $idCustomer
@@ -26,7 +23,7 @@ class Finished extends Action
      */
     public function getName(): string
     {
-        return $this->name;
+        return 'Выполнено';
     }
 
     /**
@@ -34,6 +31,6 @@ class Finished extends Action
      */
     public function getInnerName(): string
     {
-        return $this->innerName;
+        return 'finished';
     }
 }

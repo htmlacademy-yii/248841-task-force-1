@@ -15,13 +15,13 @@ abstract class Action
      * Метод возвращает имя действия
      * @return string
      */
-    public abstract function getName(): string;
+    abstract public function getName(): string;
 
     /**
      * Метод возвращает внутреннее имя действия
      * @return string
      */
-    public abstract function getInnerName(): string;
+    abstract public function getInnerName(): string;
 
     public function __toString()
     {
@@ -35,6 +35,6 @@ abstract class Action
      * @param int $idUser
      * @return boolean
      */
-    public abstract static function checkingRights(int $idImplement,int $idCustomer,int $idUser) : bool;
+    abstract public static function checkingRights(int $idImplement,int $idCustomer,int $idUser) : bool;
 
 }

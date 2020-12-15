@@ -6,9 +6,6 @@ namespace Lobochkin\TaskForce;
 
 class Answer extends Action
 {
-    protected $name = 'Откликнуться';
-    protected $innerName = 'answer';
-
     /**
      * @param int $idImplement
      * @param int $idCustomer
@@ -26,7 +23,7 @@ class Answer extends Action
      */
     public function getName(): string
     {
-        return $this->name;
+        return 'Откликнуться';
     }
 
     /**
@@ -34,6 +31,6 @@ class Answer extends Action
      */
     public function getInnerName(): string
     {
-        return $this->innerName;
+        return 'answer';
     }
 }

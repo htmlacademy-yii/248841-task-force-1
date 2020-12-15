@@ -6,9 +6,6 @@ namespace Lobochkin\TaskForce;
 
 class Cancel extends Action
 {
-    protected $name = 'Отменить';
-    protected $innerName = 'cancel';
-
     /**
      * @param int $idImplement
      * @param int $idCustomer
@@ -26,7 +23,7 @@ class Cancel extends Action
      */
     public function getName(): string
     {
-        return $this->name;
+        return 'Отменить';
     }
 
     /**
@@ -34,6 +31,6 @@ class Cancel extends Action
      */
     public function getInnerName(): string
     {
-        return $this->innerName;
+        return 'cancel';
     }
 }
