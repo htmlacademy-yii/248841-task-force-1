@@ -10,24 +10,18 @@ namespace Lobochkin\TaskForce;
  */
 abstract class Action
 {
-    /**
-     * @var string Внешнее имя действия
-     */
-    protected $name;
 
     /**
-     * @var string Внутреннее имя действия
+     * Метод возвращает имя действия
+     * @return string
      */
-    protected $innerName;
+    public abstract function getName(): string;
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-    public function getInnerName(): string
-    {
-        return $this->innerName;
-    }
+    /**
+     * Метод возвращает внутреннее имя действия
+     * @return string
+     */
+    public abstract function getInnerName(): string;
 
     public function __toString()
     {
@@ -41,6 +35,6 @@ abstract class Action
      * @param int $idUser
      * @return boolean
      */
-    public abstract function checkingRights(int $idImplement,int $idCustomer,int $idUser) : bool;
+    public abstract static function checkingRights(int $idImplement,int $idCustomer,int $idUser) : bool;
 
 }

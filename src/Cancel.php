@@ -16,8 +16,24 @@ class Cancel extends Action
      * @return bool
      * @inheritDoc
      */
-    public function checkingRights(int $idImplement, int $idCustomer, int $idUser): bool
+    public static function checkingRights(int $idImplement, int $idCustomer, int $idUser): bool
     {
         return $idCustomer === $idUser;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getInnerName(): string
+    {
+        return $this->innerName;
     }
 }

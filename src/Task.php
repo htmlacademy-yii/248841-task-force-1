@@ -2,6 +2,13 @@
 
 namespace Lobochkin\TaskForce;
 
+use Lobochkin\TaskForce\{
+    Answer,
+    Cancel,
+    Decline,
+    Finished
+};
+
 /** Класс для управления действиями(кнопками) и статусами
  * Class Task
  * @package TaskForce
@@ -38,25 +45,22 @@ class Task
         self::ACTION_ACCEPT => 'Принять'
     ];
 
-    protected $NextStatus = [
+    const NEXT_STATUS = [
         self::ACTION_CANCEL => self::STATUS_CANCEL,
-        self::ACTION_ANSWER => null,
         self::ACTION_FINISHED => self::STATUS_DONE,
         self::ACTION_DECLINE => self::STATUS_FAILED,
         self::ACTION_ACCEPT => self::STATUS_IN_WORK,
     ];
-    protected $nextAction = [
+    const NEXT_ACTION = [
         self::STATUS_NEW => [
-            'Lobochkin\TaskForce\Answer',
-            'Lobochkin\TaskForce\Cancel'
+            Answer::class,
+            Cancel::class,
+            Accept::class
         ],
         self::STATUS_IN_WORK => [
-            'Lobochkin\TaskForce\Decline',
-            'Lobochkin\TaskForce\Finished',
-        ],
-        self::STATUS_DONE => null,
-        self::STATUS_FAILED => null,
-        self::STATUS_CANCEL => null
+            Decline::class,
+            Finished::class,
+        ]
     ];
 
     protected $idTask = null;
@@ -74,30 +78,30 @@ class Task
      */
     public function getNextStatus(string $action)
     {
-
         if (!$action) {
             return null;
         }
-        return $this->NextStatus[$action];
+        return self::NEXT_STATUS[$action];
     }
 
     /**
      * метод получения действий для статуса
      * @param string $status
-     * @param string $user
-     * @return string|null
+     * @param int $idImplement
+     * @param int $idCustomer
+     * @param int $idUser
+     * @return array массив объектов действий
      */
     public function getNextAction(string $status, int $idImplement, int $idCustomer, int $idUser)
     {
-
-        foreach ($this->nextAction[$status] as $obName) {
-            $ob = new $obName;
-                if (call_user_func_array([$ob,'checkingRights'],[$idImplement, $idCustomer, $idUser])){
-                return $ob;
+        $arOb = [];
+        foreach (self::NEXT_ACTION[$status] as $ob) {
+            if (call_user_func_array([$ob, 'checkingRights'], [$idImplement, $idCustomer, $idUser])) {
+                $arOb[] = $ob;
             }
         }
 
-        return null;
+        return $arOb;
     }
 }
 
