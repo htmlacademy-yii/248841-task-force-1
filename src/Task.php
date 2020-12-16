@@ -94,12 +94,9 @@ class Task
      */
     public function getNextAction(string $status, int $idImplement, int $idCustomer, int $idUser)
     {
-        $arOb = [];
-        $arOb = array_filter(self::NEXT_ACTION[$status], function ($v) use ($idImplement, $idCustomer, $idUser){
-            return call_user_func_array([$v, 'checkingRights'], [$idImplement, $idCustomer, $idUser]);
+        return array_filter(self::NEXT_ACTION[$status], function ($obAction) use ($idImplement, $idCustomer, $idUser){
+            return call_user_func_array([$obAction, 'checkingRights'], [$idImplement, $idCustomer, $idUser]);
         });
-
-        return $arOb;
     }
 }
 
