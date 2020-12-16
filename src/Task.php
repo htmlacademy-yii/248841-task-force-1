@@ -2,6 +2,13 @@
 
 namespace Lobochkin\TaskForce;
 
+use Lobochkin\TaskForce\{
+    Answer,
+    Cancel,
+    Decline,
+    Finished
+};
+
 /** Класс для управления действиями(кнопками) и статусами
  * Class Task
  * @package TaskForce
@@ -38,25 +45,22 @@ class Task
         self::ACTION_ACCEPT => 'Принять'
     ];
 
-    protected $NextStatus = [
+    const NEXT_STATUS = [
         self::ACTION_CANCEL => self::STATUS_CANCEL,
-        self::ACTION_ANSWER => null,
         self::ACTION_FINISHED => self::STATUS_DONE,
         self::ACTION_DECLINE => self::STATUS_FAILED,
         self::ACTION_ACCEPT => self::STATUS_IN_WORK,
-        ];
-    protected $nextAction = [
+    ];
+    const NEXT_ACTION = [
         self::STATUS_NEW => [
-            self::ROLE_IMPLEMENT => self::ACTION_ANSWER,
-            self::ROLE_CUSTOMER => self::ACTION_CANCEL
+            Answer::class,
+            Cancel::class,
+            Accept::class
         ],
         self::STATUS_IN_WORK => [
-            self::ROLE_IMPLEMENT => self::ACTION_DECLINE,
-            self::ROLE_CUSTOMER => self::ACTION_FINISHED
-        ],
-        self::STATUS_DONE => null,
-        self::STATUS_FAILED => null,
-        self::STATUS_CANCEL => null,
+            Decline::class,
+            Finished::class,
+        ]
     ];
 
     protected $idTask = null;
@@ -74,24 +78,25 @@ class Task
      */
     public function getNextStatus(string $action)
     {
-
         if (!$action) {
             return null;
         }
-        return $this->NextStatus[$action];
+        return self::NEXT_STATUS[$action];
     }
 
     /**
+     * метод получения действий для статуса
      * @param string $status
-     * @param string $user
-     * @return string|null
+     * @param int $idImplement
+     * @param int $idCustomer
+     * @param int $idUser
+     * @return array массив объектов действий
      */
-    public function getNextAction(string $status, $user)
+    public function getNextAction(string $status, int $idImplement, int $idCustomer, int $idUser)
     {
-        if (!$status && !$user) {
-            return null;
-        }
-        return $this->nextAction[$status][$user];
+        return array_filter(self::NEXT_ACTION[$status], function ($obAction) use ($idImplement, $idCustomer, $idUser){
+            return call_user_func_array([$obAction, 'checkingRights'], [$idImplement, $idCustomer, $idUser]);
+        });
     }
 }
 
