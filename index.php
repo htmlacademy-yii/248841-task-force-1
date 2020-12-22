@@ -13,6 +13,7 @@ $NextAction3 = $obTask->getNextAction(Task::STATUS_NEW,1,2,1);
 $NextAction4 = $obTask->getNextAction(Task::STATUS_NEW,1,2,2);
 
 ?>
+<?=$NextStatus?>
 <div>Статус: в работе , исполнитель: 1, заказчик: 2, юзер: 2 <?=implode($NextAction,', ')?></div>
 <hr>
 <div>Статус: в работе , исполнитель: 1, заказчик: 2, юзер: 1 <?=implode($NextAction1,', ')?></div>

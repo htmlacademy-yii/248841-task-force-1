@@ -2,12 +2,7 @@
 
 namespace Lobochkin\TaskForce;
 
-use Lobochkin\TaskForce\{
-    Answer,
-    Cancel,
-    Decline,
-    Finished
-};
+use Lobochkin\TaskForce\{Answer, Cancel, Decline, Exception\ValidValueException, Finished};
 
 /** Класс для управления действиями(кнопками) и статусами
  * Class Task
@@ -30,14 +25,14 @@ class Task
 
     const ROLE_IMPLEMENT = 'implementer'; // Исполнитель
     const ROLE_CUSTOMER = 'customer'; // Заказчик
-    protected $statusNames = [
+    const STATUS_NAME = [
         self::STATUS_NEW => 'Новое',
         self::STATUS_IN_WORK => 'В работе',
         self::STATUS_DONE => 'Выполнено',
         self::STATUS_FAILED => 'Провалено',
         self::STATUS_CANCEL => 'Отменено',
     ];
-    protected $actionNames = [
+    const ACTION_NAME = [
         self::ACTION_CANCEL => 'Отменить',
         self::ACTION_ANSWER => 'Откликнуться',
         self::ACTION_FINISHED => 'Выполнено',
@@ -75,12 +70,15 @@ class Task
     /**
      * @param string $action
      * @return string|null
+     * @throws ValidValueException
      */
-    public function getNextStatus(string $action)
+    public function getNextStatus(string $action): string
     {
-        if (!$action) {
-            return null;
+
+        if (!self::ACTION_NAME[$action]) {
+            throw new ValidValueException("Нет действия: {$action}!");
         }
+
         return self::NEXT_STATUS[$action];
     }
 
@@ -91,10 +89,14 @@ class Task
      * @param int $idCustomer
      * @param int $idUser
      * @return array массив объектов действий
+     * @throws ValidValueException
      */
-    public function getNextAction(string $status, int $idImplement, int $idCustomer, int $idUser)
+    public function getNextAction(string $status, int $idImplement, int $idCustomer, int $idUser): ?array
     {
-        return array_filter(self::NEXT_ACTION[$status], function ($obAction) use ($idImplement, $idCustomer, $idUser){
+        if (!self::STATUS_NAME[$status]) {
+            throw new ValidValueException("Нет статуса: {$status}!");
+        }
+        return array_filter(self::NEXT_ACTION[$status], function ($obAction) use ($idImplement, $idCustomer, $idUser) {
             return call_user_func_array([$obAction, 'checkingRights'], [$idImplement, $idCustomer, $idUser]);
         });
     }
