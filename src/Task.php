@@ -70,15 +70,13 @@ class Task
     /**
      * @param string $action
      * @return string|null
+     * @throws ValidValueException
      */
-    public function getNextStatus(string $action) : string
+    public function getNextStatus(string $action): string
     {
-        try {
-            if (!self::ACTION_NAME[$action]) {
-                throw new ValidValueException("Нет действия: {$action}!");
-            }
-        } catch (ValidValueException $er) {
-            print("Ошибка значения: " . $er->getMessage());
+
+        if (!self::ACTION_NAME[$action]) {
+            throw new ValidValueException("Нет действия: {$action}!");
         }
 
         return self::NEXT_STATUS[$action];
@@ -91,16 +89,12 @@ class Task
      * @param int $idCustomer
      * @param int $idUser
      * @return array массив объектов действий
+     * @throws ValidValueException
      */
-    public function getNextAction(string $status, int $idImplement, int $idCustomer, int $idUser) : ?array
+    public function getNextAction(string $status, int $idImplement, int $idCustomer, int $idUser): ?array
     {
-
-        try {
-            if (!self::STATUS_NAME[$status]) {
-                throw new ValidValueException("Нет статуса: {$status}!");
-            }
-        } catch (ValidValueException $er) {
-            print("Ошибка значения: " . $er->getMessage());
+        if (!self::STATUS_NAME[$status]) {
+            throw new ValidValueException("Нет статуса: {$status}!");
         }
         return array_filter(self::NEXT_ACTION[$status], function ($obAction) use ($idImplement, $idCustomer, $idUser) {
             return call_user_func_array([$obAction, 'checkingRights'], [$idImplement, $idCustomer, $idUser]);
