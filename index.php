@@ -12,6 +12,13 @@ $NextAction2 = $obTask->getNextAction(Task::STATUS_FAILED,1,2,2);
 $NextAction3 = $obTask->getNextAction(Task::STATUS_NEW,1,2,1);
 $NextAction4 = $obTask->getNextAction(Task::STATUS_NEW,1,2,2);
 
+
+$tables = ['city','category','value_notification','users','task','response','chat','favourites','user_category','task_category','selected_notification','events','notification'];
+foreach ($tables as $table) {
+    $csv = new \Lobochkin\TaskForce\ReadCsvAndCreateSql($table);
+    dump($csv->convertStringCsv());
+}
+
 ?>
 <?=$NextStatus?>
 <div>Статус: в работе , исполнитель: 1, заказчик: 2, юзер: 2 <?=implode($NextAction,', ')?></div>
