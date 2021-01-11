@@ -1,1 +1,0 @@
-INSERT INTO taskforce.favourites (user_id,favourite_id) VALUES("41","42"),("41","43"),("41","44"),("45","43"),("45","44"),("45","46"),("45","47");

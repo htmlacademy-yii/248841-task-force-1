@@ -1,1 +1,0 @@
-INSERT INTO taskforce.task_category (category_id,task_id) VALUES("9","1"),("10","2"),("11","3"),("12","4"),("13","5"),("13","6"),("13","7"),("14","8"),("14","9");
