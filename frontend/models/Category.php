@@ -9,9 +9,9 @@ use Yii;
  *
  * @property int $id
  * @property string $name
- * @property string|null $icon_url
+ * @property string|null $icon
  *
- * @property TaskCategory[] $taskCategories
+ * @property Task[] $tasks
  * @property UserCategory[] $userCategories
  */
 class Category extends \yii\db\ActiveRecord
@@ -31,7 +31,7 @@ class Category extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['name', 'icon_url'], 'string', 'max' => 45],
+            [['name', 'icon'], 'string', 'max' => 45],
         ];
     }
 
@@ -43,27 +43,24 @@ class Category extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Name',
-            'icon_url' => 'Icon Url',
+            'icon' => 'Icon',
         ];
     }
 
     /**
-     * Gets query for [[TaskCategories]].
+     * Gets query for [[Tasks]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getTaskCategories()
+    public function getTasks()
     {
-        return $this->hasMany(TaskCategory::className(), ['category_id' => 'id']);
+        return $this->hasMany(Task::className(), ['category_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[UserCategories]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserCategories()
+
+    public function getUser()
     {
-        return $this->hasMany(UserCategory::className(), ['category_id' => 'id']);
+        return $this->hasMany(Users::className(), ['id' => 'user_id'])
+            ->viaTable('user_category', ['category_id' => 'id']);
     }
 }

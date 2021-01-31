@@ -8,7 +8,7 @@ use Yii;
  * This is the model class for table "task".
  *
  * @property int $id
- * @property int $user_id
+ * @property int $employer_id
  * @property string $title
  * @property string $description
  * @property string $date_create
@@ -16,11 +16,15 @@ use Yii;
  * @property string $status
  * @property string|null $location
  * @property string|null $deadline
+ * @property int $category_id
+ * @property int|null $implementer_id
  *
+ * @property Category $category
  * @property Chat[] $chats
+ * @property Users $employer
  * @property FilesTask[] $filesTasks
+ * @property Users $implementer
  * @property Response[] $responses
- * @property TaskCategory[] $taskCategories
  */
 class Task extends \yii\db\ActiveRecord
 {
@@ -38,12 +42,15 @@ class Task extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'title', 'description', 'status'], 'required'],
-            [['user_id', 'price'], 'integer'],
+            [['employer_id', 'title', 'description', 'status', 'category_id'], 'required'],
+            [['employer_id', 'price', 'category_id', 'implementer_id'], 'integer'],
             [['description', 'status'], 'string'],
             [['date_create', 'deadline'], 'safe'],
             [['title'], 'string', 'max' => 255],
             [['location'], 'string', 'max' => 100],
+            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
+            [['employer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['employer_id' => 'id']],
+            [['implementer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['implementer_id' => 'id']],
         ];
     }
 
@@ -54,7 +61,7 @@ class Task extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'user_id' => 'User ID',
+            'employer_id' => 'Employer ID',
             'title' => 'Title',
             'description' => 'Description',
             'date_create' => 'Date Create',
@@ -62,7 +69,19 @@ class Task extends \yii\db\ActiveRecord
             'status' => 'Status',
             'location' => 'Location',
             'deadline' => 'Deadline',
+            'category_id' => 'Category ID',
+            'implementer_id' => 'Implementer ID',
         ];
+    }
+
+    /**
+     * Gets query for [[Category]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategory()
+    {
+        return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
 
     /**
@@ -76,6 +95,16 @@ class Task extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[Employer]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmployer()
+    {
+        return $this->hasOne(Users::className(), ['id' => 'employer_id']);
+    }
+
+    /**
      * Gets query for [[FilesTasks]].
      *
      * @return \yii\db\ActiveQuery
@@ -86,6 +115,16 @@ class Task extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[Implementer]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getImplementer()
+    {
+        return $this->hasOne(Users::className(), ['id' => 'implementer_id']);
+    }
+
+    /**
      * Gets query for [[Responses]].
      *
      * @return \yii\db\ActiveQuery
@@ -93,15 +132,5 @@ class Task extends \yii\db\ActiveRecord
     public function getResponses()
     {
         return $this->hasMany(Response::className(), ['task_id' => 'id']);
-    }
-
-    /**
-     * Gets query for [[TaskCategories]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTaskCategories()
-    {
-        return $this->hasMany(TaskCategory::className(), ['task_id' => 'id']);
     }
 }
