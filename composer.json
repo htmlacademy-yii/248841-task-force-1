@@ -45,6 +45,7 @@
     ],
     "autoload": {
         "psr-4": {
+            "frontend\\helpers\\": "frontend/helpers/",
             "Lobochkin\\TaskForce\\": "src/"
         }
     },
