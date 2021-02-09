@@ -4,48 +4,33 @@ use frontend\widgets\TimeWidget;
 ?>
 <section class="user__search">
     <?php
-    foreach ($provider->getModels() as $user) :
-        $tasks = [];
-        foreach ($user->tasks0 as $task) {
-            if ($task->status == 'cancel'){
-                $tasks[] = $task;
-            }
-        }
-        $responseRate = array_map(function ($i) {
-            return $i->rate;
-        }, $user->responses);
-
-        $responseRateAverage = 0;
-        if (count($responseRate) > 0 ) {
-            $responseRateAverage = round(array_sum($responseRate) / count($responseRate), 2);
-        }
-        ?>
+    foreach ($provider->getModels() as $user) : ?>
     <div class="content-view__feedback-card user__search-wrapper">
         <div class="feedback-card__top">
             <div class="user__search-icon">
-                <a href="user.html"><img src="<?= $user->avatar_url ?>>" width="65" height="65"></a>
-                <span><?= count($tasks);?> заданий</span>
+                <a href="user.html"><img src="<?= $user->avatar_url; ?>>" width="65" height="65"></a>
+                <span><?= $user->completedTasksCount;?> заданий</span>
                 <span><?= count($user->responses);?> отзывов</span>
             </div>
             <div class="feedback-card__top--name user__search-card">
                 <p class="link-name"><a href="user.html" class="link-regular"><?= $user->name; ?></a></p>
                 <? for ($i = 0; $i < 5; $i++) :
-                    if (floor($responseRateAverage) > $i) {?>
+                    if (floor($user->averageRate) > $i) {?>
                         <span></span>
                     <?} else {?>
                         <span class="star-disabled"></span>
                     <? }
                 endfor; ?>
-                <b><?= $responseRateAverage ?></b>
+                <b><?= $user->averageRate; ?></b>
                 <p class="user__search-content">
-                    <?= $user->description ?>
+                    <?= $user->description; ?>
                 </p>
             </div>
             <span class="new-task__time">Был на сайте <?= TimeWidget::widget(['lastTime' => $user->last_visit])==='now'?'только что': TimeWidget::widget(['lastTime' => $user->last_visit]).' назад'?></span>
         </div>
         <div class="link-specialization user__search-link--bottom">
             <? foreach ($user->category as $category) :?>
-                <a href="#" class="link-regular"><?= $category->name?></a>
+                <a href="#" class="link-regular"><?= $category->name;?></a>
             <? endforeach;?>
         </div>
     </div>

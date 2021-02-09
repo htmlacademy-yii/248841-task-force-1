@@ -1,20 +1,18 @@
 <?php
 
-use frontend\helpers\TimeAgo;
+use frontend\helpers\WordHelper;
 
 /** @var \DateInterval $diffTime */
 if ($diffTime->y) {
-   echo TimeAgo::getTime($diffTime->y, ['год', 'года', 'лет']);
+   echo WordHelper::getPluralWord($diffTime->y, ['год', 'года', 'лет']);
 } elseif ($diffTime->m) {
-    echo TimeAgo::getTime($diffTime->m, ['месяц', 'месяца', 'месяцев']);
+    echo WordHelper::getPluralWord($diffTime->m, ['месяц', 'месяца', 'месяцев']);
 } elseif ($diffTime->d) {
-    echo TimeAgo::getTime($diffTime->d, ['день', 'дня', 'дней']);
+    echo WordHelper::getPluralWord($diffTime->d, ['день', 'дня', 'дней']);
 } elseif ($diffTime->h) {
-    echo TimeAgo::getTime($diffTime->h, ['час', 'часа', 'часов']);
+    echo WordHelper::getPluralWord($diffTime->h, ['час', 'часа', 'часов']);
 } elseif ($diffTime->i) {
-    echo TimeAgo::getTime($diffTime->i, ['минту', 'минуты', 'минут']);
-} elseif ($diffTime->s) {
-    echo 'now';
+    echo WordHelper::getPluralWord($diffTime->i, ['минту', 'минуты', 'минут']);
 } else {
-    echo '0';
+    echo 'now';
 }

@@ -4,9 +4,9 @@
 namespace frontend\helpers;
 
 
-class TimeAgo
+class WordHelper
 {
-    static function getTime(int $num, array $nameTime): string
+    static function getPluralWord(int $num, array $nameTime): string
     {
         if ($num % 10 === 1 && $num % 100 !== 11) {
             $string = $num . " {$nameTime[0]}";

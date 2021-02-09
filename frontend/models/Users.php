@@ -2,7 +2,6 @@
 
 namespace frontend\models;
 
-use Yii;
 
 /**
  * This is the model class for table "users".
@@ -33,6 +32,8 @@ use Yii;
  * @property Task[] $tasks
  * @property Task[] $tasks0
  * @property UserCategory[] $userCategories
+ * @property int $completedTasksCount
+ * @property float $averageRate
  */
 class Users extends \yii\db\ActiveRecord
 {
@@ -195,5 +196,23 @@ class Users extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Category::className(), ['id' => 'category_id'])
             ->viaTable('user_category', ['user_id' => 'id']);
+    }
+
+    /**
+     * @return int
+     */
+    public function getCompletedTasksCount()
+    {
+        return $this->getTasks0()->where(['status' => 'cancel'])->count();
+    }
+
+    /**
+     * @return float|int
+     */
+
+    public function getAverageRate()
+    {
+        $rate = $this->getResponses()->average('rate');
+        return $rate ? round($rate,2) : 0;
     }
 }
