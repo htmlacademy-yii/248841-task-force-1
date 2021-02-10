@@ -2,7 +2,6 @@
 
 namespace frontend\models;
 
-use Yii;
 
 /**
  * This is the model class for table "users".
@@ -30,7 +29,11 @@ use Yii;
  * @property PhotoWork[] $photoWorks
  * @property Response[] $responses
  * @property SelectedNotification[] $selectedNotifications
+ * @property Task[] $tasks
+ * @property Task[] $tasks0
  * @property UserCategory[] $userCategories
+ * @property int $completedTasksCount
+ * @property float $averageRate
  */
 class Users extends \yii\db\ActiveRecord
 {
@@ -165,12 +168,51 @@ class Users extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[UserCategories]].
+     * Gets query for [[Tasks]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getUserCategories()
+    public function getTasks()
     {
-        return $this->hasMany(UserCategory::className(), ['user_id' => 'id']);
+        return $this->hasMany(Task::className(), ['employer_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Tasks0]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTasks0()
+    {
+        return $this->hasMany(Task::className(), ['implementer_id' => 'id']);
+    }
+
+
+    /**
+     * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getCategory()
+    {
+        return $this->hasMany(Category::className(), ['id' => 'category_id'])
+            ->viaTable('user_category', ['user_id' => 'id']);
+    }
+
+    /**
+     * @return int
+     */
+    public function getCompletedTasksCount()
+    {
+        return $this->getTasks0()->where(['status' => 'cancel'])->count();
+    }
+
+    /**
+     * @return float|int
+     */
+
+    public function getAverageRate()
+    {
+        $rate = $this->getResponses()->average('rate');
+        return $rate ? round($rate,2) : 0;
     }
 }

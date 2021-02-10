@@ -12,12 +12,12 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'css/site.css',
+//        'css/site.css',
         'css/normalize.css',
         'css/style.css',
     ];
     public $js = [
-        'js/dropzone.js',
+//        'js/dropzone.js',
         'js/main.js',
         'js/messenger.js',
         'js/vue.js'
