@@ -72,7 +72,7 @@ class TaskFilter extends Model
     public function getDataProvider()
     {
         $query = Task::find()
-            ->where(['status' => 'new'])
+            ->where(['status' => \Lobochkin\TaskForce\Task::STATUS_NEW])
             ->orderBy('id DESC');
 
 

@@ -6,6 +6,8 @@ namespace frontend\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use Lobochkin\TaskForce\Task;
+
 
 class UsersFilter extends Model
 {
@@ -67,7 +69,7 @@ class UsersFilter extends Model
     public function getDataProvider()
     {
         $query = Users::find()
-            ->where(['role' => 'implementer'])
+            ->where(['role' => Task::ROLE_IMPLEMENT])
             ->orderBy('users.id DESC');
         if ($this->category) {
             $query
@@ -76,26 +78,21 @@ class UsersFilter extends Model
         }
         if ($this->available) {
             $query
-                ->leftJoin('task', 'task.implementer_id = users.id AND task.status =\'in_work\'')
+                ->leftJoin('task', 'task.implementer_id = users.id AND task.status = :inWork',[':inWork' => Task::STATUS_IN_WORK])
                 ->groupBy('users.id')
                 ->andHaving(['COUNT(task.id)' => '0']);
         }
-        if ($this->online) {
-            $query->andWhere('last_visit > NOW() - INTERVAL 30 MINUTE');
-        }
+
         if ($this->isFeedback) {
             $query
-                ->leftJoin('response', 'response.user_id = users.id')
-                ->groupBy('users.id')
-                ->andHaving('COUNT(response.id) > 0');
+                ->innerJoin('response', 'response.user_id = users.id');
         }
         if ($this->online) {
             $query->andWhere('last_visit > NOW() - INTERVAL 30 MINUTE');
         }
         if ($this->favorites) {
             $currentUserId = 41;
-            $query->leftJoin('favourites', 'favourites.user_id = :user', [':user' => $currentUserId])
-                ->andWhere('users.id = favourites.favourite_id');
+            $query->innerJoin('favourites', 'favourites.user_id = :user AND users.id = favourites.favourite_id', [':user' => $currentUserId]);
         }
 
 //dd($query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql);

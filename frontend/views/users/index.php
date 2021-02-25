@@ -34,7 +34,7 @@ use yii\bootstrap\Html;
                     <?= $user->description; ?>
                 </p>
             </div>
-            <span class="new-task__time">Был на сайте <?= TimeWidget::widget(['lastTime' => $user->last_visit])==='now'?'только что': TimeWidget::widget(['lastTime' => $user->last_visit]).' назад'?></span>
+            <span class="new-task__time">Был на сайте <?= TimeWidget::widget(['lastTime' => $user->last_visit, 'lastWord' => 'назад'])?></span>
         </div>
         <div class="link-specialization user__search-link--bottom">
             <? foreach ($user->category as $category) :?>

@@ -29,7 +29,7 @@ use yii\bootstrap\{ActiveForm,Html};
                 </p>
                 <b class="new-task__price new-task__price--<?= $task->category->icon ?>"><?= $task->price ?><b> ₽</b></b>
                 <p class="new-task__place"><?= $task->location ?></p>
-                <span class="new-task__time"><?= TimeWidget::widget(['lastTime' => $task->date_create]) === 'now' ? 'только что' : TimeWidget::widget(['lastTime' => $task->date_create]) . ' назад'; ?></span>
+                <span class="new-task__time"><?= TimeWidget::widget(['lastTime' => $task->date_create, 'lastWord' => 'назад']) ?></span>
             </div>
         <?php endforeach; ?>
     </div>
