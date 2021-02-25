@@ -4,25 +4,22 @@
 namespace frontend\controllers;
 
 
-use frontend\models\Users;
-use Lobochkin\TaskForce\LastTime;
-use yii\data\ActiveDataProvider;
+use frontend\models\UsersFilter;
+use Yii;
 use yii\web\Controller;
 
 class UsersController extends Controller
 {
     public function actionIndex()
     {
-        $provider = new ActiveDataProvider([
-            'query' => Users::find()
-                ->where(['role' => 'implementer'])
-                ->orderBy('id DESC'),
-            'pagination' => [
-                'pageSize' => 20,
-            ],
+        $formFilter = new UsersFilter();
+        if (Yii::$app->request->isPost) {
+            $formFilter->load(Yii::$app->request->post());
+        }
+        return $this->render('index', [
+            'provider' => $formFilter->getDataProvider(),
+            'formFilter' => $formFilter
         ]);
-
-        return $this->render('index', ['provider' => $provider]);
     }
 
 }

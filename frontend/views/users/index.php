@@ -1,6 +1,14 @@
 <?php
+
+use frontend\models\Category;
 use frontend\widgets\TimeWidget;
-/** @var object $provider */
+use yii\bootstrap\ActiveForm;
+use yii\bootstrap\Html;
+
+/** @var object $provider ActiveDataProvider
+ * @var object $formFilter TaskFilter
+ * @var object $form ActiveForm
+ */
 ?>
 <section class="user__search">
     <?php
@@ -26,7 +34,7 @@ use frontend\widgets\TimeWidget;
                     <?= $user->description; ?>
                 </p>
             </div>
-            <span class="new-task__time">Был на сайте <?= TimeWidget::widget(['lastTime' => $user->last_visit])==='now'?'только что': TimeWidget::widget(['lastTime' => $user->last_visit]).' назад'?></span>
+            <span class="new-task__time">Был на сайте <?= TimeWidget::widget(['lastTime' => $user->last_visit, 'lastWord' => 'назад'])?></span>
         </div>
         <div class="link-specialization user__search-link--bottom">
             <? foreach ($user->category as $category) :?>
@@ -38,52 +46,67 @@ use frontend\widgets\TimeWidget;
 </section>
 <section class="search-task">
     <div class="search-task__wrapper">
-        <form class="search-task__form" name="users" method="post" action="#">
-            <fieldset class="search-task__categories">
-                <legend>Категории</legend>
-                <label class="checkbox__legend">
-                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="" checked disabled>
-                    <span>Курьерские услуги</span>
-                </label>
-                <label class="checkbox__legend">
-                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="" checked>
-                    <span>Грузоперевозки</span>
-                </label>
-                <label class="checkbox__legend">
-                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
-                    <span>Переводы</span>
-                </label>
-                <label class="checkbox__legend">
-                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
-                    <span>Строительство и ремонт</span>
-                </label>
-                <label class="checkbox__legend">
-                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
-                    <span>Выгул животных</span>
-                </label>
-            </fieldset>
-            <fieldset class="search-task__categories">
-                <legend>Дополнительно</legend>
-                <label class="checkbox__legend">
-                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
-                    <span>Сейчас свободен</span>
-                </label>
-                <label class="checkbox__legend">
-                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
-                    <span>Сейчас онлайн</span>
-                </label>
-                <label class="checkbox__legend">
-                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
-                    <span>Есть отзывы</span>
-                </label>
-                <label class="checkbox__legend">
-                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
-                    <span>В избранном</span>
-                </label>
-            </fieldset>
-            <label class="search-task__name" for="110">Поиск по имени</label>
-            <input class="input-middle input" id="110" type="search" name="q" placeholder="">
-            <button class="button" type="submit">Искать</button>
-        </form>
+        <?php $form = ActiveForm::begin([
+            'options' => ['class' => 'search-task__form']
+        ]); ?>
+        <?= $form->field($formFilter, 'category', [
+            "template" => Html::tag('legend',"{labelTitle}") . "\n{input}",
+            'options' => [
+                'tag' => 'fieldset',
+                'class' => 'search-task__categories',
+            ]
+        ])->checkboxList(Category::getCategorisList(), [
+            'unselect' => null,
+            'tag' => false,
+            'item' => function ($index, $label, $name, $checked, $value) {
+                return Html::beginTag('label',['class' =>'checkbox__legend']) .
+                    Html::checkbox($name, $checked, [
+                        'class' => 'visually-hidden checkbox__input',
+                        'value' => $value
+                    ]) . Html::tag('span',$label) . Html::endTag('label');
+            }
+        ]);?>
+        <fieldset class="search-task__categories">
+            <legend>Дополнительно</legend>
+            <?= $form->field($formFilter, 'available', [
+                'options' => [],
+                'checkboxTemplate' => Html::beginTag('label',['class' =>'checkbox__legend']) ."{input}".Html::tag('span',"{labelTitle}"). Html::endTag('label'),
+            ])->checkbox([
+                'uncheck' => null,
+                'class' => 'visually-hidden checkbox__input',
+            ]); ?>
+            <?= $form->field($formFilter, 'online', [
+                'options' => [],
+                'checkboxTemplate' => Html::beginTag('label',['class' =>'checkbox__legend']) ."{input}".Html::tag('span',"{labelTitle}"). Html::endTag('label'),
+            ])->checkbox([
+                'uncheck' => null,
+                'class' => 'visually-hidden checkbox__input',
+            ]); ?>
+            <?= $form->field($formFilter, 'isFeedback', [
+                'options' => [],
+                'checkboxTemplate' => Html::beginTag('label',['class' =>'checkbox__legend']) ."{input}".Html::tag('span',"{labelTitle}"). Html::endTag('label'),
+            ])->checkbox([
+                'uncheck' => null,
+                'class' => 'visually-hidden checkbox__input',
+            ]); ?>
+            <?= $form->field($formFilter, 'favorites', [
+                'options' => [],
+                'checkboxTemplate' => Html::beginTag('label',['class' =>'checkbox__legend']) ."{input}".Html::tag('span',"{labelTitle}"). Html::endTag('label'),
+            ])->checkbox([
+                'uncheck' => null,
+                'class' => 'visually-hidden checkbox__input',
+            ]); ?>
+        </fieldset>
+        <?= $form->field($formFilter, 'name', [
+            'options' => [
+                'class' => 'field-container',
+            ],
+            'labelOptions' => ['class' => 'search-task__name'],
+            'template' => "{label}\n{input}"
+        ])->textInput(['class' => 'input-middle input']); ?>
+        <?= Html::submitButton('Искать', ['class' => 'button']); ?>
+
+        <?php ActiveForm::end(); ?>
     </div>
 </section>
+

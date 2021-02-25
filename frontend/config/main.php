@@ -42,6 +42,11 @@ return [
             'showScriptName' => false,
             'rules' => [
                 '<controller:\w+>/<action:\w+>/' => '<controller>/<action>',
+                [
+                    'pattern' => '<controller:\w+>/<action:\w+>/<param>',
+                    'route' => '<controller>/<action>',
+                    'defaults' => ['param' => '']
+                ],
             ],
         ],
 

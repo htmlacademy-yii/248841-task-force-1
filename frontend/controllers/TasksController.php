@@ -1,9 +1,8 @@
 <?php
 
-
 namespace frontend\controllers;
-use frontend\models\{Task};
-use yii\data\ActiveDataProvider;
+use frontend\models\{Task, TaskFilter};
+use Yii;
 use yii\web\Controller;
 
 class TasksController extends Controller
@@ -11,16 +10,14 @@ class TasksController extends Controller
     public function actionIndex()
     {
 
-        $provider = new ActiveDataProvider([
-            'query' => Task::find()
-                ->where(['status' => 'new'])
-                ->orderBy('id DESC'),
-            'pagination' => [
-                'pageSize' => 20,
-            ],
-        ]);
-
-        return $this->render('index', ['provider' => $provider]);
+        $formFilter = new TaskFilter();
+        if (Yii::$app->request->isPost) {
+            $formFilter->load(Yii::$app->request->post());
+        }
+        return $this->render('index', [
+            'provider' => $formFilter->getDataProvider(),
+            'formFilter' => $formFilter
+            ]);
     }
 
 }
