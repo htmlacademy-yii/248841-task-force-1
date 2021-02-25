@@ -5,6 +5,7 @@ namespace frontend\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use Lobochkin\TaskForce\Task as TaskForceTask;
 
 class TaskFilter extends Model
 {
@@ -72,11 +73,10 @@ class TaskFilter extends Model
     public function getDataProvider()
     {
         $query = Task::find()
-            ->where(['status' => \Lobochkin\TaskForce\Task::STATUS_NEW])
+            ->where(['status' => TaskForceTask::STATUS_NEW])
             ->orderBy('id DESC');
 
-
-            $query->andFilterWhere(['category_id' => $this->category]);
+        $query->andFilterWhere(['category_id' => $this->category]);
 
         if ($this->remoteWork) {
             $query->andWhere(['location' => null]);
