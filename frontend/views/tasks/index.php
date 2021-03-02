@@ -20,8 +20,8 @@ use yii\bootstrap\{ActiveForm,Html};
         foreach ($provider->getModels() as $task) : ?>
             <div class="new-task__card">
                 <div class="new-task__title">
-                    <a href="view.html" class="link-regular"><h2><?= $task->title; ?></h2></a>
-                    <a class="new-task__type link-regular" href="#"><p><?= $task->category->name; ?></p></a>
+                    <a href="view/<?= $task->id; ?>" class="link-regular"><h2><?= $task->title; ?></h2></a>
+                    <a class="new-task__type link-regular" href="<?= $task->category->id; ?>"><p><?= $task->category->name; ?></p></a>
                 </div>
                 <div class="new-task__icon new-task__icon--<?= $task->category->icon; ?>"></div>
                 <p class="new-task_description">

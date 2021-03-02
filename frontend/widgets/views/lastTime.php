@@ -7,7 +7,7 @@ use frontend\helpers\WordHelper;
 if ($diffTime->y) {
     echo WordHelper::getPluralWord($diffTime->y, ['год', 'года', 'лет']) , ' ' , $lastWord;
 } elseif ($diffTime->m) {
-    echo WordHelper::getPluralWord($diffTime->m, ['месяц', 'месяца', 'месяцев'] , ' ' , $lastWord);
+    echo WordHelper::getPluralWord($diffTime->m, ['месяц', 'месяца', 'месяцев']) , ' ' , $lastWord;
 } elseif ($diffTime->d) {
     echo WordHelper::getPluralWord($diffTime->d, ['день', 'дня', 'дней']) , ' ' , $lastWord;
 } elseif ($diffTime->h) {

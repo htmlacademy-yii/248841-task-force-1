@@ -5,38 +5,26 @@ namespace frontend\models;
 use Yii;
 
 /**
- * This is the model class for table "response".
+ * This is the model class for table "answers".
  *
  * @property int $id
- * @property int $task_id
- * @property int $user_id
- * @property int $rate
- * @property string|null $description
- * @property string $last_time
+ * @property int|null $user_id
+ * @property int|null $task_id
+ * @property string|null $price
+ * @property string|null $comment
  *
  * @property Task $task
  * @property Users $user
  */
-class Response extends \yii\db\ActiveRecord
+class Answers extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'response';
+        return 'answers';
     }
-
-    /**
-     * для стилей звёздочек рейтинга
-     */
-    const MAP_RATE = [
-        1 => 'three',
-        2 => 'three',
-        3 => 'three',
-        4 => 'five',
-        5 => 'five',
-    ];
 
     /**
      * {@inheritdoc}
@@ -44,10 +32,9 @@ class Response extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['task_id', 'user_id', 'rate'], 'required'],
-            [['task_id', 'user_id', 'rate'], 'integer'],
-            [['description'], 'string'],
-            [['last_time'], 'safe'],
+            [['user_id', 'task_id'], 'integer'],
+            [['comment'], 'string'],
+            [['price'], 'string', 'max' => 45],
             [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -60,21 +47,11 @@ class Response extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'task_id' => 'Task ID',
             'user_id' => 'User ID',
-            'rate' => 'Rate',
-            'description' => 'Description',
-            'last_time' => 'Last Time',
+            'task_id' => 'Task ID',
+            'price' => 'Price',
+            'comment' => 'Comment',
         ];
-    }
-
-    /**
-     * @param int $rate
-     * @return string
-     */
-    public static function getStringRate(int $rate): string
-    {
-        return self::MAP_RATE[$rate];
     }
 
     /**

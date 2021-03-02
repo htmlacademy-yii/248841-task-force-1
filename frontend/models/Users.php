@@ -56,8 +56,8 @@ class Users extends \yii\db\ActiveRecord
             [['description', 'role'], 'string'],
             [['last_visit', 'date_create'], 'safe'],
             [['name', 'email', 'password', 'skype', 'telegram'], 'string', 'max' => 45],
-            [['birthday'], 'string', 'max' => 10],
-            [['phone'], 'string', 'max' => 15],
+            [['birthday'], 'date'],
+            [['phone'], 'integer', 'max' => 11],
             [['avatar_url'], 'string', 'max' => 255],
             [['email'], 'unique'],
             [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
@@ -215,4 +215,13 @@ class Users extends \yii\db\ActiveRecord
         $rate = $this->getResponses()->average('rate');
         return $rate ? round($rate,2) : 0;
     }
+    /**
+     * Gets query for [[Answers]].
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAnswers()
+    {
+        return $this->hasMany(Answers::className(), ['user_id' => 'id']);
+    }
+
 }

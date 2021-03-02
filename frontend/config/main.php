@@ -41,11 +41,18 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                '<controller:\w+>/<action:\w+>/' => '<controller>/<action>',
+//               '<controller:\w+>/<action:\w+>/' => '<controller>/<action>',
                 [
-                    'pattern' => '<controller:\w+>/<action:\w+>/<param>',
+                    'pattern' => '<controller:\w+>/file/<filename>',
+                    'route' => '<controller>/file',
+                ],
+                [
+                    'pattern' => '<controller:\w+>/<category>',
+                    'route' => '<controller>',
+                ],
+                [
+                    'pattern' => '<controller:\w+>/<action:\w+>/<id>',
                     'route' => '<controller>/<action>',
-                    'defaults' => ['param' => '']
                 ],
             ],
         ],
