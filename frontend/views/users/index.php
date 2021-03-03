@@ -1,7 +1,7 @@
 <?php
 
 use frontend\models\Category;
-use frontend\widgets\TimeWidget;
+use frontend\widgets\{TimeWidget,StarsReviews};
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 
@@ -16,20 +16,13 @@ use yii\bootstrap\Html;
     <div class="content-view__feedback-card user__search-wrapper">
         <div class="feedback-card__top">
             <div class="user__search-icon">
-                <a href="user.html"><img src="<?= $user->avatar_url; ?>>" width="65" height="65"></a>
+                <a href="/users/view/<?=$user->id?>"><?= Html::img('@web/uploads/' . $user->avatar_url, ['width' => 65, 'height' => 65, 'alt' => 'Аватар пользователя']); ?></a>
                 <span><?= $user->completedTasksCount;?> заданий</span>
                 <span><?= count($user->responses);?> отзывов</span>
             </div>
             <div class="feedback-card__top--name user__search-card">
-                <p class="link-name"><a href="user.html" class="link-regular"><?= $user->name; ?></a></p>
-                <? for ($i = 0; $i < 5; $i++) :
-                    if (floor($user->averageRate) > $i) {?>
-                        <span></span>
-                    <?} else {?>
-                        <span class="star-disabled"></span>
-                    <? }
-                endfor; ?>
-                <b><?= $user->averageRate; ?></b>
+                <p class="link-name"><a href="/users/view/<?=$user->id?>" class="link-regular"><?= $user->name; ?></a></p>
+                <?= StarsReviews::widget(['rating' => $user->averageRate]) ?>
                 <p class="user__search-content">
                     <?= $user->description; ?>
                 </p>
@@ -38,7 +31,7 @@ use yii\bootstrap\Html;
         </div>
         <div class="link-specialization user__search-link--bottom">
             <? foreach ($user->category as $category) :?>
-                <a href="#" class="link-regular"><?= $category->name;?></a>
+                <a href="?UsersFilter[category][]=<?= $category->id; ?>" class="link-regular"><?= $category->name;?></a>
             <? endforeach;?>
         </div>
     </div>

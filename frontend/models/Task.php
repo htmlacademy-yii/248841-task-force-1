@@ -133,4 +133,13 @@ class Task extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Response::className(), ['task_id' => 'id']);
     }
+
+    /**
+     * Gets query for [[Answers]].
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAnswers()
+    {
+        return $this->hasMany(Answers::className(), ['task_id' => 'id']);
+    }
 }

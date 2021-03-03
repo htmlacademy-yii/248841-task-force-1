@@ -4,7 +4,7 @@ use frontend\models\Category;
 use frontend\models\TaskFilter;
 use frontend\widgets\TimeWidget;
 use yii\data\ActiveDataProvider;
-use yii\bootstrap\{ActiveForm,Html};
+use yii\bootstrap\{ActiveForm, Html};
 
 
 /** @var $provider ActiveDataProvider
@@ -20,8 +20,8 @@ use yii\bootstrap\{ActiveForm,Html};
         foreach ($provider->getModels() as $task) : ?>
             <div class="new-task__card">
                 <div class="new-task__title">
-                    <a href="view.html" class="link-regular"><h2><?= $task->title; ?></h2></a>
-                    <a class="new-task__type link-regular" href="#"><p><?= $task->category->name; ?></p></a>
+                    <a href="view/<?= $task->id; ?>" class="link-regular"><h2><?= $task->title; ?></h2></a>
+                    <a class="new-task__type link-regular" href="?TaskFilter[category][]=<?= $task->category->id; ?>"><p><?= $task->category->name; ?></p></a>
                 </div>
                 <div class="new-task__icon new-task__icon--<?= $task->category->icon; ?>"></div>
                 <p class="new-task_description">
@@ -47,10 +47,12 @@ use yii\bootstrap\{ActiveForm,Html};
 <section class="search-task">
     <div class="search-task__wrapper">
         <?php $form = ActiveForm::begin([
+            'action' => [''],
+            'method' => 'get',
             'options' => ['class' => 'search-task__form']
         ]); ?>
         <?= $form->field($formFilter, 'category', [
-                "template" => Html::tag('legend',"{labelTitle}") . "\n{input}",
+            "template" => Html::tag('legend', "{labelTitle}") . "\n{input}",
             'options' => [
                 'tag' => 'fieldset',
                 'class' => 'search-task__categories',
@@ -59,25 +61,25 @@ use yii\bootstrap\{ActiveForm,Html};
             'unselect' => null,
             'tag' => false,
             'item' => function ($index, $label, $name, $checked, $value) {
-                return Html::beginTag('label',['class' =>'checkbox__legend']) .
+                return Html::beginTag('label', ['class' => 'checkbox__legend']) .
                     Html::checkbox($name, $checked, [
                         'class' => 'visually-hidden checkbox__input',
                         'value' => $value
-                    ]) . Html::tag('span',$label) . Html::endTag('label');
+                    ]) . Html::tag('span', $label) . Html::endTag('label');
             }
-        ]);?>
+        ]); ?>
         <fieldset class="search-task__categories">
             <legend>Дополнительно</legend>
             <?= $form->field($formFilter, 'withoutImplementer', [
                 'options' => [],
-                'checkboxTemplate' => Html::beginTag('label',['class' =>'checkbox__legend']) ."{input}".Html::tag('span',"{labelTitle}"). Html::endTag('label'),
+                'checkboxTemplate' => Html::beginTag('label', ['class' => 'checkbox__legend']) . "{input}" . Html::tag('span', "{labelTitle}") . Html::endTag('label'),
             ])->checkbox([
                 'uncheck' => null,
                 'class' => 'visually-hidden checkbox__input',
             ]); ?>
             <?= $form->field($formFilter, 'remoteWork', [
                 'options' => [],
-                'checkboxTemplate' => Html::beginTag('label',['class' =>'checkbox__legend']) ."{input}".Html::tag('span',"{labelTitle}"). Html::endTag('label'),
+                'checkboxTemplate' => Html::beginTag('label', ['class' => 'checkbox__legend']) . "{input}" . Html::tag('span', "{labelTitle}") . Html::endTag('label'),
             ])->checkbox([
                 'uncheck' => null,
                 'class' => 'visually-hidden checkbox__input',

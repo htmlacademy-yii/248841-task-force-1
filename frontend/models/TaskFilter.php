@@ -12,6 +12,7 @@ class TaskFilter extends Model
     const TIME_PERIOD_DAY = 1;
     const TIME_PERIOD_WEEK = 7;
     const TIME_PERIOD_MONTH = 30;
+    const TIME_PERIOD_ALL = null;
     /**
      * @var int[]
      */
@@ -66,7 +67,8 @@ class TaskFilter extends Model
         return [
             self::TIME_PERIOD_DAY => 'За день',
             self::TIME_PERIOD_WEEK => 'За неделю',
-            self::TIME_PERIOD_MONTH => 'За месяц'
+            self::TIME_PERIOD_MONTH => 'За месяц',
+            self::TIME_PERIOD_ALL => 'За всё время'
         ];
     }
 
@@ -89,7 +91,6 @@ class TaskFilter extends Model
         }
 
         $query->andFilterWhere(['Like', 'title', $this->title]);
-
 
         return new ActiveDataProvider([
             'query' => $query,
