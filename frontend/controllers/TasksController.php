@@ -1,6 +1,7 @@
 <?php
 
 namespace frontend\controllers;
+
 use frontend\models\{Task, TaskFilter};
 use Yii;
 use yii\web\Controller;
@@ -11,14 +12,12 @@ class TasksController extends Controller
     public function actionIndex()
     {
         $formFilter = new TaskFilter();
-        if (Yii::$app->request->isGet){
-            $formFilter->load(Yii::$app->request->get());
-        }
+        $formFilter->load(Yii::$app->request->get());
 
         return $this->render('index', [
             'provider' => $formFilter->getDataProvider(),
             'formFilter' => $formFilter
-            ]);
+        ]);
     }
 
     /**
@@ -33,7 +32,7 @@ class TasksController extends Controller
             throw new NotFoundHttpException("Задание с ID $id не найден");
         }
 
-        return $this->render('view',['task' =>$task]);
+        return $this->render('view', ['task' => $task]);
 
     }
 

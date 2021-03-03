@@ -15,15 +15,14 @@ class UsersController extends Controller
     public function actionIndex()
     {
         $formFilter = new UsersFilter();
-        if (Yii::$app->request->isGet) {
-            $formFilter->load(Yii::$app->request->get());
-        }
+        $formFilter->load(Yii::$app->request->get());
 
         return $this->render('index', [
             'provider' => $formFilter->getDataProvider(),
             'formFilter' => $formFilter
         ]);
     }
+
     /**
      * @param $id string
      * @return string
@@ -36,7 +35,7 @@ class UsersController extends Controller
             throw new NotFoundHttpException("Пользователь с ID $id не найден");
         }
 
-        return $this->render('view',['user' =>$user]);
+        return $this->render('view', ['user' => $user]);
 
     }
 }
