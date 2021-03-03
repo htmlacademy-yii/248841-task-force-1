@@ -92,7 +92,6 @@ class TaskFilter extends Model
 
         $query->andFilterWhere(['Like', 'title', $this->title]);
 
-
         return new ActiveDataProvider([
             'query' => $query,
             'pagination' => [

@@ -42,18 +42,10 @@ return [
             'showScriptName' => false,
             'rules' => [
 //               '<controller:\w+>/<action:\w+>/' => '<controller>/<action>',
-                [
-                    'pattern' => '<controller:\w+>/file/<filename>',
-                    'route' => '<controller>/file',
-                ],
-                [
-                    'pattern' => '<controller:\w+>/<category>',
-                    'route' => '<controller>',
-                ],
-                [
-                    'pattern' => '<controller:\w+>/<action:\w+>/<id>',
-                    'route' => '<controller>/<action>',
-                ],
+                '<controller:\w+>/file/<filename>' => '<controller>/file',
+                '<controller:\w+>/view/<id:\d+>' => '<controller>/view',
+                '<controller:\w+>/<action:\w+>/' => '<controller>/<action>',
+
             ],
         ],
 

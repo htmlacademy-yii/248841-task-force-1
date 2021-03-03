@@ -2,7 +2,7 @@
 
 use frontend\helpers\WordHelper;
 use frontend\models\Task;
-use frontend\widgets\TimeWidget;
+use frontend\widgets\{TimeWidget, StarsReviews};
 use yii\bootstrap\Html;
 
 /**
@@ -16,7 +16,7 @@ use yii\bootstrap\Html;
                 <div class="content-view__headline">
                     <h1><?= $task->title; ?></h1>
                     <span>Размещено в категории
-                                    <a href="/tasks/<?= $task->category->id; ?>" class="link-regular"><?= $task->category->name; ?></a>
+                                    <a href="/tasks/?TaskFilter[category][]=<?= $task->category->id; ?>" class="link-regular"><?= $task->category->name; ?></a>
                                     <?= TimeWidget::widget(['lastTime' => $task->date_create, 'lastWord' => 'назад']) ?></span>
                 </div>
                 <b class="new-task__price new-task__price--<?= $task->category->icon ?> content-view-price"><?= $task->price ?><b> ₽</b></b>
@@ -68,17 +68,10 @@ use yii\bootstrap\Html;
             <? foreach ($task->answers as $answer) : ?>
                 <div class="content-view__feedback-card">
                     <div class="feedback-card__top">
-                        <a href="/users/view/<?=$answer->user->id?>"><?= Html::img('@web/uploads/' . $answer->user->avatar_url, ['width' => 55, 'height' => 55, 'alt' => 'Аватар']); ?></a>
+                        <a href="/users/view/<?= $answer->user->id ?>"><?= Html::img('@web/uploads/' . $answer->user->avatar_url, ['width' => 55, 'height' => 55, 'alt' => 'Аватар']); ?></a>
                         <div class="feedback-card__top--name">
-                            <p><a href="/users/view/<?=$answer->user->id?>" class="link-regular"><?= $answer->user->name; ?></a></p>
-                            <? for ($i = 0; $i < 5; $i++):
-                                if (floor($answer->user->averageRate) > $i) { ?>
-                                    <span></span>
-                                <? } else { ?>
-                                    <span class="star-disabled"></span>
-                                <? }
-                            endfor; ?>
-                            <b><?= $answer->user->averageRate; ?></b>
+                            <p><a href="/users/view/<?= $answer->user->id ?>" class="link-regular"><?= $answer->user->name; ?></a></p>
+                            <?= StarsReviews::widget(['rating' => $answer->user->averageRate]) ?>
                         </div>
                         <span class="new-task__time"><?= TimeWidget::widget(['lastTime' => $answer->user->last_visit, 'lastWord' => 'назад']) ?></span>
                     </div>
@@ -107,10 +100,11 @@ use yii\bootstrap\Html;
                 <?= Html::img('@web/uploads/' . $task->employer->avatar_url, ['width' => 62, 'height' => 62, 'alt' => 'Аватар заказчика']); ?>
 
                 <div class="profile-mini__name five-stars__rate">
-                    <p><?= $task->employer->name?></p>
+                    <p><?= $task->employer->name ?></p>
                 </div>
             </div>
-            <p class="info-customer"><span><?= WordHelper::getPluralWord(count($task->employer->tasks), ['задание', 'задания', 'заданий']);?></span><span class="last-"><?= TimeWidget::widget(['lastTime' => $task->employer->date_create, 'lastWord' => '']) ?> на сайте</span></p>
+            <p class="info-customer"><span><?= WordHelper::getPluralWord(count($task->employer->tasks), ['задание', 'задания', 'заданий']); ?></span><span
+                        class="last-"><?= TimeWidget::widget(['lastTime' => $task->employer->date_create, 'lastWord' => '']) ?> на сайте</span></p>
             <a href="#" class="link-regular">Смотреть профиль</a>
         </div>
     </div>

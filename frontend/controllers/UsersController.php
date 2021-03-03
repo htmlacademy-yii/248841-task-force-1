@@ -15,11 +15,10 @@ class UsersController extends Controller
     public function actionIndex()
     {
         $formFilter = new UsersFilter();
-        if (Yii::$app->request->isPost) {
-            $formFilter->load(Yii::$app->request->post());
-        } elseif (Yii::$app->request->isGet) {
-            $formFilter->category = Yii::$app->request->get();
+        if (Yii::$app->request->isGet) {
+            $formFilter->load(Yii::$app->request->get());
         }
+
         return $this->render('index', [
             'provider' => $formFilter->getDataProvider(),
             'formFilter' => $formFilter
@@ -30,7 +29,7 @@ class UsersController extends Controller
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionView($id = '')
+    public function actionView($id)
     {
         $user = Users::findOne($id);
         if (!$user) {
