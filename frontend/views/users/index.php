@@ -40,6 +40,8 @@ use yii\bootstrap\Html;
 <section class="search-task">
     <div class="search-task__wrapper">
         <?php $form = ActiveForm::begin([
+            'action' => [''],
+            'method' => 'get',
             'options' => ['class' => 'search-task__form']
         ]); ?>
         <?= $form->field($formFilter, 'category', [
