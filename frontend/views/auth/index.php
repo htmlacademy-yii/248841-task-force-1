@@ -50,12 +50,11 @@ use yii\bootstrap\Html;
                 'class' => 'field-container field-container--registration',
             ],
             'labelOptions' => ['class' => 'input-danger'],
-            'inputOptions' => ['class' => 'input textarea', 'type' => 'password'],
             'errorOptions' => [
                 'class' => 'registration__text-error',
                 'tag' => 'span'
             ]
-        ]); ?>
+        ])->passwordInput(['class' => 'input textarea']); ?>
 
         <?= Html::submitButton('Cоздать аккаунт', ['class' => 'button button__registration']); ?>
 
