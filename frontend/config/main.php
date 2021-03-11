@@ -7,7 +7,10 @@ $params = array_merge(
 );
 
 return [
+    'language'=>'ru',
+    'sourceLanguage'=>'ru',
     'id' => 'app-frontend',
+    'name' => ' ООО «ТаскФорс»',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',

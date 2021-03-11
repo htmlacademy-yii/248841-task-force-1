@@ -51,11 +51,14 @@ class Users extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'email', 'password', 'role', 'last_visit'], 'required'],
+            [['email', 'name', 'city_id', 'password', 'id', 'description', 'role', 'birthday', 'phone', 'skype', 'telegram', 'last_visit', 'avatar_url', 'date_create'], 'safe'],
+            [[ 'email', 'password'], 'required', 'message' => 'Поле {attribute} необходимо заполнить'],
             [['city_id'], 'integer'],
+            [['name'], 'required','message' => 'Введите ваше имя и фамилию'],
+            [['city_id'], 'required', 'message' => 'Укажите город, чтобы находить подходящие задачи'],
+            [['password'], 'string', 'min' => 8, 'tooShort' => 'Длина пароля от 8 символов'],
             [['description', 'role'], 'string'],
-            [['last_visit', 'date_create'], 'safe'],
-            [['name', 'email', 'password', 'skype', 'telegram'], 'string', 'max' => 45],
+            [['name', 'email', 'skype', 'telegram'], 'string', 'max' => 45],
             [['birthday'], 'date'],
             [['phone'], 'integer', 'max' => 11],
             [['avatar_url'], 'string', 'max' => 255],
@@ -70,11 +73,11 @@ class Users extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
+            'email' => 'Электронная почта',
+            'name' => 'Ваше имя',
+            'city_id' => 'Город проживания',
+            'password' => 'Пароль',
             'id' => 'ID',
-            'name' => 'Name',
-            'email' => 'Email',
-            'city_id' => 'City ID',
-            'password' => 'Password',
             'description' => 'Description',
             'role' => 'Role',
             'birthday' => 'Birthday',
