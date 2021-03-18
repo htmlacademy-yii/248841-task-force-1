@@ -7,10 +7,11 @@ use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
-class TasksController extends Controller
+class TasksController extends SecuredController
 {
     public function actionIndex()
     {
+        /** @var TaskFilter $formFilter */
         $formFilter = new TaskFilter();
         $formFilter->load(Yii::$app->request->get());
 

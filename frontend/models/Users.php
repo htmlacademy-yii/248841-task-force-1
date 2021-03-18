@@ -3,6 +3,9 @@
 namespace frontend\models;
 
 
+use Yii;
+use yii\web\IdentityInterface;
+
 /**
  * This is the model class for table "users".
  *
@@ -35,7 +38,7 @@ namespace frontend\models;
  * @property int $completedTasksCount
  * @property float $averageRate
  */
-class Users extends \yii\db\ActiveRecord
+class Users extends \yii\db\ActiveRecord implements IdentityInterface
 {
     /**
      * {@inheritdoc}
@@ -227,4 +230,53 @@ class Users extends \yii\db\ActiveRecord
         return $this->hasMany(Answers::className(), ['user_id' => 'id']);
     }
 
+    /**
+     * @inheritDoc
+     */
+    public static function findIdentity($id)
+    {
+        return self::findOne($id);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        // TODO: Implement findIdentityByAccessToken() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getId()
+    {
+        return $this->getPrimaryKey();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAuthKey()
+    {
+        // TODO: Implement getAuthKey() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validateAuthKey($authKey)
+    {
+        // TODO: Implement validateAuthKey() method.
+    }
+
+    /**
+     * @param $password
+     * @return bool
+     */
+    public function validatePassword($password)
+    {
+
+        return \Yii::$app->security->validatePassword($password, $this->password);
+    }
 }
