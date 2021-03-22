@@ -1,7 +1,7 @@
 'use strict';
 $(function() {
 
-    $('body').on("submit", "form#loginForm", function(event) {
+    $(document).on("submit", "form#loginForm", function(event) {
         let form = $(this);
         console.log('sdfsd');
         let data = form.serialize();
