@@ -5,6 +5,8 @@ namespace frontend\controllers;
 
 
 use frontend\models\LoginForm;
+use frontend\models\Users;
+use Lobochkin\TaskForce\Task;
 use yii\bootstrap\ActiveForm;
 use yii\filters\AccessControl;
 use yii\web\BadRequestHttpException;
@@ -24,14 +26,15 @@ class LandingController extends Controller
                         'allow' => true,
                         'roles' => ['?']
                     ]
-                ]
+                ],
+                'denyCallback' => function($rule, $action) {
+                    if (!\Yii::$app->user->isGuest) {
+
+                        return $this->redirect('/tasks/');
+                    }
+                },
             ]
         ];
-    }
-
-    public function beforeAction($action)
-    {
-        return \Yii::$app->user->isGuest?: $this->redirect('/tasks/');
     }
 
     public function actionIndex()

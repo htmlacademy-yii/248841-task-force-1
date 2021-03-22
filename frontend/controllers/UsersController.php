@@ -44,6 +44,15 @@ class UsersController extends SecuredController
     }
 
     /**
+     * @return \yii\web\Response
+     */
+    public function actionLogout() {
+        \Yii::$app->user->logout();
+
+        return $this->goHome();
+    }
+
+    /**
      * @param $id string
      * @return string
      * @throws NotFoundHttpException

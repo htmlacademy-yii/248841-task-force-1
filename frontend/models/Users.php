@@ -243,7 +243,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        // TODO: Implement findIdentityByAccessToken() method.
+        return null;
     }
 
     /**
@@ -259,7 +259,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getAuthKey()
     {
-        // TODO: Implement getAuthKey() method.
+        return null;
     }
 
     /**
@@ -267,7 +267,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        // TODO: Implement validateAuthKey() method.
+        return null;
     }
 
     /**
