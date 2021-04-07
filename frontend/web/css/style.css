@@ -2114,6 +2114,7 @@ footer {
       text-decoration: none; }
 
 .landing-top {
+  box-sizing: content-box;
   font-family: "Myriad Pro", sans-serif;
   background-color: #ffffff;
   background-image: url("../img/woman-wrench.png");

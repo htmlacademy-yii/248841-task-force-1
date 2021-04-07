@@ -6,12 +6,32 @@ namespace frontend\controllers;
 
 use frontend\models\Users;
 use frontend\models\UsersFilter;
+use Lobochkin\TaskForce\Task;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
-class UsersController extends Controller
+class UsersController extends SecuredController
 {
+    public function behaviors()
+    {
+        $rules = parent::behaviors();
+        $rule = [
+            'allow' => false,
+            'actions' => ['index','view'],
+            'matchCallback' => function ($rule, $action) {
+                $id = \Yii::$app->user->getId();
+                $user = Users::findOne($id);
+
+                return Task::ROLE_IMPLEMENT === $user->role;
+            }
+        ];
+
+        array_unshift($rules['access']['rules'], $rule);
+
+        return $rules;
+    }
+
     public function actionIndex()
     {
         $formFilter = new UsersFilter();
@@ -21,6 +41,15 @@ class UsersController extends Controller
             'provider' => $formFilter->getDataProvider(),
             'formFilter' => $formFilter
         ]);
+    }
+
+    /**
+     * @return \yii\web\Response
+     */
+    public function actionLogout() {
+        \Yii::$app->user->logout();
+
+        return $this->goHome();
     }
 
     /**
