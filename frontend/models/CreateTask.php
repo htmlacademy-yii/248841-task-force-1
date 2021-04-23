@@ -77,8 +77,6 @@ class CreateTask extends Model
 
         if (!$task->save()) {
 
-            $transaction->rollBack();
-
             return null;
         }
 
