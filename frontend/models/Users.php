@@ -15,7 +15,6 @@ use yii\web\IdentityInterface;
  * @property int|null $city_id
  * @property string $password
  * @property string|null $description
- * @property string $role
  * @property string|null $birthday
  * @property string|null $phone
  * @property string|null $skype
@@ -54,13 +53,13 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['email', 'name', 'city_id', 'password', 'id', 'description', 'role', 'birthday', 'phone', 'skype', 'telegram', 'last_visit', 'avatar_url', 'date_create'], 'safe'],
-            [[ 'email', 'password'], 'required', 'message' => 'Поле {attribute} необходимо заполнить'],
+            [['email', 'name', 'city_id', 'password', 'id', 'description', 'birthday', 'phone', 'skype', 'telegram', 'last_visit', 'avatar_url', 'date_create'], 'safe'],
+            [['email', 'password'], 'required', 'message' => 'Поле {attribute} необходимо заполнить'],
             [['city_id'], 'integer'],
-            [['name'], 'required','message' => 'Введите ваше имя и фамилию'],
+            [['name'], 'required', 'message' => 'Введите ваше имя и фамилию'],
             [['city_id'], 'required', 'message' => 'Укажите город, чтобы находить подходящие задачи'],
             [['password'], 'string', 'min' => 8, 'tooShort' => 'Длина пароля от 8 символов'],
-            [['description', 'role'], 'string'],
+            [['description'], 'string'],
             [['name', 'email', 'skype', 'telegram'], 'string', 'max' => 45],
             [['birthday'], 'date'],
             [['phone'], 'integer', 'max' => 11],
@@ -82,7 +81,6 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
             'password' => 'Пароль',
             'id' => 'ID',
             'description' => 'Description',
-            'role' => 'Role',
             'birthday' => 'Birthday',
             'phone' => 'Phone',
             'skype' => 'Skype',
@@ -219,8 +217,9 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     public function getAverageRate()
     {
         $rate = $this->getResponses()->average('rate');
-        return $rate ? round($rate,2) : 0;
+        return $rate ? round($rate, 2) : 0;
     }
+
     /**
      * Gets query for [[Answers]].
      * @return \yii\db\ActiveQuery
@@ -278,5 +277,14 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     {
 
         return \Yii::$app->security->validatePassword($password, $this->password);
+    }
+
+    /**
+     * @return bool
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function isCustomer() :bool
+    {
+        return $this->getCategory()->count() === '0';
     }
 }

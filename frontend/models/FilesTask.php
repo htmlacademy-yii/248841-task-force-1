@@ -10,7 +10,7 @@ use Yii;
  * @property int $id
  * @property int $task_id
  * @property string $url_file
- *
+ * @property string $name_file
  * @property Task $task
  */
 class FilesTask extends \yii\db\ActiveRecord
@@ -31,7 +31,7 @@ class FilesTask extends \yii\db\ActiveRecord
         return [
             [['task_id', 'url_file'], 'required'],
             [['task_id'], 'integer'],
-            [['url_file'], 'string', 'max' => 255],
+            [['url_file', 'name_file'], 'string', 'max' => 255],
             [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
@@ -45,6 +45,7 @@ class FilesTask extends \yii\db\ActiveRecord
             'id' => 'ID',
             'task_id' => 'Task ID',
             'url_file' => 'Url File',
+            'name_file' => 'Name File'
         ];
     }
 

@@ -69,12 +69,10 @@ class UsersFilter extends Model
     public function getDataProvider()
     {
         $query = Users::find()
-            ->where(['role' => Task::ROLE_IMPLEMENT])
-            ->orderBy('users.id DESC');
+            ->orderBy('users.id DESC')
+            ->innerJoin('user_category', 'user_category.user_id = users.id');
         if ($this->category) {
-            $query
-                ->leftJoin('user_category', 'user_category.user_id = users.id')
-                ->andWhere(['IN','user_category.category_id',$this->category]);
+            $query->andWhere(['IN','user_category.category_id',$this->category]);
         }
         if ($this->available) {
             $query

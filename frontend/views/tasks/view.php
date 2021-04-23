@@ -31,7 +31,7 @@ use yii\bootstrap\Html;
             <div class="content-view__attach">
                 <h3 class="content-view__h3">Вложения</h3>
                 <? foreach ($task->filesTasks as $file): ?>
-                    <a href="/tasks/file/<?= $file->url_file ?>"><?= $file->url_file ?></a>
+                    <a href="/tasks/file/<?= $file->url_file ?>"><?= $file->name_file ?></a>
                 <?php endforeach; ?>
             </div>
             <div class="content-view__location">
@@ -97,8 +97,7 @@ use yii\bootstrap\Html;
         <div class="profile-mini__wrapper">
             <h3>Заказчик</h3>
             <div class="profile-mini__top">
-                <?= Html::img('@web/uploads/' . $task->employer->avatar_url, ['width' => 62, 'height' => 62, 'alt' => 'Аватар заказчика']); ?>
-
+                <?= $task->employer->avatar_url ? Html::img('@web/uploads/' . $task->employer->avatar_url, ['width' => 62, 'height' => 62, 'alt' => 'Аватар заказчика']): '' ?>
                 <div class="profile-mini__name five-stars__rate">
                     <p><?= $task->employer->name ?></p>
                 </div>

@@ -20,10 +20,8 @@ class UsersController extends SecuredController
             'allow' => false,
             'actions' => ['index','view'],
             'matchCallback' => function ($rule, $action) {
-                $id = \Yii::$app->user->getId();
-                $user = Users::findOne($id);
 
-                return Task::ROLE_IMPLEMENT === $user->role;
+                return !\Yii::$app->user->identity->isCustomer();
             }
         ];
 

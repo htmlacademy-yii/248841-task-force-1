@@ -5,11 +5,14 @@ namespace frontend\assets;
 use yii\web\AssetBundle;
 use yii\web\JqueryAsset;
 
-class LoginFormAsset extends AssetBundle
+class CreateAsset extends AssetBundle
 {
     public $js = [
-        'js/main.js',
-        'js/loginForm.js'
+        'js/dropzone.js',
+        'js/create.js'
+    ];
+    public $css = [
+        'css/dropzone.css',
     ];
     public $depends = [
         JqueryAsset::class
