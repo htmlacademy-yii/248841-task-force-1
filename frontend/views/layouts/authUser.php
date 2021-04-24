@@ -83,20 +83,37 @@ AppAsset::register($this);
                     </a>
                 </div>
                 <div class="header__nav">
-                    <ul class="header-nav__list site-list">
-                        <li class="site-list__item">
-                            <a href="#">Задания</a>
-                        </li>
-                        <li class="site-list__item">
-                            <a href="#">Исполнители</a>
-                        </li>
-                        <li class="site-list__item">
-                            <a href="#">Создать задание</a>
-                        </li>
-                        <li class="site-list__item">
-                            <a>Мой профиль</a>
-                        </li>
-                    </ul>
+                    <?=
+                    Nav::widget([
+                        'items' => [
+                            [
+                                'label' => 'Задания',
+                                'url' => ['/tasks'],
+                                'visible' => !Yii::$app->user->isGuest,
+                                'options' => ['class' =>'site-list__item'],
+                            ],
+                            [
+                                'label' => 'Исполнители',
+                                'url' => ['/users'],
+                                'visible' => !Yii::$app->user->isGuest,
+                                'options' => ['class' =>'site-list__item'],
+                            ],
+                            [
+                                'label' => 'Создать задание',
+                                'url' => ['site/login'],
+                                'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isCustomer(),
+                                'options' => ['class' =>'site-list__item'],
+                            ],
+                            [
+                                'label' => 'Мой профиль',
+                                'url' => [''],
+                                'visible' => !Yii::$app->user->isGuest,
+                                'options' => ['class' =>'site-list__item'],
+                            ],
+                        ],
+                        'options' => ['class' =>'header-nav__list site-list'],
+                    ]);
+                    ?>
                 </div>
             </div>
         </header>
