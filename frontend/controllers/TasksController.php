@@ -52,7 +52,7 @@ class TasksController extends SecuredController
     {
         $task = Task::findOne($id);
         if (!$task) {
-            throw new NotFoundHttpException("Задание с ID $id не найден");
+            throw new NotFoundHttpException("Задание с ID $id не найдено");
         }
 
         return $this->render('view', ['task' => $task]);
