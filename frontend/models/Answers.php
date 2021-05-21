@@ -18,6 +18,9 @@ use Yii;
  */
 class Answers extends \yii\db\ActiveRecord
 {
+    const CANCEL = 'cancel'; // отказать
+    const ACCEPT = 'accept'; // принять
+
     /**
      * {@inheritdoc}
      */
@@ -34,7 +37,7 @@ class Answers extends \yii\db\ActiveRecord
         return [
             [['user_id', 'task_id'], 'integer'],
             [['comment'], 'string'],
-            [['price'], 'string', 'max' => 45],
+            ['price', 'integer', 'integerOnly' => true, 'min' => '1'],
             [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -49,8 +52,8 @@ class Answers extends \yii\db\ActiveRecord
             'id' => 'ID',
             'user_id' => 'User ID',
             'task_id' => 'Task ID',
-            'price' => 'Price',
-            'comment' => 'Comment',
+            'price' => 'Ваша цена',
+            'comment' => 'Комментарий',
         ];
     }
 

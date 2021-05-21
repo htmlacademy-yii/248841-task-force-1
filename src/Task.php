@@ -49,8 +49,8 @@ class Task
     const NEXT_ACTION = [
         self::STATUS_NEW => [
             Answer::class,
-            Cancel::class,
-            Accept::class
+//            Cancel::class,
+//            Accept::class
         ],
         self::STATUS_IN_WORK => [
             Decline::class,
@@ -61,11 +61,11 @@ class Task
     protected $idTask = null;
     protected $idStatus = null;
 
-    public function __construct(int $idTask, int $idStatus)
-    {
-        $this->idTask = $idTask;
-        $this->idStatus = $idStatus;
-    }
+//    public function __construct(int $idTask, int $idStatus)
+//    {
+//        $this->idTask = $idTask;
+//        $this->idStatus = $idStatus;
+//    }
 
     /**
      * @param string $action
@@ -85,19 +85,23 @@ class Task
     /**
      * метод получения действий для статуса
      * @param string $status
-     * @param int $idImplement
-     * @param int $idCustomer
+     * @param int|null $idImplement
+     * @param int $idEmployer
      * @param int $idUser
      * @return array массив объектов действий
      * @throws ValidValueException
      */
-    public function getNextAction(string $status, int $idImplement, int $idCustomer, int $idUser): ?array
+    public static function getNextAction(string $status, $idImplement, int $idEmployer, int $idUser): ?array
     {
+
         if (!self::STATUS_NAME[$status]) {
             throw new ValidValueException("Нет статуса: {$status}!");
         }
-        return array_filter(self::NEXT_ACTION[$status], function ($obAction) use ($idImplement, $idCustomer, $idUser) {
-            return call_user_func_array([$obAction, 'checkingRights'], [$idImplement, $idCustomer, $idUser]);
+//        dd(array_filter(self::NEXT_ACTION[$status], function ($obAction) use ($idImplement, $idEmployer, $idUser) {
+//            return call_user_func_array([$obAction, 'checkingRights'], [$idImplement, $idEmployer, $idUser]);
+//        }));
+        return array_filter(self::NEXT_ACTION[$status], function ($obAction) use ($idImplement, $idEmployer, $idUser) {
+            return call_user_func_array([$obAction, 'checkingRights'], [$idImplement, $idEmployer, $idUser]);
         });
     }
 }

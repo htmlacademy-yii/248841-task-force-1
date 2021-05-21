@@ -21,7 +21,7 @@ abstract class Action
      * Метод возвращает внутреннее имя действия
      * @return string
      */
-    abstract public function getInnerName(): string;
+    abstract public static function getInnerName(): string;
 
     public function __toString()
     {
@@ -30,11 +30,11 @@ abstract class Action
 
     /**
      * метод для праверки прав на действие
-     * @param int $idImplement
+     * @param int|null $idImplement
      * @param int $idCustomer
      * @param int $idUser
-     * @return boolean
+     * @return bool
      */
-    abstract public static function checkingRights(int $idImplement,int $idCustomer,int $idUser) : bool;
+    abstract public static function checkingRights(?int $idImplement,int $idCustomer,int $idUser) : bool;
 
 }

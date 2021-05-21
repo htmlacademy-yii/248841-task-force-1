@@ -7,13 +7,13 @@ namespace Lobochkin\TaskForce;
 class Decline extends Action
 {
     /**
-     * @param int $idImplement
+     * @param int|null $idImplement
      * @param int $idCustomer
      * @param int $idUser
      * @return bool
      * @inheritDoc
      */
-    public static function checkingRights(int $idImplement, int $idCustomer, int $idUser): bool
+    public static function checkingRights(?int $idImplement, int $idCustomer, int $idUser): bool
     {
         return $idImplement === $idUser;
     }
@@ -29,8 +29,8 @@ class Decline extends Action
     /**
      * @inheritDoc
      */
-    public function getInnerName(): string
+    public static function getInnerName(): string
     {
-        return 'decline';
+        return Task::ACTION_DECLINE;
     }
 }

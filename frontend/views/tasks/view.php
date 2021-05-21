@@ -1,12 +1,22 @@
 <?php
 
+use frontend\assets\ViewAsset;
 use frontend\helpers\WordHelper;
+use frontend\models\Answers;
+use frontend\models\Response;
 use frontend\models\Task;
 use frontend\widgets\{TimeWidget, StarsReviews};
+use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
+use yii\widgets\Pjax;
 
+ViewAsset::register($this);
 /**
  * @var $task Task
+ */
+/**
+ * @var $answer Answers
+ * @var $response Response
  */
 ?>
 <section class="content-view">
@@ -50,71 +60,90 @@ use yii\bootstrap\Html;
             </div>
         </div>
         <div class="content-view__action-buttons">
-            <button class=" button button__big-color response-button open-modal"
-                    type="button" data-for="response-form">Откликнуться
-            </button>
-            <button class="button button__big-color refusal-button open-modal"
-                    type="button" data-for="refuse-form">Отказаться
-            </button>
-            <button class="button button__big-color request-button open-modal"
-                    type="button" data-for="complete-form">Завершить
-            </button>
+            <? foreach (\Lobochkin\TaskForce\Task::getNextAction($task->status, $task->implementer_id, $task->employer_id, \Yii::$app->user->identity->getId()) as $item) :
+                switch ($item::getInnerName()) {
+                    case \Lobochkin\TaskForce\Task::ACTION_ANSWER:
+                        if (!in_array(\Yii::$app->user->identity->getId(), array_map(function ($v) {
+                            return $v->user_id;
+                        }, $task->answers))) :?>
+                            <button class=" button button__big-color response-button open-modal"
+                                    type="button" data-for="response-form">Откликнуться
+                            </button>
+                        <? endif;
+                        break;
+                    case \Lobochkin\TaskForce\Task::ACTION_DECLINE: ?>
+                        <button class="button button__big-color refusal-button open-modal"
+                                type="button" data-for="refuse-form">Отказаться
+                        </button>
+                        <? break;
+                    case \Lobochkin\TaskForce\Task::ACTION_FINISHED: ?>
+                        <button class="button button__big-color request-button open-modal"
+                                type="button" data-for="complete-form">Завершить
+                        </button>
+                        <? break;
+                }
+            endforeach; ?>
         </div>
     </div>
     <?
-
-    if(($task->employer_id == \Yii::$app->user->identity->getId() || in_array(\Yii::$app->user->identity->getId(),array_map(function ($v){
-        return $v->user_id;
-    },$task->answers)) ) && count($task->answers) > 0):?>
-    <div class="content-view__feedback">
-        <h2>Отклики <span>(<?= count($task->answers) ?>)</span></h2>
-        <div class="content-view__feedback-wrapper">
-            <?
-            /**
-             * @var array
-             */
-            $answers = $task->answers;
-            if($task->employer_id != \Yii::$app->user->identity->getId()){
-                $answers = array_filter($answers, function ($v){
-                    return \Yii::$app->user->identity->getId() == $v->user_id;
-                });
-            }
-            foreach ($answers as $answer) :?>
-                <div class="content-view__feedback-card">
-                    <div class="feedback-card__top">
-                        <a href="/users/view/<?= $answer->user->id ?>"><?= $answer->user->avatar_url ? Html::img('@web/uploads/' . $answer->user->avatar_url, ['width' => 55, 'height' => 55, 'alt' => 'Аватар']) : ''; ?></a>
-                        <div class="feedback-card__top--name">
-                            <p><a href="/users/view/<?= $answer->user->id ?>" class="link-regular"><?= $answer->user->name; ?></a></p>
-                            <?= StarsReviews::widget(['rating' => $answer->user->averageRate]) ?>
+    Pjax::begin(['id' => 'content-view__feedback']);
+    if (($task->employer_id == \Yii::$app->user->identity->getId() || in_array(\Yii::$app->user->identity->getId(), array_map(function ($v) {
+                return $v->user_id;
+            }, $task->answers))) && count($task->answers) > 0):?>
+        <div class="content-view__feedback">
+            <h2>Отклики <span>(<?= count($task->answers) ?>)</span></h2>
+            <div class="content-view__feedback-wrapper">
+                <?
+                /**
+                 * @var array
+                 */
+                $answers = $task->answers;
+                if ($task->employer_id != \Yii::$app->user->identity->getId()) {
+                    $answers = array_filter($answers, function ($v) {
+                        return \Yii::$app->user->identity->getId() == $v->user_id;
+                    });
+                }
+                foreach ($answers as $answer) :?>
+                    <div class="content-view__feedback-card">
+                        <div class="feedback-card__top">
+                            <a href="/users/view/<?= $answer->user->id ?>"><?= $answer->user->avatar_url ? Html::img('@web/uploads/' . $answer->user->avatar_url,
+                                    ['width' => 55, 'height' => 55, 'alt' => 'Аватар']) : ''; ?></a>
+                            <div class="feedback-card__top--name">
+                                <p><a href="/users/view/<?= $answer->user->id ?>" class="link-regular"><?= $answer->user->name; ?></a></p>
+                                <?= StarsReviews::widget(['rating' => $answer->user->averageRate]) ?>
+                            </div>
+                            <span class="new-task__time"><?= TimeWidget::widget(['lastTime' => $answer->date_create, 'lastWord' => 'назад']) ?></span>
                         </div>
-                        <span class="new-task__time"><?= TimeWidget::widget(['lastTime' => $answer->user->last_visit, 'lastWord' => 'назад']) ?></span>
+                        <div class="feedback-card__content">
+                            <p>
+                                <?= $answer->comment ?>
+                            </p>
+                            <span><?= $answer->price ?> ₽</span>
+                        </div>
+                        <? if ($task->employer_id == \Yii::$app->user->identity->getId() && !$answer->status && $task->status !== \Lobochkin\TaskForce\Task::STATUS_IN_WORK): ?>
+                            <div class="feedback-card__actions">
+                        <span class="button__small-color response-button button"
+                              data-action="<?= \frontend\models\Answers::ACCEPT ?>" data-id="<?= $answer->id ?>">Подтвердить</span>
+                                <span class="button__small-color refusal-button button" data-action="<?= \frontend\models\Answers::CANCEL ?>" data-id="<?= $answer->id ?>"
+                                >Отказать</span>
+                            </div>
+                        <? endif; ?>
                     </div>
-                    <div class="feedback-card__content">
-                        <p>
-                            <?= $answer->comment ?>
-                        </p>
-                        <span><?= $answer->price ?> ₽</span>
-                    </div>
-                    <? if ($task->employer_id == \Yii::$app->user->identity->getId()):?>
-                    <div class="feedback-card__actions">
-                        <a class="button__small-color response-button button"
-                           type="button">Подтвердить</a>
-                        <a class="button__small-color refusal-button button"
-                           type="button">Отказать</a>
-                    </div>
-                    <? endif;?>
-                </div>
-            <? endforeach; ?>
+                <? endforeach; ?>
+            </div>
         </div>
-    </div>
-    <? endif; ?>
+
+    <? endif;
+    Pjax::end();
+    ?>
+
 </section>
 <section class="connect-desk">
     <div class="connect-desk__profile-mini">
         <div class="profile-mini__wrapper">
             <h3>Заказчик</h3>
             <div class="profile-mini__top">
-                <?= $task->employer->avatar_url ? Html::img('@web/uploads/' . $task->employer->avatar_url, ['width' => 62, 'height' => 62, 'alt' => 'Аватар заказчика']): '' ?>
+                <?= $task->employer->avatar_url ? Html::img('@web/uploads/' . $task->employer->avatar_url, ['width' => 62, 'height' => 62, 'alt' => 'Аватар заказчика']) : '' ?>
                 <div class="profile-mini__name five-stars__rate">
                     <p><?= $task->employer->name ?></p>
                 </div>
@@ -124,58 +153,115 @@ use yii\bootstrap\Html;
             <a href="#" class="link-regular">Смотреть профиль</a>
         </div>
     </div>
-<!--    <div id="chat-container">-->
-<!---->
-        <!--                    добавьте сюда атрибут task с указанием в нем id текущего задания-->
-<!--        <chat class="connect-desk__chat" task="68"></chat>-->
-<!--    </div>-->
+    <!--    <div id="chat-container">-->
+    <!---->
+    <!--                    добавьте сюда атрибут task с указанием в нем id текущего задания-->
+    <!--        <chat class="connect-desk__chat" task="68"></chat>-->
+    <!--    </div>-->
 </section>
 <section class="response-form form-modal" id="response-form">
     <h2>Отклик на задание</h2>
-    <form action="#" method="post">
-        <p>
-            <label class="form-modal-description" for="response-payment">Ваша цена</label>
-            <input class="response-form-payment input input-middle input-money" type="text" name="response-payment"
-                   id="response-payment">
-        </p>
-        <p>
-            <label class="form-modal-description" for="response-comment">Комментарий</label>
-            <textarea class="input textarea" rows="4" id="response-comment" name="response-comment"
-                      placeholder="Place your text"></textarea>
-        </p>
-        <button class="button modal-button" type="submit">Отправить</button>
-    </form>
-    <button class="form-modal-close" type="button">Закрыть</button>
+
+    <?php $form = ActiveForm::begin([
+        'options' => [
+            'tag' => false,
+        ],
+        'action' => '/tasks/add-answer',
+        'enableAjaxValidation' => true,
+        'id' => 'answerForm',
+        'validateOnBlur' => false,
+        'validateOnChange' => false,
+    ]); ?>
+    <?= $form->field($answer, 'price', [
+        'options' => [
+            'tag' => 'p',
+        ],
+        'template' => "{label}\n{input}\n{error}",
+        'errorOptions' => [
+            'tag' => 'span',
+        ],
+        'labelOptions' => ['class' => 'form-modal-description']
+    ])->textInput([
+        'autofocus' => true,
+        'class' => 'response-form-payment input input-middle input-money',
+    ]) ?>
+
+    <?= $form->field($answer, 'comment', [
+        'options' => [
+            'tag' => 'p',
+        ],
+        'labelOptions' => ['class' => 'form-modal-description'],
+    ])->textarea([
+        'class' => 'input textarea',
+        'rows' => "4",
+        'placeholder' => 'Place your text'
+    ]) ?>
+    <?= $form->field($answer, 'user_id')->label(false)->hiddenInput(['value' => \Yii::$app->user->identity->getId()]); ?>
+    <?= $form->field($answer, 'task_id')->label(false)->hiddenInput(['value' => $task->id]); ?>
+    <?= Html::submitButton('Отправить', ['class' => 'button modal-button']) ?>
+    <?php ActiveForm::end(); ?>
+    <?= Html::button('Закрыть', ['class' => 'form-modal-close']) ?>
+
 </section>
 <section class="completion-form form-modal" id="complete-form">
     <h2>Завершение задания</h2>
-    <p class="form-modal-description">Задание выполнено?</p>
-    <form action="#" method="post">
-        <input class="visually-hidden completion-input completion-input--yes" type="radio" id="completion-radio--yes"
-               name="completion" value="yes">
-        <label class="completion-label completion-label--yes" for="completion-radio--yes">Да</label>
-        <input class="visually-hidden completion-input completion-input--difficult" type="radio"
-               id="completion-radio--yet" name="completion" value="difficulties">
-        <label class="completion-label completion-label--difficult" for="completion-radio--yet">Возникли проблемы</label>
-        <p>
-            <label class="form-modal-description" for="completion-comment">Комментарий</label>
-            <textarea class="input textarea" rows="4" id="completion-comment" name="completion-comment"
-                      placeholder="Place your text"></textarea>
-        </p>
-        <p class="form-modal-description">
-            Оценка
-        <div class="feedback-card__top--name completion-form-star">
-            <span class="star-disabled"></span>
-            <span class="star-disabled"></span>
-            <span class="star-disabled"></span>
-            <span class="star-disabled"></span>
-            <span class="star-disabled"></span>
-        </div>
-        </p>
-        <input type="hidden" name="rating" id="rating">
-        <button class="button modal-button" type="submit">Отправить</button>
-    </form>
-    <button class="form-modal-close" type="button">Закрыть</button>
+    <?php $form = ActiveForm::begin([
+        'options' => [
+            'tag' => false,
+        ],
+        'action' => '/tasks/complete',
+        'enableAjaxValidation' => true,
+        'id' => 'completeForm',
+        'validateOnBlur' => false,
+        'validateOnChange' => false,
+    ]); ?>
+    <?= $form->field($response, 'ready', [
+        'labelOptions' => ['class' => 'form-modal-description'],
+    ])
+        ->radioList([
+            Response::YES => 'Да',
+            Response::NO => 'Возникли проблемы'
+        ],
+            [
+                'item' => function ($index, $label, $name, $checked, $value) {
+                    $class = $value === Response::YES ? 'yes' : 'difficult';
+
+                    return
+                        Html::radio($name, $checked, [
+                            'value' => $value,
+                            'id' => $index,
+                            'class' => 'visually-hidden completion-input completion-input--' . $class
+                        ]) . Html::label($label, $index, ['class' => 'completion-label completion-label--' . $class]);
+                },
+                'value' => Response::YES
+            ]); ?>
+    <?= $form->field($response, 'description', [
+        'options' => [
+            'tag' => 'p',
+        ],
+        'labelOptions' => ['class' => 'form-modal-description'],
+    ])->textarea([
+        'class' => 'input textarea',
+        'rows' => "4",
+        'placeholder' => 'Place your text'
+    ]) ?>
+    <?= $form->field($response, 'user_id')->label(false)->hiddenInput(['value' => $task->implementer_id]); ?>
+    <?= $form->field($response, 'task_id')->label(false)->hiddenInput(['value' => $task->id]); ?>
+    <p class="form-modal-description">
+        Оценка
+    <div class="feedback-card__top--name completion-form-star">
+        <span class="star-disabled"></span>
+        <span class="star-disabled"></span>
+        <span class="star-disabled"></span>
+        <span class="star-disabled"></span>
+        <span class="star-disabled"></span>
+    </div>
+    </p>
+    <?= $form->field($response, 'rate')->label(false)->hiddenInput(['id' => 'rating']); ?>
+    <?= Html::submitButton('Отправить', ['class' => 'button modal-button']) ?>
+    <?php ActiveForm::end(); ?>
+    <?= Html::button('Закрыть', ['class' => 'form-modal-close']) ?>
+
 </section>
 <section class="form-modal refusal-form" id="refuse-form">
     <h2>Отказ от задания</h2>
@@ -184,12 +270,62 @@ use yii\bootstrap\Html;
         Это действие приведёт к снижению вашего рейтинга.
         Вы уверены?
     </p>
-    <button class="button__form-modal button" id="close-modal"
-            type="button">Отмена
-    </button>
-    <button class="button__form-modal refusal-button button"
-            type="button">Отказаться
-    </button>
-    <button class="form-modal-close" type="button">Закрыть</button>
+    <?php $form = ActiveForm::begin([
+        'options' => [
+            'tag' => false,
+        ],
+        'action' => '/tasks/complete',
+        'enableAjaxValidation' => true,
+        'id' => 'completeForm',
+        'validateOnBlur' => false,
+        'validateOnChange' => false,
+    ]); ?>
+
+    <?= $form->field($response, 'ready', [
+        'options' => [
+                'tag' => false,
+            ],
+        'errorOptions' => [
+            'tag' => false
+        ]
+    ])->label(false)->hiddenInput(['value' => Response::NO]); ?>
+    <?= $form->field($response, 'user_id', [
+        'options' => [
+            'tag' => false,
+        ],
+        'errorOptions' => [
+            'tag' => false
+        ]
+    ])->label(false)->hiddenInput(['value' => $task->implementer_id]); ?>
+    <?= $form->field($response, 'task_id', [
+        'options' => [
+            'tag' => false,
+        ],
+        'errorOptions' => [
+            'tag' => false
+        ]
+    ])->label(false)->hiddenInput(['value' => $task->id]); ?>
+
+    <?= $form->field($response, 'rate', [
+        'options' => [
+            'tag' => false,
+        ],
+        'errorOptions' => [
+            'tag' => false
+        ]
+    ])->label(false)->hiddenInput(['value' => 1]); ?>
+
+    <?= Html::submitButton('Отказаться', ['class' => 'button__form-modal refusal-button button']) ?>
+
+    <?php ActiveForm::end(); ?>
+    <?= Html::button('Отмена', [
+        'class' => 'button__form-modal button',
+        'id' => "close-modal",
+        'type' => "button"
+    ]) ?>
+    <?= Html::button('Закрыть', ['class' => 'form-modal-close']) ?>
+
+
 </section>
 <div class="overlay"></div>
+

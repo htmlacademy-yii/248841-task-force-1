@@ -3047,8 +3047,8 @@ footer {
 }
 
 .completion-input:checked + label {
-    -webkit-box-shadow: inset 0 0px 10px rgba(0, 0, 0, 0.2);
-    box-shadow: inset 0 0px 10px rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: inset 0 0px 10px rgba(0, 0, 0, 0.6);
+    box-shadow: inset 0 0px 10px rgba(0, 0, 0, 0.6);
 }
 
 .completion-input--yes:checked + label {
