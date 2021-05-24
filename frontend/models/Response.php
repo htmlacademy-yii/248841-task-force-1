@@ -56,7 +56,7 @@ class Response extends \yii\db\ActiveRecord
         return [
             [['task_id', 'user_id', 'rate', 'ready'], 'required'],
             [['task_id', 'user_id'], 'integer'],
-            ['rate', 'integer', 'integerOnly' => true, 'min' => '1','max' => '5'],
+            ['rate', 'integer', 'integerOnly' => true, 'min' => 1,'max' => 5],
             [['description'], 'string'],
             [['last_time'], 'safe'],
             [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],

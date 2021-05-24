@@ -1,6 +1,7 @@
 <?php
 
 use frontend\assets\ViewAsset;
+use frontend\helpers\TaskPermission;
 use frontend\helpers\WordHelper;
 use frontend\models\Answers;
 use frontend\models\Response;
@@ -63,9 +64,7 @@ ViewAsset::register($this);
             <? foreach (\Lobochkin\TaskForce\Task::getNextAction($task->status, $task->implementer_id, $task->employer_id, \Yii::$app->user->identity->getId()) as $item) :
                 switch ($item::getInnerName()) {
                     case \Lobochkin\TaskForce\Task::ACTION_ANSWER:
-                        if (!in_array(\Yii::$app->user->identity->getId(), array_map(function ($v) {
-                            return $v->user_id;
-                        }, $task->answers))) :?>
+                        if (!TaskPermission::canShowAnswer(\Yii::$app->user->identity->getId(),$task->id)) :?>
                             <button class=" button button__big-color response-button open-modal"
                                     type="button" data-for="response-form">Откликнуться
                             </button>
@@ -87,9 +86,7 @@ ViewAsset::register($this);
     </div>
     <?
     Pjax::begin(['id' => 'content-view__feedback']);
-    if (($task->employer_id == \Yii::$app->user->identity->getId() || in_array(\Yii::$app->user->identity->getId(), array_map(function ($v) {
-                return $v->user_id;
-            }, $task->answers))) && count($task->answers) > 0):?>
+    if (($task->employer_id == \Yii::$app->user->identity->getId() || TaskPermission::canShowAnswer(\Yii::$app->user->identity->getId(),$task->id)) && count($task->answers) > 0):?>
         <div class="content-view__feedback">
             <h2>Отклики <span>(<?= count($task->answers) ?>)</span></h2>
             <div class="content-view__feedback-wrapper">
@@ -120,7 +117,7 @@ ViewAsset::register($this);
                             </p>
                             <span><?= $answer->price ?> ₽</span>
                         </div>
-                        <? if ($task->employer_id == \Yii::$app->user->identity->getId() && !$answer->status && $task->status !== \Lobochkin\TaskForce\Task::STATUS_IN_WORK): ?>
+                        <? if ($task->employer_id == \Yii::$app->user->identity->getId() && !$answer->status && $task->status === \Lobochkin\TaskForce\Task::STATUS_NEW): ?>
                             <div class="feedback-card__actions">
                         <span class="button__small-color response-button button"
                               data-action="<?= \frontend\models\Answers::ACCEPT ?>" data-id="<?= $answer->id ?>">Подтвердить</span>

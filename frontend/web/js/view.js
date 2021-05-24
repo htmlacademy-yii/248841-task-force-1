@@ -13,7 +13,6 @@ $(function() {
                    id: btn.data('id'),
                },
                success: function (responseText) {
-                   console.log(responseText);
                    $.pjax.reload({container: '#content-view__feedback'})
                },
                error: function(jqXHR, errMsg) {

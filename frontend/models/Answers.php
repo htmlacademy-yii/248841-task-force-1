@@ -37,7 +37,7 @@ class Answers extends \yii\db\ActiveRecord
         return [
             [['user_id', 'task_id'], 'integer'],
             [['comment'], 'string'],
-            ['price', 'integer', 'integerOnly' => true, 'min' => '1'],
+            ['price', 'integer', 'integerOnly' => true, 'min' => 1],
             [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];

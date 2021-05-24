@@ -125,34 +125,6 @@ class TasksController extends SecuredController
         return $this->redirect("/tasks/view/{$model->task_id}");
     }
 
-//    public function actionFailed()
-//    {
-//        $model = new \frontend\models\Response();
-//        $transaction = \Yii::$app->db->beginTransaction();
-//        $model->load(\Yii::$app->request->post());
-//        if (!$model->validate()) {
-//            \Yii::$app->response->format = Response::FORMAT_JSON;
-//
-//            return ActiveForm::validate($model);
-//        }
-//        if (!$model->save()) {
-//
-//            return null;
-//        }
-//
-//        $task = Task::findOne($model->task_id);
-//        $task->status = $model->ready === \frontend\models\Response::YES ? \Lobochkin\TaskForce\Task::STATUS_DONE : \Lobochkin\TaskForce\Task::STATUS_FAILED;
-//        if (!$task->save()) {
-//            $transaction->rollBack();
-//
-//            return null;
-//        }
-//        $transaction->commit();
-//
-//
-//        return $this->redirect("/tasks/view/{$model->task_id}");
-//    }
-
     /**
      * @param $filename
      * @return \yii\console\Response|\yii\web\Response
@@ -232,6 +204,8 @@ class TasksController extends SecuredController
                 $task->status = \Lobochkin\TaskForce\Task::STATUS_IN_WORK;
                 $task->save();
                 break;
+            default :
+                throw new BadRequestHttpException('Передано не верное действие');
         }
         $answer->save();
     }
