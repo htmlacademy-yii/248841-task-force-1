@@ -100,7 +100,7 @@ AppAsset::register($this);
                             ],
                             [
                                 'label' => 'Создать задание',
-                                'url' => ['site/login'],
+                                'url' => ['tasks/create'],
                                 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isCustomer(),
                                 'options' => ['class' =>'site-list__item'],
                             ],

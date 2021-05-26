@@ -18,7 +18,7 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         //'js/dropzone.js',
-//        'js/main.js',
+        'js/main.js',
         'js/messenger.js',
         'js/vue.js'
     ];

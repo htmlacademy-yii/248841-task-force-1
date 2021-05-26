@@ -28,6 +28,16 @@ class Response extends \yii\db\ActiveRecord
     }
 
     /**
+     * выполнил ли исполнитель задание
+     */
+    public const YES = 'yes';
+
+    /**
+     * выполнил ли исполнитель задание
+     */
+    public const NO = 'no';
+
+    /**
      * для стилей звёздочек рейтинга
      */
     const MAP_RATE = [
@@ -44,8 +54,9 @@ class Response extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['task_id', 'user_id', 'rate'], 'required'],
-            [['task_id', 'user_id', 'rate'], 'integer'],
+            [['task_id', 'user_id', 'rate', 'ready'], 'required'],
+            [['task_id', 'user_id'], 'integer'],
+            ['rate', 'integer', 'integerOnly' => true, 'min' => 1,'max' => 5],
             [['description'], 'string'],
             [['last_time'], 'safe'],
             [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
@@ -62,9 +73,10 @@ class Response extends \yii\db\ActiveRecord
             'id' => 'ID',
             'task_id' => 'Task ID',
             'user_id' => 'User ID',
-            'rate' => 'Rate',
-            'description' => 'Description',
+            'rate' => 'ОЦЕНКА',
+            'description' => 'Комментарий',
             'last_time' => 'Last Time',
+            'ready' => 'Задание выполнено?'
         ];
     }
 
