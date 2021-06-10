@@ -143,6 +143,7 @@ class TasksController extends SecuredController
     public function actionCreate()
     {
         $model = new CreateTask();
+
         if (\Yii::$app->request->getIsPost() && \Yii::$app->request->isAjax) {
 
             $model->load(\Yii::$app->request->post());

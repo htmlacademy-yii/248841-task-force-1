@@ -18,7 +18,13 @@ class SecuredController extends Controller
                         'allow' => true,
                         'roles' => ['@']
                     ]
-                ]
+                ],
+                'denyCallback' => function($rule, $action) {
+                    if (\Yii::$app->user->isGuest) {
+
+                        return $this->redirect('/');
+                    }
+                },
             ]
         ];
     }
