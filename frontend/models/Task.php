@@ -28,6 +28,7 @@ use Yii;
  */
 class Task extends \yii\db\ActiveRecord
 {
+
     /**
      * {@inheritdoc}
      */
@@ -44,7 +45,7 @@ class Task extends \yii\db\ActiveRecord
         return [
             [['employer_id', 'title', 'description', 'category_id'], 'required'],
             [['employer_id', 'price', 'category_id', 'implementer_id'], 'integer'],
-            [['description', 'status'], 'string'],
+            [['description', 'status','address'], 'string'],
             [['date_create', 'deadline'], 'safe'],
             [['title'], 'string', 'max' => 255],
             [['location'], 'string', 'max' => 100],
@@ -71,6 +72,7 @@ class Task extends \yii\db\ActiveRecord
             'deadline' => 'Deadline',
             'category_id' => 'Category ID',
             'implementer_id' => 'Implementer ID',
+            'address' => 'Локация'
         ];
     }
 

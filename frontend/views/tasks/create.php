@@ -5,6 +5,7 @@ use frontend\models\Category;
 use kartik\date\DatePicker;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
+use yii\web\View;
 
 /**
  * @var object $model CreateTask
@@ -56,12 +57,18 @@ CreateAsset::register($this);
             <div class="create__file dropzone-custom">
             </div>
         </div>
-        <div class="field-container">
-            <label for="13">Локация</label>
-            <input class="input-navigation input-middle input" id="13" type="search" name="location"
-                   placeholder="Санкт-Петербург, Калининский район">
-            <span>Укажите адрес исполнения, если задание требует присутствия</span>
-        </div>
+        <?= $form->field($model, 'location')->label(false)->hiddenInput(); ?>
+        <?= $form->field($model, 'address', [
+            'options' => [
+                'class' => 'field-container',
+            ],
+            'template' => "{label}\n{input}\n" . Html::tag('span', 'Укажите адрес исполнения, если задание требует присутствия')
+        ])->textInput([
+            'class' => 'input-navigation input-middle input',
+            'placeholder' => 'Санкт-Петербург, Калининский район',
+            'id'=> 'address'
+        ]); ?>
+
         <div class="create__price-time">
             <?= $form->field($model, 'price', [
                 'options' => [

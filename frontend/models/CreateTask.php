@@ -35,15 +35,24 @@ class CreateTask extends Model
      * @var null|string
      */
     public $deadline;
+    /**
+     * @var null|string
+     */
+    public $location;
+    /**
+     * @var null|string
+     */
+    public $address;
 
     public function rules()
     {
         return [
             [['title', 'description', 'category'], 'required'],
             [['price', 'category'], 'integer'],
-            [['description'], 'string', 'min' => 30],
+            [['description'], 'string', 'min' => 20],
             [['title'], 'string', 'min' => 10],
-            [['title', 'description', 'price', 'category', 'deadline', 'location', 'files'], 'safe'],
+            [['address'], 'string'],
+            [['title', 'description', 'price', 'category', 'deadline', 'location', 'files', 'address'], 'safe'],
             [['category'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category' => 'id']],
             ['price', 'number', 'min' => '0']
         ];
@@ -59,6 +68,7 @@ class CreateTask extends Model
             'deadline' => 'Сроки исполнения',
             'category' => 'Категория',
             'files' => 'Файлы',
+            'address' => 'Локация'
         ];
     }
 
@@ -73,6 +83,13 @@ class CreateTask extends Model
         $task->price = $this->price;
         if ($this->deadline) {
             $task->deadline = (new \DateTime($this->deadline))->format('Y-m-d');
+        }
+
+        if ($this->location) {
+            $task->location = $this->location;
+        }
+        if ($this->address) {
+            $task->address = $this->address;
         }
 
         if (!$task->save()) {

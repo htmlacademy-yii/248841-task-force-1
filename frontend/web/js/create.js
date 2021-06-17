@@ -1,26 +1,42 @@
 // 'use strict';
 
 $(function() {
-    let validate = function(responseText){
+
+    $('#address').suggestions({
+        token: '9b554c891335dc4f9840da2a2334d6b12213db1e',
+        type: 'ADDRESS',
+        /* Вызывается, когда пользователь выбирает одну из подсказок */
+        onSelect: function(suggestion) {
+            console.log(suggestion.data.geo_lat);
+            console.log(suggestion.data.geo_lon);
+            console.log(suggestion.data.geo_lat+','+suggestion.data.geo_lon);
+
+            $('#createtask-location').val(suggestion.data.geo_lat+','+suggestion.data.geo_lon);
+        }
+    });
+
+    let validate = function(responseText) {
         $('.warning-item.warning-item--error > p,h3').remove();
         $('.field-container > span').css({
-            "color": "#8a8a8d"
-        });$('.field-container > .input').css({
-            "border-color": "#e4e9f2"
+            'color': '#8a8a8d'
+        });
+        $('.field-container > .input').css({
+            'border-color': '#e4e9f2'
         });
         for (let prop in responseText) {
 
             let blockHtml = '';
-            $('.field-'+prop + '> span').css({
-                "color": "red"
+            $('.field-' + prop + '> span').css({
+                'color': 'red'
             });
-            $('.field-'+prop + '> .input').css({
-                "border-color": "red"
+            $('.field-' + prop + '> .input').css({
+                'border-color': 'red'
             });
-            blockHtml = "<h3>" + $('.field-'+prop + '> label').text() + "</h3><p>" + responseText[prop].join(', ') + "<p>";
+            blockHtml = '<h3>' + $('.field-' + prop + '> label').text() +
+                '</h3><p>' + responseText[prop].join(', ') + '<p>';
             $('.warning-item.warning-item--error').append(blockHtml);
         }
-        $('.warning-item.warning-item--error').show("slow");
+        $('.warning-item.warning-item--error').show('slow');
     };
     Dropzone.autoDiscover = false;
     var dropzone = new Dropzone('div.create__file', {
@@ -34,7 +50,7 @@ $(function() {
         maxFiles: 5,
         maxFilesize: 10,
         dictMaxFilesExceeded: 'Превышено макс. кол-во файлов. Макс. кол-во: {{maxFiles}}шт.',
-        dictFileTooBig: "Файл слишком большой ({{filesize}}MB). Макс. размер: {{maxFilesize}}MB.",
+        dictFileTooBig: 'Файл слишком большой ({{filesize}}MB). Макс. размер: {{maxFilesize}}MB.',
         init: function() {
             dzClosure = this;
 
@@ -43,22 +59,22 @@ $(function() {
 
                     e.preventDefault();
                     e.stopPropagation();
-                    if (dzClosure.files.length == 0){
-                        let form = $("form#createForm");
-                            let data = form.serialize();
+                    if (dzClosure.files.length == 0) {
+                        let form = $('form#createForm');
+                        let data = form.serialize();
 
-                            $.ajax({
-                                url: form.attr('action'),
-                                type: 'POST',
-                                data: data,
-                                success: function (responseText) {
-                                    validate(responseText);
-                                },
-                                error: function(jqXHR, errMsg) {
-                                    // alert(errMsg);
-                                }
-                            });
-                            return false;
+                        $.ajax({
+                            url: form.attr('action'),
+                            type: 'POST',
+                            data: data,
+                            success: function(responseText) {
+                                validate(responseText);
+                            },
+                            error: function(jqXHR, errMsg) {
+                                // alert(errMsg);
+                            }
+                        });
+                        return false;
                     }
 
                     dzClosure.processQueue();
@@ -78,8 +94,8 @@ $(function() {
                 formData.append('_csrf-frontend',
                     $('[name="_csrf-frontend"]').val());
             });
-            this.on("successmultiple", function(file, responseText) {
-                if ( responseText  === Object(responseText)){
+            this.on('successmultiple', function(file, responseText) {
+                if (responseText === Object(responseText)) {
                     this.removeAllFiles();
                     validate(responseText);
                 } else {
@@ -89,4 +105,5 @@ $(function() {
 
         }
     });
+
 });
