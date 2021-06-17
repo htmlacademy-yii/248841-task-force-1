@@ -1,5 +1,6 @@
 <?php
 
+use frontend\assets\ApiYandexAsset;
 use frontend\assets\ViewAsset;
 use frontend\helpers\TaskPermission;
 use frontend\helpers\WordHelper;
@@ -13,6 +14,7 @@ use yii\web\View;
 use yii\widgets\Pjax;
 
 ViewAsset::register($this);
+ApiYandexAsset::register($this);
 /**
  * @var $task Task
  */

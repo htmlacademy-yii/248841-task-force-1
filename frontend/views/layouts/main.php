@@ -25,8 +25,6 @@ AppAsset::register($this);
         <?php $this->registerCsrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?></title>
         <?php $this->head() ?>
-        <script src="https://api-maps.yandex.ru/2.1/?apikey=2aa73c46-013d-4bc6-8206-39080d5e77b7&lang=ru_RU" type="text/javascript">
-        </script>
     </head>
     <body>
     <?php $this->beginBody() ?>

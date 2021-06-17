@@ -5,6 +5,7 @@ use frontend\models\Category;
 use kartik\date\DatePicker;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
+use yii\web\View;
 
 /**
  * @var object $model CreateTask
@@ -25,10 +26,6 @@ CreateAsset::register($this);
             'validateOnBlur' => false,
             'validateOnChange' => false,
         ]); ?>
-
-
-
-
         <?= $form->field($model, 'title', [
             'options' => [
                 'class' => 'field-container',
@@ -61,13 +58,6 @@ CreateAsset::register($this);
             </div>
         </div>
         <?= $form->field($model, 'location')->label(false)->hiddenInput(); ?>
-<!--        <div class="field-container">-->
-<!--            <label for="address">Локация</label>-->
-<!--            <input class="input-navigation input-middle input" id="address" type="search" name="address"-->
-<!--                   placeholder="Санкт-Петербург, Калининский район">-->
-<!--            <span>Укажите адрес исполнения, если задание требует присутствия</span>-->
-<!--        </div>-->
-
         <?= $form->field($model, 'address', [
             'options' => [
                 'class' => 'field-container',
