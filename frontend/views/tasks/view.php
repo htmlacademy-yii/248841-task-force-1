@@ -162,11 +162,9 @@ ApiYandexAsset::register($this);
                 <a href="#" class="link-regular">Смотреть профиль</a>
             </div>
         </div>
-        <!--    <div id="chat-container">-->
-        <!---->
-        <!--                    добавьте сюда атрибут task с указанием в нем id текущего задания-->
-        <!--        <chat class="connect-desk__chat" task="68"></chat>-->
-        <!--    </div>-->
+            <div id="chat-container">
+                <chat class="connect-desk__chat" task="<?=$task->id ?>"></chat>
+            </div>
     </section>
     <section class="response-form form-modal" id="response-form">
         <h2>Отклик на задание</h2>

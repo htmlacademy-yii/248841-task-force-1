@@ -7,10 +7,6 @@ $(function() {
         type: 'ADDRESS',
         /* Вызывается, когда пользователь выбирает одну из подсказок */
         onSelect: function(suggestion) {
-            console.log(suggestion.data.geo_lat);
-            console.log(suggestion.data.geo_lon);
-            console.log(suggestion.data.geo_lat+','+suggestion.data.geo_lon);
-
             $('#createtask-location').val(suggestion.data.geo_lat+','+suggestion.data.geo_lon);
         }
     });
