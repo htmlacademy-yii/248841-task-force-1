@@ -39,7 +39,7 @@ Vue.component('chat', {
       })
       .then(msg => {
         this.messages.push(msg);
-        this.message = null;
+        // this.message = null;
       })
       .catch(err => {
         console.error('Не удалось отправить сообщение', err);

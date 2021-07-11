@@ -23,9 +23,9 @@ return [
         'request' => [
             'csrfParam' => '_csrf-frontend',
             'baseUrl' => '',
-//            'parsers' => [
-//                'application/json' => 'yii\web\JsonParser',
-//            ]
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ]
         ],
         'user' => [
             'identityClass' => 'frontend\models\Users',
@@ -52,16 +52,14 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-//                'GET messages' => 'api/messages/get-task-messages',
-                'POST messages' => 'api/messages/add-task-messages',
-//               '<controller:\w+>/<action:\w+>/' => '<controller>/<action>',
+                'POST api/messages' => 'api/messages/add-task-messages',
+               'GET api/messages' => 'api/messages/get-task-messages',
                 '<controller:\w+>/file/<filename>' => '<controller>/file',
                 '<controller:\w+>/view/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<action:\w+>/' => '<controller>/<action>',
 //                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/api-tasks'],
 //                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/messages'],
-                'GET api/messages' => 'api/messages/get-task-messages',
-//                'POST api/messages' => 'api/messages/add-task-messages'
+
             ],
         ],
 
