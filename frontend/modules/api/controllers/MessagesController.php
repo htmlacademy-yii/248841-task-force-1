@@ -7,18 +7,35 @@ use frontend\modules\api\actions\CreateAction;
 use frontend\modules\api\models\ChatApi;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\filters\VerbFilter;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\Request;
 use yii\web\Response;
+use yii\web\ServerErrorHttpException;
 
 class MessagesController extends Controller
 {
+
     public $enableCsrfValidation = false;
 
-    public function actionIndex()
+    /**
+     * @return array
+     */
+    public function behaviors()
     {
-        dd('actionIndex');
+        $rules = parent::behaviors();
+
+        $rules['verbs'] = [
+            'class' => VerbFilter::className(),
+            'actions' => [
+                'getTaskMessages' => ['get', 'ajax'],
+                'addTaskMessages' => ['post', 'ajax'],
+
+            ],
+        ];
+
+        return $rules;
     }
 
     /**
@@ -28,8 +45,8 @@ class MessagesController extends Controller
     public function actionGetTaskMessages()
     {
 
-        if (!Yii::$app->request->get('task_id') && !((int)Yii::$app->request->get('task_id') > 0)) {
-            throw new BadRequestHttpException();
+        if (!Yii::$app->request->get('task_id')) {
+            throw new BadRequestHttpException('Не передан id задачи');
         }
 
         $provider = new ActiveDataProvider([
@@ -40,23 +57,20 @@ class MessagesController extends Controller
         /**
          * @var array $response
          */
-        $response = [];
-        foreach ($provider->getModels() as $model) {
-            $response[] = $model;
-        }
+
         Yii::$app->response->statusCode = 200;
-        return $response;
+
+        return $provider->getModels() ?: [];
     }
 
     /**
      * @return ChatApi|null
      * @throws BadRequestHttpException
+     * @throws ServerErrorHttpException
      */
+
     public function actionAddTaskMessages()
     {
-        if (!Yii::$app->request->isPost) {
-            throw new BadRequestHttpException();
-        }
         /**
          * @var $request Request
          */
@@ -72,7 +86,7 @@ class MessagesController extends Controller
         $chat->text = $request->message;
         $chat->user_id = \Yii::$app->user->getId();
         if (!$chat->save()) {
-            throw new BadRequestHttpException();
+            throw new ServerErrorHttpException();
         }
 
         Yii::$app->response->statusCode = 201;
