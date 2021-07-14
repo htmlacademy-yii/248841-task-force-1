@@ -7,17 +7,25 @@ $params = array_merge(
 );
 
 return [
-    'language'=>'ru',
-    'sourceLanguage'=>'ru',
+    'language' => 'ru',
+    'sourceLanguage' => 'ru',
     'id' => 'app-frontend',
     'name' => ' ООО «ТаскФорс»',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
+    'modules' => [
+        'api' => [
+            'class' => 'frontend\modules\api\Module'
+        ]
+    ],
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
-            'baseUrl' => ''
+            'baseUrl' => '',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ]
         ],
         'user' => [
             'identityClass' => 'frontend\models\Users',
@@ -44,10 +52,13 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-//               '<controller:\w+>/<action:\w+>/' => '<controller>/<action>',
+                'POST api/messages' => 'api/messages/add-task-messages',
+               'GET api/messages' => 'api/messages/get-task-messages',
                 '<controller:\w+>/file/<filename>' => '<controller>/file',
                 '<controller:\w+>/view/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<action:\w+>/' => '<controller>/<action>',
+//                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/api-tasks'],
+//                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/messages'],
 
             ],
         ],
