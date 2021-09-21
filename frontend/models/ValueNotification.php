@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "value_notification".
@@ -52,5 +53,11 @@ class ValueNotification extends \yii\db\ActiveRecord
     public function getSelectedNotifications()
     {
         return $this->hasMany(SelectedNotification::className(), ['value_name_id' => 'id']);
+    }
+
+    public static function getNotifList()
+    {
+
+        return ArrayHelper::map(self::find()->all(), 'id', 'name');
     }
 }

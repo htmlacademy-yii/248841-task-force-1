@@ -154,10 +154,10 @@ AppAsset::register($this);
                     <div class="account__pop-up">
                         <ul class="account__pop-up-list">
                             <li>
-                                <a href="#">Мои задания</a>
+                                <a href="/my-tasks">Мои задания</a>
                             </li>
                             <li>
-                                <a href="#">Настройки</a>
+                                <a href="/account">Настройки</a>
                             </li>
                             <li>
                                 <a href="/users/logout">Выход</a>

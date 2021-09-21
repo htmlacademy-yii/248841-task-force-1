@@ -36,6 +36,8 @@ use yii\web\IdentityInterface;
  * @property UserCategory[] $userCategories
  * @property int $completedTasksCount
  * @property float $averageRate
+ * @property string|null $not_show_profile
+ * @property string|null $show_contacts
  */
 class Users extends \yii\db\ActiveRecord implements IdentityInterface
 {
@@ -53,13 +55,13 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['email', 'name', 'city_id', 'password', 'id', 'description', 'birthday', 'phone', 'skype', 'telegram', 'last_visit', 'avatar_url', 'date_create'], 'safe'],
+            [['email', 'name', 'city_id', 'password', 'id', 'description', 'birthday', 'phone', 'skype', 'telegram', 'last_visit', 'avatar_url', 'date_create','show_contacts','not_show_profile'], 'safe'],
             [['email', 'password'], 'required', 'message' => 'Поле {attribute} необходимо заполнить'],
             [['city_id'], 'integer'],
             [['name'], 'required', 'message' => 'Введите ваше имя и фамилию'],
             [['city_id'], 'required', 'message' => 'Укажите город, чтобы находить подходящие задачи'],
             [['password'], 'string', 'min' => 8, 'tooShort' => 'Длина пароля от 8 символов'],
-            [['description'], 'string'],
+            [['description','not_show_profile','show_contacts'], 'string'],
             [['name', 'email', 'skype', 'telegram'], 'string', 'max' => 45],
             [['birthday'], 'date'],
             [['phone'], 'integer', 'max' => 11],
@@ -88,6 +90,9 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
             'last_visit' => 'Last Visit',
             'avatar_url' => 'Avatar Url',
             'date_create' => 'Date Create',
+            'show_contacts' => 'Показывать мои контакты только заказчику',
+            'not_show_profile' => 'Не показывать мой профиль'
+
         ];
     }
 
@@ -100,6 +105,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return $this->hasMany(Chat::className(), ['user_id' => 'id']);
     }
+
 
     /**
      * Gets query for [[City]].
@@ -189,6 +195,23 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     public function getTasks0()
     {
         return $this->hasMany(Task::className(), ['implementer_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[UserCategory]].
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserCategory()
+    {
+        return $this->hasMany(UserCategory::className(), ['user_id' => 'id']);
+    }
+    /**
+     * Gets query for [[SelectedNotification]].
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserNotification()
+    {
+        return $this->hasMany(SelectedNotification::className(), ['user_id' => 'id']);
     }
 
 

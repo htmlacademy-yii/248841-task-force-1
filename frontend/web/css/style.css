@@ -523,6 +523,8 @@ footer {
     flex-wrap: wrap;
 }
 
+
+
 .new-task__title a h2 {
     font-weight: 600;
     font-size: 22px;
@@ -2062,6 +2064,11 @@ footer {
     padding-right: 30px;
     padding-bottom: 30px;
     margin-right: 0;
+    box-sizing: content-box;
+}
+
+.my-list__wrapper * {
+    box-sizing: inherit;
 }
 
 .my-list {
@@ -2321,6 +2328,7 @@ footer {
     padding-bottom: 20px;
     background-color: #ffffff;
     width: 1000px;
+    box-sizing: content-box;
 }
 
 .account__redaction-avatar {
