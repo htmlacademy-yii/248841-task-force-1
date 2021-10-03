@@ -140,6 +140,9 @@ class TasksController extends SecuredController
         return Yii::$app->response->sendFile("$storagePath/$filename", $filename);
     }
 
+    /**
+     * @return array|string|Response
+     */
     public function actionCreate()
     {
         $model = new CreateTask();

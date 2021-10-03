@@ -10,6 +10,7 @@ use Yii;
  * @property int $id
  * @property int $value_name_id
  * @property int $user_id
+ * @property int $active
  *
  * @property Users $user
  * @property ValueNotification $valueName
@@ -46,6 +47,7 @@ class SelectedNotification extends \yii\db\ActiveRecord
             'id' => 'ID',
             'value_name_id' => 'Value Name ID',
             'user_id' => 'User ID',
+            'active' => 'active'
         ];
     }
 

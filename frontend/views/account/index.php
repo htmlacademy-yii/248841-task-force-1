@@ -18,11 +18,11 @@ use yii\bootstrap\Html;
 
 AccountAsset::register($this);
 ?>
+
 <section class="account__redaction-wrapper">
     <h1>Редактирование настроек профиля</h1>
 
     <?php $form = ActiveForm::begin([
-//        'action' => ['/'],
         'method' => 'post',
         'id' => 'account',
     ]); ?>
@@ -76,7 +76,7 @@ AccountAsset::register($this);
                     'language' => 'ru',
                     'options' => [
                         'class' => 'input-middle input input-date',
-                        'placeholder' => '25.03.2021',
+                        'placeholder' => '25-03-2021',
                     ],
                     'pluginOptions' => [
                         'autoclose' => true,
@@ -141,6 +141,16 @@ AccountAsset::register($this);
         </div>
 
         <h3 class="div-line">Фото работ</h3>
+        <div>
+            <span>Загруженные ранее фото:</span>
+            <div class="photo-works">
+                <?
+                foreach ($model->photoWorks as $photo) :?>
+                    <img src="/uploads/<?= $photo['url_photo'] ?>" width="150" height="150" alt="<?=$photo['photo_name']?>" style="object-fit: cover;">
+               <? endforeach;?>
+
+            </div>
+        </div>
         <div class="photo-var">Выбрать фотографии</div>
         <div class="account__redaction-section-wrapper account__redaction">
             <div class="create__file dropzone-custom"></div>
@@ -153,7 +163,7 @@ AccountAsset::register($this);
                 'options' => [
                     'class' => 'field-container account__input account__input',
                 ],
-            ])->textInput(['class' => 'input textarea', 'placeholder' => '8 (917) 187 44 87', 'type' => 'tel']);
+            ])->textInput(['class' => 'input textarea', 'placeholder' => '8 (917) 187 44 87', 'type' => 'number']);
             ?>
             <?=
             $form->field($model, 'skype', [
@@ -186,14 +196,15 @@ AccountAsset::register($this);
                             'class' => 'visually-hidden checkbox__input',
                             'value' => $value
                         ]) . Html::tag('span', $label) . Html::endTag('label');
-                }
+                },
+                'unselect' => null
             ]); ?>
             <div class="search-task__categories account_checkbox account_checkbox--secrecy">
                 <?= $form->field($model, 'showContacts', [
                     'options' => [
                         'tag' => false,
                     ],
-                    'checkboxTemplate' => Html::beginTag('label',['class' =>'checkbox__legend']) ."{input}".Html::tag('span',"{labelTitle}"). Html::endTag('label'),
+                    'checkboxTemplate' => Html::beginTag('label', ['class' => 'checkbox__legend']) . "{input}" . Html::tag('span', "{labelTitle}") . Html::endTag('label'),
                 ])->checkbox([
                     'uncheck' => null,
                     'class' => 'visually-hidden checkbox__input',
@@ -202,7 +213,7 @@ AccountAsset::register($this);
                     'options' => [
                         'tag' => false,
                     ],
-                    'checkboxTemplate' => Html::beginTag('label',['class' =>'checkbox__legend']) ."{input}".Html::tag('span',"{labelTitle}"). Html::endTag('label'),
+                    'checkboxTemplate' => Html::beginTag('label', ['class' => 'checkbox__legend']) . "{input}" . Html::tag('span', "{labelTitle}") . Html::endTag('label'),
                 ])->checkbox([
                     'uncheck' => null,
                     'class' => 'visually-hidden checkbox__input',
@@ -215,3 +226,4 @@ AccountAsset::register($this);
 
     <?php ActiveForm::end(); ?>
 </section>
+

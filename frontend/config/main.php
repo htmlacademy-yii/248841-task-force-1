@@ -19,6 +19,7 @@ return [
             'class' => 'frontend\modules\api\Module'
         ]
     ],
+    'timeZone' => 'Europe/Berlin',
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',

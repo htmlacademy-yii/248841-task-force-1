@@ -10,6 +10,7 @@ use Yii;
  * @property int $id
  * @property int $user_id
  * @property int $category_id
+ * @property int $active
  *
  * @property Category $category
  * @property Users $user
@@ -46,6 +47,7 @@ class UserCategory extends \yii\db\ActiveRecord
             'id' => 'ID',
             'user_id' => 'User ID',
             'category_id' => 'Category ID',
+            'active' => 'active'
         ];
     }
 

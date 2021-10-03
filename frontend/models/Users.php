@@ -56,15 +56,15 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return [
             [['email', 'name', 'city_id', 'password', 'id', 'description', 'birthday', 'phone', 'skype', 'telegram', 'last_visit', 'avatar_url', 'date_create','show_contacts','not_show_profile'], 'safe'],
-            [['email', 'password'], 'required', 'message' => 'Поле {attribute} необходимо заполнить'],
+            [['email'], 'required', 'message' => 'Поле {attribute} необходимо заполнить'],
             [['city_id'], 'integer'],
             [['name'], 'required', 'message' => 'Введите ваше имя и фамилию'],
             [['city_id'], 'required', 'message' => 'Укажите город, чтобы находить подходящие задачи'],
             [['password'], 'string', 'min' => 8, 'tooShort' => 'Длина пароля от 8 символов'],
             [['description','not_show_profile','show_contacts'], 'string'],
             [['name', 'email', 'skype', 'telegram'], 'string', 'max' => 45],
-            [['birthday'], 'date'],
-            [['phone'], 'integer', 'max' => 11],
+            [['birthday'], 'date','format'=>'Y-m-d'],
+            [['phone'], 'string', 'max' => 12],
             [['avatar_url'], 'string', 'max' => 255],
             [['email'], 'unique'],
             [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
@@ -308,6 +308,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function isCustomer() :bool
     {
-        return $this->getCategory()->count() === '0';
+
+        return $this->getUserCategory()->andWhere(['active' => 'Y'])->count() === '0';
     }
 }

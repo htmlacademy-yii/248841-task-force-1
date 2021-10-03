@@ -10,6 +10,7 @@ use Yii;
  * @property int $id
  * @property int $user_id
  * @property string $url_photo
+ * @property string $photo_name
  *
  * @property Users $user
  */
@@ -31,7 +32,7 @@ class PhotoWork extends \yii\db\ActiveRecord
         return [
             [['user_id', 'url_photo'], 'required'],
             [['user_id'], 'integer'],
-            [['url_photo'], 'string', 'max' => 255],
+            [['url_photo','photo_name'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -45,6 +46,7 @@ class PhotoWork extends \yii\db\ActiveRecord
             'id' => 'ID',
             'user_id' => 'User ID',
             'url_photo' => 'Url Photo',
+            'photo_name' => 'Фото работ'
         ];
     }
 

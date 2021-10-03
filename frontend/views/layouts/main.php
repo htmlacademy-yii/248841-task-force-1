@@ -28,7 +28,15 @@ AppAsset::register($this);
     </head>
     <body>
     <?php $this->beginBody() ?>
-
+    <div class="preloader-conteiner">
+        <div class="preloader">
+            <div class="📦"></div>
+            <div class="📦"></div>
+            <div class="📦"></div>
+            <div class="📦"></div>
+            <div class="📦"></div>
+        </div>
+    </div>
     <div class="table-layout">
         <header class="page-header">
             <div class="main-container page-header__container">
@@ -107,7 +115,7 @@ AppAsset::register($this);
                             ],
                             [
                                 'label' => 'Мой профиль',
-                                'url' => [''],
+                                'url' => ['/account'],
                                 'visible' => !Yii::$app->user->isGuest,
                                 'options' => ['class' =>'site-list__item'],
                             ],
@@ -154,7 +162,7 @@ AppAsset::register($this);
                     <div class="account__pop-up">
                         <ul class="account__pop-up-list">
                             <li>
-                                <a href="/my-tasks">Мои задания</a>
+                                <a href="/my-tasks/index">Мои задания</a>
                             </li>
                             <li>
                                 <a href="/account">Настройки</a>
@@ -184,26 +192,37 @@ AppAsset::register($this);
                     </p>
                 </div>
                 <div class="page-footer__links">
-                    <ul class="links__list">
-                        <li class="links__item">
-                            <a href="browse.html">Задания</a>
-                        </li>
-                        <li class="links__item">
-                            <a href="account.html">Мой профиль</a>
-                        </li>
-                        <li class="links__item">
-                            <a href="users.html">Исполнители</a>
-                        </li>
-                        <li class="links__item">
-                            <a href="signup.html">Регистрация</a>
-                        </li>
-                        <li class="links__item">
-                            <a href="create.html">Создать задание</a>
-                        </li>
-                        <li class="links__item">
-                            <a href="">Справка</a>
-                        </li>
-                    </ul>
+                    <?=
+                    Nav::widget([
+                        'items' => [
+                            [
+                                'label' => 'Задания',
+                                'url' => ['/tasks'],
+                                'visible' => !Yii::$app->user->isGuest,
+                                'options' => ['class' =>'links__item'],
+                            ],
+                            [
+                                'label' => 'Исполнители',
+                                'url' => ['/users'],
+                                'visible' => !Yii::$app->user->isGuest,
+                                'options' => ['class' =>'links__item'],
+                            ],
+                            [
+                                'label' => 'Создать задание',
+                                'url' => ['tasks/create'],
+                                'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isCustomer(),
+                                'options' => ['class' =>'links__item'],
+                            ],
+                            [
+                                'label' => 'Мой профиль',
+                                'url' => ['/account'],
+                                'visible' => !Yii::$app->user->isGuest,
+                                'options' => ['class' =>'links__item'],
+                            ],
+                        ],
+                        'options' => ['class' =>'links__list'],
+                    ]);
+                    ?>
                 </div>
                 <div class="page-footer__copyright">
                     <a>
@@ -216,15 +235,6 @@ AppAsset::register($this);
             </div>
         </footer>
     </div>
-    <!--<script src="/js/dropzone.js"></script>-->
-    <!--<script>-->
-    <!--    Dropzone.autoDiscover = false;-->
-    <!---->
-    <!--    var dropzone = new Dropzone(".dropzone", {-->
-    <!--        url: window.location.href, maxFiles: 6, uploadMultiple: true,-->
-    <!--        acceptedFiles: 'image/*', previewTemplate: '<a href="#"><img data-dz-thumbnail alt="Фото работы"></a>'-->
-    <!--    });-->
-    <!--</script>-->
     <?php $this->endBody() ?>
     </body>
     </html>

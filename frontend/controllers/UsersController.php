@@ -6,9 +6,7 @@ namespace frontend\controllers;
 
 use frontend\models\Users;
 use frontend\models\UsersFilter;
-use Lobochkin\TaskForce\Task;
 use Yii;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 class UsersController extends SecuredController
@@ -20,13 +18,14 @@ class UsersController extends SecuredController
             'allow' => false,
             'actions' => ['index','view'],
             'matchCallback' => function ($rule, $action) {
-
+                if (\Yii::$app->user->isGuest) {
+                    return $this->redirect('/');
+                }
                 return !\Yii::$app->user->identity->isCustomer();
             }
         ];
 
         array_unshift($rules['access']['rules'], $rule);
-
         return $rules;
     }
 
