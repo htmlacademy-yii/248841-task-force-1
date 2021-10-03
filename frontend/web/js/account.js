@@ -74,7 +74,7 @@ var dropzone = new Dropzone('.create__file', {
         this.on('sendingmultiple', function(data, xhr, formData) {
 $('.preloader-conteiner').addClass('active');
             var file = document.getElementById('upload-avatar');
-            formData.append('avatarUrl', file.files[0]);
+            formData.append('Account[avatarUrl]', file.files[0]);
             formData.append('Account[name]',
                 $('#account-name').val());
             formData.append('Account[email]',

@@ -192,12 +192,14 @@ class Account extends Model
     {
         $transaction = \Yii::$app->db->beginTransaction();
         $userId = \Yii::$app->user->identity->getId();
-        if ($_FILES['Account']['tmp_name']['avatarUrl']) {
+
+        if ($_FILES['Account']['tmp_name']['avatarUrl'] || $_FILES['avatarUrl']['tmp_name']) {
             $user = Users::findOne($userId);
 
             if ($user->avatar_url) {
                 unlink(\Yii::getAlias('@webroot/uploads/') . $user->avatar_url);
             }
+
             $avatarUrl = UploadedFile::getInstanceByName('Account[avatarUrl]');
 
             $filenameRandom = \Yii::$app->getSecurity()->generateRandomString() . '.' . $avatarUrl->getExtension();
