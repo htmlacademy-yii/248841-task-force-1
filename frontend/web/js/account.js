@@ -112,6 +112,7 @@ $('.preloader-conteiner').addClass('active');
 
         });
         this.on('successmultiple', function(file, responseText) {
+            this.removeAllFiles();
             $('.preloader-conteiner').removeClass('active');
             if (responseText =='success'){
                 location.reload();

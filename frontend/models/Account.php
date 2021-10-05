@@ -43,7 +43,7 @@ class Account extends Model
     /**
      * @var int[]
      */
-    public $category;
+    public $category = [];
 
     /**
      * @var string
@@ -86,7 +86,7 @@ class Account extends Model
     /**
      * @var integer[]
      */
-    public $notification;
+    public $notification = [];
 
     /** @var Users */
     private $user;
@@ -191,16 +191,13 @@ class Account extends Model
     public function saveFiles()
     {
         $transaction = \Yii::$app->db->beginTransaction();
-        $userId = \Yii::$app->user->identity->getId();
 
-        if ($_FILES['Account']['tmp_name']['avatarUrl'] || $_FILES['avatarUrl']['tmp_name']) {
-            $user = Users::findOne($userId);
+        if ($avatarUrl = UploadedFile::getInstanceByName('Account[avatarUrl]')) {
+            $user = $this->user;
 
             if ($user->avatar_url) {
                 unlink(\Yii::getAlias('@webroot/uploads/') . $user->avatar_url);
             }
-
-            $avatarUrl = UploadedFile::getInstanceByName('Account[avatarUrl]');
 
             $filenameRandom = \Yii::$app->getSecurity()->generateRandomString() . '.' . $avatarUrl->getExtension();
             $storagePath = \Yii::getAlias('@webroot/uploads/') . $filenameRandom;
@@ -217,34 +214,18 @@ class Account extends Model
             }
         }
 
-        if ($_FILES['files']) {
-            $files = UploadedFile::getInstancesByName('files');
-            if (!$files) {
-                return false;
-            }
+        if ($files = UploadedFile::getInstancesByName('files')) {
+
             if (count($files) > 6) {
                 $files = array_slice($files, 0, 6);
             }
 
-            $photos = PhotoWork::find()->where(['user_id' => $userId])->all();
-            $oldPhotos = [];
-            foreach ($photos as $photo) {
-                $oldPhotos[$photo['photo_name']] = [
-                    'url_photo' => $photo['url_photo'],
-                    'id' => $photo['id']
-                ];
-            }
+            $photos = $this->user->photoWorks;
 
-            foreach ($files as $key => $file) {
-                if ($oldPhotos[$file->name]) {
-                    unset($oldPhotos[$file->name]);
-                    unset($files[$key]);
-                }
-            }
-            unset($file);
             $diff = (count($photos) + count($files) - 6);
+            $delPhotos = [];
             if ($diff > 0) {
-                $oldPhotos = array_slice($oldPhotos, 0, $diff);
+                $delPhotos = array_slice($photos, 0, $diff);
             }
 
             foreach ($files as $count => $file) {
@@ -255,10 +236,9 @@ class Account extends Model
                 Image::resize($storagePath, 1100, 800)
                     ->save($storagePath, ['quality' => 80]);
 
-                $photoWork->user_id = $userId;
+                $photoWork->user_id = $this->user->id;
                 $photoWork->url_photo = $filenameRandom;
 
-                $photoWork->photo_name = $file->name;
                 if (!$photoWork->save()) {
                     $transaction->rollBack();
                     return false;
@@ -267,11 +247,11 @@ class Account extends Model
             }
             unset($file);
 
-            foreach ($oldPhotos as $oldPhoto) {
+            foreach ($delPhotos as $oldPhoto) {
                 unlink(\Yii::getAlias('@webroot/uploads/') . $oldPhoto['url_photo']);
             }
 
-            PhotoWork::deleteAll(['id' => array_column($oldPhotos, 'id')]);
+            PhotoWork::deleteAll(['id' => array_column($delPhotos, 'id')]);
         }
 
         $transaction->commit();
@@ -287,100 +267,119 @@ class Account extends Model
         $this->user->email = $this->email;
         $this->user->birthday = (new \DateTime($this->birthday))->format('Y-m-d');
         $this->user->description = $this->description;
-        $arCat = $this->user->getUserCategory()->select(['category_id', 'active'])->asArray()->all();
-        $newCategory = !$this->category ? [] : $this->category;
-        if (count($newCategory) < 1) {
-            UserCategory::updateAll(['active' => 'N'], ['user_id' => $this->user->id]);
-        } else {
-            foreach ($arCat as $item) {
-                if ($item['active'] === 'N' && in_array($item['category_id'], $newCategory)) {
-                    unset($newCategory[array_search($item['category_id'],$newCategory)]);
-                    $temp = UserCategory::findOne([
-                        'user_id' => $this->user->id,
-                        'category_id' => $item['category_id']
-                    ]);
-                    $temp->active = 'Y';
-                    if (!$temp->validate()){
-                        $transaction->rollBack();
-                        return $temp->errors;
-                    }
-                    $temp->save();
-                }  else if($item['active'] === 'Y' && in_array($item['category_id'], $newCategory)) {
-                    unset($newCategory[array_search($item['category_id'],$newCategory)]);
-                } else if($item['active'] === 'Y' && !in_array($item['category_id'], $newCategory)) {
-                    $temp = UserCategory::findOne([
-                        'user_id' => $this->user->id,
-                        'category_id' => $item['category_id']
-                    ]);
-                    $temp->active = 'N';
-                    if (!$temp->validate()){
-                        $transaction->rollBack();
-                        return $temp->errors;
-                    }
-                    $temp->save();
-                }
-            }
-            unset($item);
-            foreach ($newCategory as $id) {
-                $newCategory = new UserCategory;
-                $newCategory->category_id = $id;
-                $newCategory->user_id = $this->user->id;
-                $newCategory->active = 'Y';
 
-                if (!$newCategory->validate()){
-                    $transaction->rollBack();
-                    return $newCategory->errors;
-                }
-                $newCategory->save();
-            }
-            unset($id);
+        $arCat = $this->user->getUserCategory()->where(['active' => 'Y'])->select('category_id')->asArray()->all();
+        $fromDBCat = ArrayHelper::getColumn($arCat, 'category_id');
+        $fromRequestCat = $this->category;
+
+        $toActivateOrAdd = array_diff($fromRequestCat, $fromDBCat);
+        $toDeactivate = array_diff($fromDBCat, $fromRequestCat);
+
+        foreach ($toDeactivate as $categoryId) {
+            UserCategory::updateAll(['active' => 'N'], [
+                        'user_id' => $this->user->id,
+                        'category_id' => $categoryId
+                    ]);
         }
 
-        $arNotification = $this->user->getUserNotification()->select(['value_name_id','active'])->asArray()->all();
-        $newNotification = !$this->notification ? [] : $this->notification;
+        foreach ($toActivateOrAdd as $categoryId) {
+            $affectedRowsCount = UserCategory::updateAll([
+                'active' => 'Y',
+            ], [
+                'user_id' => $this->user->id,
+                'category_id' => $categoryId,
+            ]);
 
-        if (count($newNotification) < 1) {
-            SelectedNotification::updateAll(['active' => 'N'], ['user_id' => $this->user->id]);
-        } else {
-            foreach ($arNotification as $item){
-                if ($item['active'] === 'N' && in_array($item['value_name_id'], $newNotification)) {
-                    unset($newNotification[array_search($item['value_name_id'],$newNotification)]);
-                    $temp = SelectedNotification::findOne([
-                        'user_id' => $this->user->id,
-                        'value_name_id' => $item['value_name_id']
-                    ]);
-                    $temp->active = 'Y';
-                    if (!$temp->validate()){
+            if (!$affectedRowsCount) {
+                $temp = new UserCategory();
+                $temp->user_id = $this->user->id;
+                $temp->category_id = $categoryId;
+                $temp->active = 'Y';
+                if (!$temp->validate()){
                         $transaction->rollBack();
                         return $temp->errors;
                     }
                     $temp->save();
-                } else if($item['active'] === 'Y' && in_array($item['value_name_id'], $newNotification)) {
-                    unset($newNotification[array_search($item['value_name_id'],$newNotification)]);
-                } else if($item['active'] === 'Y' && !in_array($item['value_name_id'], $newNotification)) {
-                    $temp = SelectedNotification::findOne([
-                        'user_id' => $this->user->id,
-                        'value_name_id' => $item['value_name_id']
-                    ]);
-                    $temp->active = 'N';
-                    if (!$temp->validate()){
-                        $transaction->rollBack();
-                        return $temp->errors;
-                    }
-                    $temp->save();
-                }
             }
-            unset($item);
-            foreach ($newNotification as $id) {
-                $newNotif = new SelectedNotification;
-                $newNotif->value_name_id = $id;
-                $newNotif->user_id = $this->user->id;
-                $newNotif->active = 'Y';
-                if (!$newNotif->validate()){
+        }
+//        $arCat = $this->user->getUserCategory()->select(['category_id', 'active'])->asArray()->all();
+//        $newCategory = !$this->category ? [] : $this->category;
+//        if (count($newCategory) < 1) {
+//            UserCategory::updateAll(['active' => 'N'], ['user_id' => $this->user->id]);
+//        } else {
+//            foreach ($arCat as $item) {
+//                if ($item['active'] === 'N' && in_array($item['category_id'], $newCategory)) {
+//                    unset($newCategory[array_search($item['category_id'],$newCategory)]);
+//                    $temp = UserCategory::findOne([
+//                        'user_id' => $this->user->id,
+//                        'category_id' => $item['category_id']
+//                    ]);
+//                    $temp->active = 'Y';
+//                    if (!$temp->validate()){
+//                        $transaction->rollBack();
+//                        return $temp->errors;
+//                    }
+//                    $temp->save();
+//                }  else if($item['active'] === 'Y' && in_array($item['category_id'], $newCategory)) {
+//                    unset($newCategory[array_search($item['category_id'],$newCategory)]);
+//                } else if($item['active'] === 'Y' && !in_array($item['category_id'], $newCategory)) {
+//                    $temp = UserCategory::findOne([
+//                        'user_id' => $this->user->id,
+//                        'category_id' => $item['category_id']
+//                    ]);
+//                    $temp->active = 'N';
+//                    if (!$temp->validate()){
+//                        $transaction->rollBack();
+//                        return $temp->errors;
+//                    }
+//                    $temp->save();
+//                }
+//            }
+//            unset($item);
+//            foreach ($newCategory as $id) {
+//                $newCategory = new UserCategory;
+//                $newCategory->category_id = $id;
+//                $newCategory->user_id = $this->user->id;
+//                $newCategory->active = 'Y';
+//
+//                if (!$newCategory->validate()){
+//                    $transaction->rollBack();
+//                    return $newCategory->errors;
+//                }
+//                $newCategory->save();
+//            }
+//            unset($id);
+//        }
+
+        $array = $this->user->getUserNotification()->where(['active' => 'Y'])->select('value_name_id')->asArray()->all();
+        $fromDB = ArrayHelper::getColumn($array, 'value_name_id');
+
+        $fromRequest = $this->notification;
+        $toActivateOrAdd = array_diff($fromRequest, $fromDB);
+        $toDeactivate = array_diff($fromDB, $fromRequest);
+
+        foreach ($toDeactivate as $categoryId) {
+            SelectedNotification::updateAll(['active' => 'N'], ['user_id' => $this->user->id,'value_name_id' => $categoryId]);
+        }
+
+        foreach ($toActivateOrAdd as $notificationId) {
+            $affectedRowsCount = SelectedNotification::updateAll([
+                'active' => 'Y',
+            ], [
+                'user_id' => $this->user->id,
+                'value_name_id' => $notificationId,
+            ]);
+
+            if (!$affectedRowsCount) {
+                $temp = new SelectedNotification();
+                $temp->user_id = $this->user->id;
+                $temp->value_name_id = $notificationId;
+                $temp->active = 'Y';
+                $temp->save();
+                if (!$temp->validate()){
                     $transaction->rollBack();
-                    return $newNotif->errors;
+                    return $temp->errors;
                 }
-                $newNotif->save();
             }
         }
 
@@ -391,21 +390,13 @@ class Account extends Model
             }
             $this->user->password = \Yii::$app->security->generatePasswordHash($this->password1);
         }
-        $this->user->phone = substr($this->phone,0,12);
+        $this->user->phone = preg_replace('/[\D]/','',$this->phone);
         $this->user->skype = $this->skype;
         $this->user->telegram = $this->telegram;
 
+        $this->user->not_show_profile = $this->notShowProfile === '1' ? 'Y' : 'N';
 
-        if ($this->notShowProfile === '1'){
-            $this->user->not_show_profile = 'Y';
-        } else {
-            $this->user->not_show_profile = 'N';
-        }
-        if ($this->showContacts === '1'){
-            $this->user->show_contacts = 'Y';
-        } else {
-            $this->user->show_contacts = 'N';
-        }
+        $this->user->show_contacts = $this->showContacts === '1' ? 'Y' : 'N';
 
         if (!$this->user->validate()){
             $transaction->rollBack();

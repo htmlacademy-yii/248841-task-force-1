@@ -11,6 +11,7 @@ use phpDocumentor\Reflection\Types\False_;
 use yii\bootstrap\ActiveForm;
 use yii\filters\VerbFilter;
 use yii\web\Response;
+use yii\web\ServerErrorHttpException;
 use yii\web\UploadedFile;
 
 class AccountController extends SecuredController
@@ -45,7 +46,7 @@ class AccountController extends SecuredController
             $model->load(\Yii::$app->request->post());
             if ($model->validate()) {
                 if (boolval($_FILES) && !$model->saveFiles()) {
-                    return 'Ошибка сохранения файлов!';
+                    return new ServerErrorHttpException('Ошибка сохранения файлов!');
                 }
 
                 \Yii::$app->response->format = Response::FORMAT_JSON;

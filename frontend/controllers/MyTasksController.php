@@ -50,7 +50,7 @@ class MyTasksController extends SecuredController
                         'employer_id' => \Yii::$app->user->getId(),
                     ]);
                 break;
-            case 'delay':
+            case \Lobochkin\TaskForce\Task::EXPIRED:
                 $query = Task::find()
                     ->where(['status' => \Lobochkin\TaskForce\Task::STATUS_IN_WORK])
                     ->andWhere('deadline < NOW()')

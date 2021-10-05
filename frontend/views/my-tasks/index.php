@@ -95,7 +95,7 @@ MyTaskAsset::register($this);
                           fill="black"/>
                 </svg>
             </div>
-            <a href="<?= Url::to(['my-tasks/index', 'status' => 'delay']) ?>">
+            <a href="<?= Url::to(['my-tasks/index', 'status' => \Lobochkin\TaskForce\Task::EXPIRED]) ?>">
                 Просроченные
             </a>
         </li>

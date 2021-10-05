@@ -163,7 +163,7 @@ AccountAsset::register($this);
                 'options' => [
                     'class' => 'field-container account__input account__input',
                 ],
-            ])->textInput(['class' => 'input textarea', 'placeholder' => '8 (917) 187 44 87', 'type' => 'number']);
+            ])->textInput(['class' => 'input textarea', 'placeholder' => '8 (917) 187 44 87', 'type' => 'tell']);
             ?>
             <?=
             $form->field($model, 'skype', [
