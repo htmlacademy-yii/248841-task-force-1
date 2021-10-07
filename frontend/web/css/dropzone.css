@@ -526,3 +526,12 @@
 .dz-error.dz-complete .dz-error-message > span {
     color: white;
 }
+
+.photo-var {
+    border: 2px solid #979797;
+    display: inline-block;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #f7f9fc;
+    cursor: pointer;
+}

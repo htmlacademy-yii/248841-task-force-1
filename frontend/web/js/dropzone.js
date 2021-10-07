@@ -1089,6 +1089,7 @@ function (_Emitter) {
 
 
     if (_this.options.url == null) {
+console.log(_this.options.url);
       _this.options.url = _this.element.getAttribute("action");
     }
 

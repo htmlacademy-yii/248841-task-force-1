@@ -23,6 +23,8 @@ class Task
     const ACTION_DECLINE = 'decline'; // Отказаться от задания(Исполнитель)
     const ACTION_ACCEPT = 'accept'; // Принять отклик от исполнителя(Заказчик)
 
+    const EXPIRED = 'expired'; // Для вкладки просроченные в моих заданиях
+
     const ROLE_IMPLEMENT = 'implementer'; // Исполнитель
     const ROLE_CUSTOMER = 'customer'; // Заказчик
     const STATUS_NAME = [

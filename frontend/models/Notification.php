@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "notification".
@@ -71,4 +72,5 @@ class Notification extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Users::className(), ['id' => 'recipient_id']);
     }
+
 }

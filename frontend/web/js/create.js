@@ -91,6 +91,7 @@ $(function() {
                     $('[name="_csrf-frontend"]').val());
             });
             this.on('successmultiple', function(file, responseText) {
+                this.removeAllFiles();
                 if (responseText === Object(responseText)) {
                     this.removeAllFiles();
                     validate(responseText);
