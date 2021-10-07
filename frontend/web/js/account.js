@@ -13,7 +13,6 @@ $(function() {
             reader.readAsDataURL(this.files[0]);
         }
     });
-
 });
 
 Dropzone.autoDiscover = false;

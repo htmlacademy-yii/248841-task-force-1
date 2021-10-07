@@ -6,6 +6,7 @@ namespace frontend\controllers;
 
 use common\models\User;
 use frontend\models\Account;
+use frontend\models\PhotoWork;
 use frontend\models\Users;
 use phpDocumentor\Reflection\Types\False_;
 use yii\bootstrap\ActiveForm;
@@ -55,6 +56,17 @@ class AccountController extends SecuredController
 
             \Yii::$app->response->format = Response::FORMAT_JSON;
             return ActiveForm::validate($model);
+        }
+        if (\Yii::$app->request->getIsGet() && \Yii::$app->request->get('imgDel') > 0) {
+            $idPhoto = \Yii::$app->request->get('imgDel');
+            foreach ($model->photoWorks as $key => $photoWork) {
+                if ($photoWork['id'] == $idPhoto){
+                    unlink(\Yii::getAlias('@webroot/uploads/') . $photoWork['url_photo']);
+                    unset($model->photoWorks[$key]);
+                }
+            }
+            PhotoWork::deleteAll(['id' => $idPhoto]);
+            return $this->redirect('/account');
         }
 
         return $this->render('index', ['model' => $model]);

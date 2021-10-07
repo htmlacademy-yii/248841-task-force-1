@@ -302,54 +302,6 @@ class Account extends Model
                     $temp->save();
             }
         }
-//        $arCat = $this->user->getUserCategory()->select(['category_id', 'active'])->asArray()->all();
-//        $newCategory = !$this->category ? [] : $this->category;
-//        if (count($newCategory) < 1) {
-//            UserCategory::updateAll(['active' => 'N'], ['user_id' => $this->user->id]);
-//        } else {
-//            foreach ($arCat as $item) {
-//                if ($item['active'] === 'N' && in_array($item['category_id'], $newCategory)) {
-//                    unset($newCategory[array_search($item['category_id'],$newCategory)]);
-//                    $temp = UserCategory::findOne([
-//                        'user_id' => $this->user->id,
-//                        'category_id' => $item['category_id']
-//                    ]);
-//                    $temp->active = 'Y';
-//                    if (!$temp->validate()){
-//                        $transaction->rollBack();
-//                        return $temp->errors;
-//                    }
-//                    $temp->save();
-//                }  else if($item['active'] === 'Y' && in_array($item['category_id'], $newCategory)) {
-//                    unset($newCategory[array_search($item['category_id'],$newCategory)]);
-//                } else if($item['active'] === 'Y' && !in_array($item['category_id'], $newCategory)) {
-//                    $temp = UserCategory::findOne([
-//                        'user_id' => $this->user->id,
-//                        'category_id' => $item['category_id']
-//                    ]);
-//                    $temp->active = 'N';
-//                    if (!$temp->validate()){
-//                        $transaction->rollBack();
-//                        return $temp->errors;
-//                    }
-//                    $temp->save();
-//                }
-//            }
-//            unset($item);
-//            foreach ($newCategory as $id) {
-//                $newCategory = new UserCategory;
-//                $newCategory->category_id = $id;
-//                $newCategory->user_id = $this->user->id;
-//                $newCategory->active = 'Y';
-//
-//                if (!$newCategory->validate()){
-//                    $transaction->rollBack();
-//                    return $newCategory->errors;
-//                }
-//                $newCategory->save();
-//            }
-//            unset($id);
-//        }
 
         $array = $this->user->getUserNotification()->where(['active' => 'Y'])->select('value_name_id')->asArray()->all();
         $fromDB = ArrayHelper::getColumn($array, 'value_name_id');

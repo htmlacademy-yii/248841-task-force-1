@@ -10,6 +10,7 @@ use frontend\models\ValueNotification;
 use kartik\date\DatePicker;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
+use yii\helpers\Url;
 
 /**
  * @var $form ActiveForm
@@ -142,88 +143,97 @@ AccountAsset::register($this);
 
         <h3 class="div-line">Фото работ</h3>
         <div>
+
             <span>Загруженные ранее фото:</span>
+            <? if (count($model->photoWorks)>0){?>
             <div class="photo-works">
                 <?
-                foreach ($model->photoWorks as $photo) :?>
-                    <img src="/uploads/<?= $photo['url_photo'] ?>" width="150" height="150" alt="<?=$photo['photo_name']?>" style="object-fit: cover;">
-               <? endforeach;?>
+                foreach ($model->photoWorks as $photo) : ?>
+                    <a class="photo-works__link" target="_blank" href="/uploads/<?= $photo['url_photo'] ?>">
+                        <div class="photo-works__img" style="background-image: url(/uploads/<?= $photo['url_photo'] ?>);">
+                            <span onclick="location.replace('<?= Url::to(['', 'imgDel' => $photo['id']]);?>'); return false;" class="photo-works__delete"></span>
+                        </div>
+                    </a>
+                <?
+                endforeach; ?>
+            </div>
+            <?} else{?>
+            Загруженных фотографий нет
+            <?}?>
+        </div>
+            <div class="photo-var">Выбрать фотографии</div>
+            <div class="account__redaction-section-wrapper account__redaction">
+                <div class="create__file dropzone-custom"></div>
+            </div>
 
+            <h3 class="div-line">Контакты</h3>
+            <div class="account__redaction-section-wrapper account__redaction">
+                <?=
+                $form->field($model, 'phone', [
+                    'options' => [
+                        'class' => 'field-container account__input account__input',
+                    ],
+                ])->textInput(['class' => 'input textarea', 'placeholder' => '8 (917) 187 44 87', 'type' => 'tell']);
+                ?>
+                <?=
+                $form->field($model, 'skype', [
+                    'options' => [
+                        'class' => 'field-container account__input account__input',
+                    ],
+                ])->textInput(['class' => 'input textarea', 'placeholder' => 'DenisT']);
+                ?>
+                <?=
+                $form->field($model, 'telegram', [
+                    'options' => [
+                        'class' => 'field-container account__input account__input',
+                    ],
+                ])->textInput(['class' => 'input textarea', 'placeholder' => '@DenisT']);
+                ?>
+            </div>
+            <h3 class="div-line">Настройки сайта</h3>
+            <h4>Уведомления</h4>
+            <div class="account__redaction-section-wrapper account_section--bottom">
+                <?= $form->field($model, 'notification', [
+                    "template" => "{input}",
+                    'options' => [
+                        'class' => 'search-task__categories account_checkbox--bottom',
+                    ]
+                ])->checkboxList(ValueNotification::getNotifList(), [
+                    'tag' => false,
+                    'item' => function ($index, $label, $name, $checked, $value) {
+                        return Html::beginTag('label', ['class' => 'checkbox__legend']) .
+                            Html::checkbox($name, $checked, [
+                                'class' => 'visually-hidden checkbox__input',
+                                'value' => $value
+                            ]) . Html::tag('span', $label) . Html::endTag('label');
+                    },
+                    'unselect' => null
+                ]); ?>
+                <div class="search-task__categories account_checkbox account_checkbox--secrecy">
+                    <?= $form->field($model, 'showContacts', [
+                        'options' => [
+                            'tag' => false,
+                        ],
+                        'checkboxTemplate' => Html::beginTag('label', ['class' => 'checkbox__legend']) . "{input}" . Html::tag('span', "{labelTitle}") . Html::endTag('label'),
+                    ])->checkbox([
+                        'uncheck' => null,
+                        'class' => 'visually-hidden checkbox__input',
+                    ]); ?>
+                    <?= $form->field($model, 'notShowProfile', [
+                        'options' => [
+                            'tag' => false,
+                        ],
+                        'checkboxTemplate' => Html::beginTag('label', ['class' => 'checkbox__legend']) . "{input}" . Html::tag('span', "{labelTitle}") . Html::endTag('label'),
+                    ])->checkbox([
+                        'uncheck' => null,
+                        'class' => 'visually-hidden checkbox__input',
+                    ]); ?>
+                    </label>
+                </div>
             </div>
         </div>
-        <div class="photo-var">Выбрать фотографии</div>
-        <div class="account__redaction-section-wrapper account__redaction">
-            <div class="create__file dropzone-custom"></div>
-        </div>
+        <?= Html::submitButton('Сохранить изменения', ['class' => 'button']); ?>
 
-        <h3 class="div-line">Контакты</h3>
-        <div class="account__redaction-section-wrapper account__redaction">
-            <?=
-            $form->field($model, 'phone', [
-                'options' => [
-                    'class' => 'field-container account__input account__input',
-                ],
-            ])->textInput(['class' => 'input textarea', 'placeholder' => '8 (917) 187 44 87', 'type' => 'tell']);
-            ?>
-            <?=
-            $form->field($model, 'skype', [
-                'options' => [
-                    'class' => 'field-container account__input account__input',
-                ],
-            ])->textInput(['class' => 'input textarea', 'placeholder' => 'DenisT']);
-            ?>
-            <?=
-            $form->field($model, 'telegram', [
-                'options' => [
-                    'class' => 'field-container account__input account__input',
-                ],
-            ])->textInput(['class' => 'input textarea', 'placeholder' => '@DenisT']);
-            ?>
-        </div>
-        <h3 class="div-line">Настройки сайта</h3>
-        <h4>Уведомления</h4>
-        <div class="account__redaction-section-wrapper account_section--bottom">
-            <?= $form->field($model, 'notification', [
-                "template" => "{input}",
-                'options' => [
-                    'class' => 'search-task__categories account_checkbox--bottom',
-                ]
-            ])->checkboxList(ValueNotification::getNotifList(), [
-                'tag' => false,
-                'item' => function ($index, $label, $name, $checked, $value) {
-                    return Html::beginTag('label', ['class' => 'checkbox__legend']) .
-                        Html::checkbox($name, $checked, [
-                            'class' => 'visually-hidden checkbox__input',
-                            'value' => $value
-                        ]) . Html::tag('span', $label) . Html::endTag('label');
-                },
-                'unselect' => null
-            ]); ?>
-            <div class="search-task__categories account_checkbox account_checkbox--secrecy">
-                <?= $form->field($model, 'showContacts', [
-                    'options' => [
-                        'tag' => false,
-                    ],
-                    'checkboxTemplate' => Html::beginTag('label', ['class' => 'checkbox__legend']) . "{input}" . Html::tag('span', "{labelTitle}") . Html::endTag('label'),
-                ])->checkbox([
-                    'uncheck' => null,
-                    'class' => 'visually-hidden checkbox__input',
-                ]); ?>
-                <?= $form->field($model, 'notShowProfile', [
-                    'options' => [
-                        'tag' => false,
-                    ],
-                    'checkboxTemplate' => Html::beginTag('label', ['class' => 'checkbox__legend']) . "{input}" . Html::tag('span', "{labelTitle}") . Html::endTag('label'),
-                ])->checkbox([
-                    'uncheck' => null,
-                    'class' => 'visually-hidden checkbox__input',
-                ]); ?>
-                </label>
-            </div>
-        </div>
-    </div>
-    <?= Html::submitButton('Сохранить изменения', ['class' => 'button']); ?>
-
-    <?php ActiveForm::end(); ?>
+        <?php ActiveForm::end(); ?>
 </section>
 

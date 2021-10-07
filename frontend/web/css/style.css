@@ -379,13 +379,44 @@ footer {
     cursor: pointer;
 }
 .photo-works {
+    display: flex;
     margin: 15px auto 15px 0;
     padding: 5px;
     width: fit-content;
     border: 1px dashed #8a8a8d;
 }
-.photo-works>img {
+
+.photo-works__delete {
+    display: none;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 25px;
+    height: 25px;
+    background-image: url(/img/bin.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 65%;
+    background-color: rgba(255,255,255,0.6);
     border-radius: 5px;
+}
+.photo-works__img:hover .photo-works__delete {
+    display: inline-block;
+}
+.photo-works__img {
+    position: relative;
+    border-radius: 5px;
+    width: 150px;
+    height: 150px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.photo-works__link {
+    margin-right: 5px;
+}
+.photo-works__link:last-child {
+    margin-right: 0;
 }
 .header__account-photo>img {
     object-fit: cover;
