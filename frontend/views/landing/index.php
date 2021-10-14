@@ -4,6 +4,7 @@
  */
 
 use frontend\models\LoginForm;
+use rmrevin\yii\ulogin\ULogin;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 use frontend\assets\LoginFormAsset;
@@ -11,6 +12,7 @@ use frontend\assets\LoginFormAsset;
 LoginFormAsset::register($this);
 
 ?>
+
 <section class="enter-form form-modal" id="enter-form">
     <h2>Вход на сайт</h2>
     <?php $form = ActiveForm::begin([
@@ -39,9 +41,47 @@ LoginFormAsset::register($this);
         ],
         'labelOptions' => ['class' => 'form-modal-description'],
     ])->passwordInput(['class' => 'enter-form-email input input-middle']) ?>
+    <div class="landing-buttons">
     <?= Html::submitButton('Войти', ['class' => 'button']) ?>
     <?php ActiveForm::end(); ?>
     <?= Html::button('Закрыть', ['class' => 'form-modal-close', 'id' => 'close-modal']) ?>
+    <?= ULogin::widget([
+        // widget look'n'feel
+        'display' => ULogin::D_PANEL,
+
+        // required fields
+        'fields' => [ULogin::F_FIRST_NAME, ULogin::F_LAST_NAME, ULogin::F_EMAIL, ULogin::F_CITY],
+
+        // optional fields
+        'optional' => [ULogin::F_BDATE],
+
+        // login providers
+        'providers' => [ULogin::P_VKONTAKTE],
+
+        // login providers that are shown when user clicks on additonal providers button
+        'hidden' => [],
+
+        // where to should ULogin redirect users after successful login
+        'redirectUri' => ['auth/ulogin-auth'],
+
+        // force use https in redirect uri
+        'forceRedirectUrlScheme' => 'http',
+
+        // optional params (can be ommited)
+        // force widget language (autodetect by default)
+        'language' => ULogin::L_RU,
+
+        // providers sorting ('relevant' by default)
+        'sortProviders' => ULogin::S_RELEVANT,
+
+        // verify users' email (disabled by default)
+        'verifyEmail' => '0',
+
+        // mobile buttons style (enabled by default)
+        'mobileButtons' => '1',
+    ]);?>
+        <span>Войти через:</span>
+    </div>
 </section>
 <div class="landing-bottom">
     <div class="landing-bottom-container">

@@ -17,27 +17,11 @@ use yii\web\UploadedFile;
 
 class AccountController extends SecuredController
 {
-    public function beforeAction($action)
-    {
-        if (in_array($action->id, ['load-photo'])) {
-            $this->enableCsrfValidation = false;
-        }
-        return parent::beforeAction($action);
-    }
-
-    public function behaviors()
-    {
-        $rules = parent::behaviors();
-        $rules['verbs'] = [
-            'class' => VerbFilter::className(),
-            'actions' => [
-                'loadPhoto' => ['post', 'ajax'],
-            ],
-        ];
-
-        return $rules;
-    }
-
+    /**
+     * @return array|string|Response|ServerErrorHttpException
+     * @throws \yii\base\Exception
+     * @throws \yii\db\Exception
+     */
     public function actionIndex()
     {
 
