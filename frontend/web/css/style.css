@@ -1011,7 +1011,12 @@ footer {
 .button__registration {
     -ms-flex-item-align: start;
     align-self: flex-start;
+}
+.auth-buttons {
     margin-top: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .red-button {
@@ -3211,4 +3216,18 @@ footer {
   background-color: #ffffff;
   top: 25px;
   left: 0;
+}
+
+.landing-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row-reverse;
+}
+
+.landing-buttons > span {
+    width: 20px;
+}
+.landing-buttons > div {
+    padding-top: 7px;
 }

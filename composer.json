@@ -21,7 +21,8 @@
         "symfony/var-dumper": "^5.1",
         "kartik-v/yii2-widget-datepicker": "@dev",
         "guzzlehttp/guzzle": "^7.3",
-        "yiisoft/yii2-imagine": "^2.3"
+        "yiisoft/yii2-imagine": "^2.3",
+        "yiisoft/yii2-authclient": "~2.1.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
