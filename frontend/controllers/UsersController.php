@@ -64,4 +64,5 @@ class UsersController extends SecuredController
         return $this->render('view', ['user' => $user]);
 
     }
+
 }

@@ -21,7 +21,7 @@ class AuthController extends Controller
 
     public function actionIndex()
     {
-        $this->layout ='authUser';
+        $this->layout = 'authUser';
         $user = new Users();
         if (Yii::$app->request->getIsPost()) {
             $user->load(Yii::$app->request->post());
@@ -32,7 +32,7 @@ class AuthController extends Controller
                 $this->goHome();
             }
         }
-        return $this->render('index',['model' => $user]);
+        return $this->render('index', ['model' => $user]);
     }
 
     public function actions()
