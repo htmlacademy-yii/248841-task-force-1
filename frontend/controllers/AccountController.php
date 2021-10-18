@@ -24,10 +24,9 @@ class AccountController extends SecuredController
      */
     public function actionIndex()
     {
-
         $model = new Account();
-
         if (\Yii::$app->request->getIsPost() && \Yii::$app->request->isAjax) {
+
             $model->load(\Yii::$app->request->post());
             if ($model->validate()) {
                 if (boolval($_FILES) && !$model->saveFiles()) {

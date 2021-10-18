@@ -50,7 +50,7 @@ return [
             ],
         ],
         'errorHandler' => [
-            'errorAction' => 'site/error',
+            'errorAction' => 'users/error',
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,

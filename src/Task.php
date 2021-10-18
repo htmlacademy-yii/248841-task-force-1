@@ -99,9 +99,7 @@ class Task
         if (!self::STATUS_NAME[$status]) {
             throw new ValidValueException("Нет статуса: {$status}!");
         }
-//        dd(array_filter(self::NEXT_ACTION[$status], function ($obAction) use ($idImplement, $idEmployer, $idUser) {
-//            return call_user_func_array([$obAction, 'checkingRights'], [$idImplement, $idEmployer, $idUser]);
-//        }));
+
         return array_filter(self::NEXT_ACTION[$status], function ($obAction) use ($idImplement, $idEmployer, $idUser) {
             return call_user_func_array([$obAction, 'checkingRights'], [$idImplement, $idEmployer, $idUser]);
         });

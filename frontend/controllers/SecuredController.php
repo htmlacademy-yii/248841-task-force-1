@@ -31,12 +31,4 @@ class SecuredController extends Controller
         ];
     }
 
-//    public function beforeAction($event)
-//    {
-//        if (!\Yii::$app->user->isGuest) {
-//            $user = Users::findOne(\Yii::$app->user->getId());
-//            $user->last_visit = (new \DateTime())->format('Y-m-d H:i:s');
-//            $user->save();
-//        }
-//    }
 }
