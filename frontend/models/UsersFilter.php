@@ -93,8 +93,6 @@ class UsersFilter extends Model
             $query->innerJoin('favourites', 'favourites.user_id = :user AND users.id = favourites.favourite_id', [':user' => $currentUserId]);
         }
 
-//dd($query->prepare(\Yii::$app->db->queryBuilder)->createCommand()->rawSql);
-
         $query->andFilterWhere(['Like', 'name', $this->name]);
         return new ActiveDataProvider([
             'query' => $query,

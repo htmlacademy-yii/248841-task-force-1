@@ -7,13 +7,12 @@ namespace Lobochkin\TaskForce;
 class Accept extends Action
 {
     /**
-     * @param int $idImplement
+     * @param int|null $idImplement
      * @param int $idCustomer
      * @param int $idUser
      * @return bool
-     * @inheritDoc
      */
-    public static function checkingRights(int $idImplement, int $idCustomer, int $idUser): bool
+    public static function checkingRights(?int $idImplement, int $idCustomer, int $idUser): bool
     {
         return $idCustomer === $idUser;
     }
@@ -29,7 +28,7 @@ class Accept extends Action
     /**
      * @inheritDoc
      */
-    public function getInnerName(): string
+    public static function getInnerName(): string
     {
         return 'accept';
     }

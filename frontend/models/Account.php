@@ -77,11 +77,11 @@ class Account extends Model
     /**
      * @var string
      */
-    public $notShowProfile;
+    public $notShowProfile = 'N';
     /**
      * @var string
      */
-    public $showContacts;
+    public $showContacts = 'N';
 
     /**
      * @var integer[]
@@ -140,6 +140,7 @@ class Account extends Model
 
     public function init()
     {
+        $newData = \Yii::$app->request->getIsPost();
         $this->user = Users::findOne(\Yii::$app->user->getId());
         $this->avatarUrl = $this->user->avatar_url;
         $this->name = $this->user->name;
@@ -147,16 +148,21 @@ class Account extends Model
         $this->email = $this->user->email;
         $this->birthday = (new \DateTime($this->user->birthday))->format('d.m.Y');
         $this->description = $this->user->description;
-        $arCat = $this->user->getUserCategory()->where(['active' => 'Y'])->select('category_id')->asArray()->all();
-        $this->category = ArrayHelper::getColumn($arCat, 'category_id');
+
         $this->photoWorks = $this->user->getPhotoWorks()->asArray()->all();
         $this->phone = $this->user->phone;
         $this->skype = $this->user->skype;
         $this->telegram = $this->user->telegram;
-        $array = $this->user->getUserNotification()->where(['active' => 'Y'])->select('value_name_id')->asArray()->all();
-        $this->notification = ArrayHelper::getColumn($array, 'value_name_id');
-        $this->notShowProfile = $this->user->not_show_profile === 'Y';
-        $this->showContacts = $this->user->show_contacts === 'Y';
+        if (!$newData){
+            $arCat = $this->user->getUserCategory()->where(['active' => 'Y'])->select('category_id')->asArray()->all();
+            $this->category = ArrayHelper::getColumn($arCat, 'category_id');
+
+            $array = $this->user->getUserNotification()->where(['active' => 'Y'])->select('value_name_id')->asArray()->all();
+            $this->notification = ArrayHelper::getColumn($array, 'value_name_id');
+
+            $this->notShowProfile = $this->user->not_show_profile === 'Y';
+            $this->showContacts = $this->user->show_contacts === 'Y';
+        }
     }
 
     /**
@@ -215,7 +221,6 @@ class Account extends Model
         }
 
         if ($files = UploadedFile::getInstancesByName('files')) {
-
             if (count($files) > 6) {
                 $files = array_slice($files, 0, 6);
             }
@@ -243,7 +248,6 @@ class Account extends Model
                     $transaction->rollBack();
                     return false;
                 }
-
             }
             unset($file);
 
@@ -270,36 +274,42 @@ class Account extends Model
 
         $arCat = $this->user->getUserCategory()->where(['active' => 'Y'])->select('category_id')->asArray()->all();
         $fromDBCat = ArrayHelper::getColumn($arCat, 'category_id');
-        $fromRequestCat = $this->category;
+        $fromRequestCat = $this->category ?: [];
 
         $toActivateOrAdd = array_diff($fromRequestCat, $fromDBCat);
         $toDeactivate = array_diff($fromDBCat, $fromRequestCat);
 
         foreach ($toDeactivate as $categoryId) {
-            UserCategory::updateAll(['active' => 'N'], [
-                        'user_id' => $this->user->id,
-                        'category_id' => $categoryId
-                    ]);
+            UserCategory::updateAll(
+                ['active' => 'N'],
+                [
+                    'user_id' => $this->user->id,
+                    'category_id' => $categoryId
+                ]
+            );
         }
 
         foreach ($toActivateOrAdd as $categoryId) {
-            $affectedRowsCount = UserCategory::updateAll([
-                'active' => 'Y',
-            ], [
-                'user_id' => $this->user->id,
-                'category_id' => $categoryId,
-            ]);
+            $affectedRowsCount = UserCategory::updateAll(
+                [
+                    'active' => 'Y',
+                ],
+                [
+                    'user_id' => $this->user->id,
+                    'category_id' => $categoryId,
+                ]
+            );
 
             if (!$affectedRowsCount) {
                 $temp = new UserCategory();
                 $temp->user_id = $this->user->id;
                 $temp->category_id = $categoryId;
                 $temp->active = 'Y';
-                if (!$temp->validate()){
-                        $transaction->rollBack();
-                        return $temp->errors;
-                    }
-                    $temp->save();
+                if (!$temp->validate()) {
+                    $transaction->rollBack();
+                    return $temp->errors;
+                }
+                $temp->save();
             }
         }
 
@@ -311,16 +321,19 @@ class Account extends Model
         $toDeactivate = array_diff($fromDB, $fromRequest);
 
         foreach ($toDeactivate as $categoryId) {
-            SelectedNotification::updateAll(['active' => 'N'], ['user_id' => $this->user->id,'value_name_id' => $categoryId]);
+            SelectedNotification::updateAll(['active' => 'N'], ['user_id' => $this->user->id, 'value_name_id' => $categoryId]);
         }
 
         foreach ($toActivateOrAdd as $notificationId) {
-            $affectedRowsCount = SelectedNotification::updateAll([
-                'active' => 'Y',
-            ], [
-                'user_id' => $this->user->id,
-                'value_name_id' => $notificationId,
-            ]);
+            $affectedRowsCount = SelectedNotification::updateAll(
+                [
+                    'active' => 'Y',
+                ],
+                [
+                    'user_id' => $this->user->id,
+                    'value_name_id' => $notificationId,
+                ]
+            );
 
             if (!$affectedRowsCount) {
                 $temp = new SelectedNotification();
@@ -328,21 +341,21 @@ class Account extends Model
                 $temp->value_name_id = $notificationId;
                 $temp->active = 'Y';
                 $temp->save();
-                if (!$temp->validate()){
+                if (!$temp->validate()) {
                     $transaction->rollBack();
                     return $temp->errors;
                 }
             }
         }
 
-        if ($this->password1){
-            if ($this->password1 !== $this->password2){
+        if ($this->password1) {
+            if ($this->password1 !== $this->password2) {
                 $transaction->rollBack();
                 return 'Пароли не совпадают';
             }
             $this->user->password = \Yii::$app->security->generatePasswordHash($this->password1);
         }
-        $this->user->phone = preg_replace('/[\D]/','',$this->phone);
+        $this->user->phone = preg_replace('/[\D]/', '', $this->phone);
         $this->user->skype = $this->skype;
         $this->user->telegram = $this->telegram;
 
@@ -350,7 +363,7 @@ class Account extends Model
 
         $this->user->show_contacts = $this->showContacts === '1' ? 'Y' : 'N';
 
-        if (!$this->user->validate()){
+        if (!$this->user->validate()) {
             $transaction->rollBack();
             return $this->user->errors;
         }

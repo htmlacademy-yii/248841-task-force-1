@@ -13,6 +13,7 @@ class UsersController extends SecuredController
 {
     public function behaviors()
     {
+
         $rules = parent::behaviors();
         $rule = [
             'allow' => false,
@@ -21,7 +22,6 @@ class UsersController extends SecuredController
                 if (\Yii::$app->user->isGuest) {
                     return $this->redirect('/');
                 }
-                return !\Yii::$app->user->identity->isCustomer();
             }
         ];
 
@@ -64,4 +64,18 @@ class UsersController extends SecuredController
         return $this->render('view', ['user' => $user]);
 
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+
+        ];
+    }
+
 }

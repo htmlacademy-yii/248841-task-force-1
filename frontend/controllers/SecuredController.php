@@ -3,6 +3,8 @@
 
 namespace frontend\controllers;
 
+use frontend\models\Users;
+use yii\base\Event;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 
@@ -28,4 +30,5 @@ class SecuredController extends Controller
             ]
         ];
     }
+
 }
