@@ -6,6 +6,9 @@ use yii\mail\MessageInterface;
 
 class ContactFormTest extends \Codeception\Test\Unit
 {
+    /**
+     * Отправка email
+     */
     public function testSendEmail()
     {
         $model = new ContactForm();

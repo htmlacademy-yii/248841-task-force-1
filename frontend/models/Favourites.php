@@ -32,8 +32,8 @@ class Favourites extends \yii\db\ActiveRecord
         return [
             [['user_id', 'favourite_id'], 'required'],
             [['user_id', 'favourite_id'], 'integer'],
-            [['favourite_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['favourite_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['favourite_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['favourite_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -56,7 +56,7 @@ class Favourites extends \yii\db\ActiveRecord
      */
     public function getFavourite()
     {
-        return $this->hasOne(Users::className(), ['id' => 'favourite_id']);
+        return $this->hasOne(Users::class, ['id' => 'favourite_id']);
     }
 
     /**
@@ -66,6 +66,6 @@ class Favourites extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(Users::className(), ['id' => 'user_id']);
+        return $this->hasOne(Users::class, ['id' => 'user_id']);
     }
 }

@@ -13,7 +13,10 @@ use yii\web\Response;
 
 class TasksController extends SecuredController
 {
-    public function behaviors()
+    /**
+     * @return array
+     */
+    public function behaviors(): array
     {
         $rules = parent::behaviors();
         $rule = [
@@ -30,7 +33,7 @@ class TasksController extends SecuredController
 
         array_unshift($rules['access']['rules'], $rule);
         $rules['verbs'] = [
-            'class' => VerbFilter::className(),
+            'class' => VerbFilter::class,
             'actions' => [
                 'answer' => ['post', 'ajax'],
                 'addAnswer' => ['post', 'ajax'],
@@ -41,7 +44,11 @@ class TasksController extends SecuredController
         return $rules;
     }
 
-    public function actionIndex()
+    /**
+     * Возвращает задачи согласно фильтру
+     * @return string
+     */
+    public function actionIndex(): string
     {
         /** @var TaskFilter $formFilter */
         $formFilter = new TaskFilter();
@@ -58,7 +65,7 @@ class TasksController extends SecuredController
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionView($id)
+    public function actionView($id): string
     {
         $task = Task::findOne($id);
         if (!$task) {

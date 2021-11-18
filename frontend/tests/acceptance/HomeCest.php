@@ -6,6 +6,9 @@ use yii\helpers\Url;
 
 class HomeCest
 {
+    /**
+     * @param AcceptanceTester $I
+     */
     public function checkHome(AcceptanceTester $I)
     {
         $I->amOnPage(Url::toRoute('/site/index'));

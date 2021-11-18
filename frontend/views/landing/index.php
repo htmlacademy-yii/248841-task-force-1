@@ -8,6 +8,7 @@ use rmrevin\yii\ulogin\ULogin;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 use frontend\assets\LoginFormAsset;
+use yii\helpers\Url;
 
 LoginFormAsset::register($this);
 
@@ -89,12 +90,12 @@ LoginFormAsset::register($this);
         <div class="landing-task">
             <div class="landing-task-top task-courier"></div>
             <div class="landing-task-description">
-                <h3><a href="#" class="link-regular">Подключить принтер</a></h3>
+                <h3><a href="<?= Url::to([''])?>" class="link-regular">Подключить принтер</a></h3>
                 <p>Необходимо подключить старый матричный принтер, у него еще LPT порт…</p>
             </div>
             <div class="landing-task-info">
                 <div class="task-info-left">
-                    <p><a href="#" class="link-regular">Курьерские услуги</a></p>
+                    <p><a href="<?= Url::to([''])?>" class="link-regular">Курьерские услуги</a></p>
                     <p>25 минут назад</p>
                 </div>
                 <span>700 <b>₽</b></span>
@@ -103,13 +104,13 @@ LoginFormAsset::register($this);
         <div class="landing-task">
             <div class="landing-task-top task-cargo"></div>
             <div class="landing-task-description">
-                <h3><a href="#" class="link-regular">Офисный переезд</a></h3>
+                <h3><a href="<?= Url::to([''])?>" class="link-regular">Офисный переезд</a></h3>
                 <p>Требуется перевезти офисную мебель
                     и технику из расчета 5 сотрудников</p>
             </div>
             <div class="landing-task-info">
                 <div class="task-info-left">
-                    <p><a href="#" class="link-regular">Грузоперевозки</a></p>
+                    <p><a href="<?= Url::to([''])?>" class="link-regular">Грузоперевозки</a></p>
                     <p>25 минут назад</p>
                 </div>
                 <span>1 800 <b>₽</b></span>
@@ -118,13 +119,13 @@ LoginFormAsset::register($this);
         <div class="landing-task">
             <div class="landing-task-top task-neo"></div>
             <div class="landing-task-description">
-                <h3><a href="#" class="link-regular">Убраться в квартире</a></h3>
+                <h3><a href="<?= Url::to([''])?>" class="link-regular">Убраться в квартире</a></h3>
                 <p>Моей хате давно нужна генеральная уборка.
                     В наличии есть только пылесос. </p>
             </div>
             <div class="landing-task-info">
                 <div class="task-info-left">
-                    <p><a href="#" class="link-regular">Уборка</a></p>
+                    <p><a href="<?= Url::to([''])?>" class="link-regular">Уборка</a></p>
                     <p>1 час назад</p>
                 </div>
                 <span>2000 <b>₽</b></span>
@@ -133,7 +134,7 @@ LoginFormAsset::register($this);
         <div class="landing-task">
             <div class="landing-task-top task-flat"></div>
             <div class="landing-task-description">
-                <h3><a href="#" class="link-regular">Празднование ДР</a></h3>
+                <h3><a href="<?= Url::to([''])?>" class="link-regular">Празднование ДР</a></h3>
                 <p>Моему другу нужно
                     устроить день рождения,
                     который он никогда не
@@ -141,7 +142,7 @@ LoginFormAsset::register($this);
             </div>
             <div class="landing-task-info">
                 <div class="task-info-left">
-                    <p><a href="#" class="link-regular">Мероприятия</a></p>
+                    <p><a href="<?= Url::to([''])?>" class="link-regular">Мероприятия</a></p>
                     <p>1 час назад</p>
                 </div>
                 <span>2000 <b>₽</b></span>

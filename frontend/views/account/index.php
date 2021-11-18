@@ -73,7 +73,7 @@ AccountAsset::register($this);
                     'options' => [
                         'class' => 'field-container account__input account__input--date',
                     ],
-                ])->widget(DatePicker::classname(), [
+                ])->widget(DatePicker::class, [
                     'language' => 'ru',
                     'options' => [
                         'class' => 'input-middle input input-date',
@@ -149,8 +149,8 @@ AccountAsset::register($this);
             <div class="photo-works">
                 <?
                 foreach ($model->photoWorks as $photo) : ?>
-                    <a class="photo-works__link" target="_blank" href="/uploads/<?= $photo['url_photo'] ?>">
-                        <div class="photo-works__img" style="background-image: url(/uploads/<?= $photo['url_photo'] ?>);">
+                    <a class="photo-works__link" target="_blank" href="<?= Url::to(['/uploads/' . $photo['url_photo']])?>">
+                        <div class="photo-works__img" style="background-image: url(<?= Url::to(['/uploads/' . $photo['url_photo']])?>);">
                             <span onclick="location.replace('<?= Url::to(['', 'imgDel' => $photo['id']]);?>'); return false;" class="photo-works__delete"></span>
                         </div>
                     </a>

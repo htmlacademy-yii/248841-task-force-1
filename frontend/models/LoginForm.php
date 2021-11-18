@@ -40,6 +40,10 @@ class LoginForm extends Model
         ];
     }
 
+    /**
+     * @param $attribute
+     * @param $params
+     */
     public function validatePassword($attribute, $params)
     {
 
@@ -52,7 +56,9 @@ class LoginForm extends Model
         }
     }
 
-
+    /**
+     * @return Users|null
+     */
     public function getUser()
     {
         if ($this->_user === null) {

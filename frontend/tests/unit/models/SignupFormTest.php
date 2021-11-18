@@ -11,17 +11,22 @@ class SignupFormTest extends \Codeception\Test\Unit
      */
     protected $tester;
 
-
+    /**
+     *
+     */
     public function _before()
     {
         $this->tester->haveFixtures([
             'user' => [
-                'class' => UserFixture::className(),
+                'class' => UserFixture::class,
                 'dataFile' => codecept_data_dir() . 'user.php'
             ]
         ]);
     }
 
+    /**
+     *
+     */
     public function testCorrectSignup()
     {
         $model = new SignupForm([
@@ -51,6 +56,9 @@ class SignupFormTest extends \Codeception\Test\Unit
         expect($mail->toString())->stringContainsString($user->verification_token);
     }
 
+    /**
+     *
+     */
     public function testNotCorrectSignup()
     {
         $model = new SignupForm([

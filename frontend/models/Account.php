@@ -3,7 +3,8 @@
 
 namespace frontend\models;
 
-
+use Exception;
+use Throwable;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use yii\imagine\Image;
@@ -99,7 +100,7 @@ class Account extends Model
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [
@@ -133,11 +134,14 @@ class Account extends Model
             [['name', 'email', 'skype', 'telegram'], 'string', 'max' => 45],
             [['phone'], 'string', 'length' => [10, 12]],
             [['avatarUrl'], 'string', 'skipOnEmpty' => false],
-            [['cityId'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['cityId' => 'id']],
-            [['password2'], 'compare', 'compareAttribute' => 'password1', 'skipOnEmpty' => true],
+            [['cityId'], 'exist', 'skipOnError' => true, 'targetClass' => City::class, 'targetAttribute' => ['cityId' => 'id']],
+            [['password2'], 'compare', 'compareAttribute' => 'password1'],
         ];
     }
 
+    /**
+     * @throws \Exception
+     */
     public function init()
     {
         $newData = \Yii::$app->request->getIsPost();
@@ -168,7 +172,7 @@ class Account extends Model
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'email' => 'Email',
@@ -190,88 +194,112 @@ class Account extends Model
     }
 
     /**
-     * @return bool
-     * @throws \yii\base\Exception
-     * @throws \yii\db\Exception
+     * @throws Throwable
      */
-    public function saveFiles()
+    public function saveAccount(): void
     {
         $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            $this->processMainData();
+            $this->processSpecializations();
+            $this->processNotifications();
+            $this->processPassword();
+            $this->processContacts();
+            $this->saveAvatar();
+            $this->saveWorksFiles();
 
-        if ($avatarUrl = UploadedFile::getInstanceByName('Account[avatarUrl]')) {
-            $user = $this->user;
+            $transaction->commit();
+        } catch (Throwable $exception) {
+            $transaction->rollBack();
 
-            if ($user->avatar_url) {
-                unlink(\Yii::getAlias('@webroot/uploads/') . $user->avatar_url);
-            }
-
-            $filenameRandom = \Yii::$app->getSecurity()->generateRandomString() . '.' . $avatarUrl->getExtension();
-            $storagePath = \Yii::getAlias('@webroot/uploads/') . $filenameRandom;
-
-            $res = $avatarUrl->saveAs($storagePath);
-            Image::resize($storagePath, 156, 156)
-                ->save($storagePath, ['quality' => 80]);
-
-            $user->avatar_url = $filenameRandom;
-
-            if (!$user->save()) {
-                $transaction->rollBack();
-                return false;
-            }
+            throw $exception;
         }
-
-        if ($files = UploadedFile::getInstancesByName('files')) {
-            if (count($files) > 6) {
-                $files = array_slice($files, 0, 6);
-            }
-
-            $photos = $this->user->photoWorks;
-
-            $diff = (count($photos) + count($files) - 6);
-            $delPhotos = [];
-            if ($diff > 0) {
-                $delPhotos = array_slice($photos, 0, $diff);
-            }
-
-            foreach ($files as $count => $file) {
-                $photoWork = new PhotoWork();
-                $filenameRandom = \Yii::$app->getSecurity()->generateRandomString() . '.' . $file->getExtension();
-                $storagePath = \Yii::getAlias('@webroot/uploads/') . $filenameRandom;
-                $res = $file->saveAs($storagePath);
-                Image::resize($storagePath, 1100, 800)
-                    ->save($storagePath, ['quality' => 80]);
-
-                $photoWork->user_id = $this->user->id;
-                $photoWork->url_photo = $filenameRandom;
-
-                if (!$photoWork->save()) {
-                    $transaction->rollBack();
-                    return false;
-                }
-            }
-            unset($file);
-
-            foreach ($delPhotos as $oldPhoto) {
-                unlink(\Yii::getAlias('@webroot/uploads/') . $oldPhoto['url_photo']);
-            }
-
-            PhotoWork::deleteAll(['id' => array_column($delPhotos, 'id')]);
-        }
-
-        $transaction->commit();
-
-        return true;
     }
 
-    public function saveAccount()
+    /**
+     * @throws Exception
+     */
+    private function processNotifications()
     {
-        $transaction = \Yii::$app->db->beginTransaction();
+        $array = $this->user->getUserNotification()->where(['active' => 'Y'])->select('value_name_id')->asArray()->all();
+        $fromDB = ArrayHelper::getColumn($array, 'value_name_id');
+
+        $fromRequest = $this->notification;
+        $toActivateOrAdd = array_diff($fromRequest, $fromDB);
+        $toDeactivate = array_diff($fromDB, $fromRequest);
+
+        foreach ($toDeactivate as $categoryId) {
+            SelectedNotification::updateAll(['active' => 'N'], ['user_id' => $this->user->id, 'value_name_id' => $categoryId]);
+        }
+
+        foreach ($toActivateOrAdd as $notificationId) {
+            $affectedRowsCount = SelectedNotification::updateAll(
+                [
+                    'active' => 'Y',
+                ],
+                [
+                    'user_id' => $this->user->id,
+                    'value_name_id' => $notificationId,
+                ]
+            );
+
+            if (!$affectedRowsCount) {
+                $temp = new SelectedNotification();
+                $temp->user_id = $this->user->id;
+                $temp->value_name_id = $notificationId;
+                $temp->active = 'Y';
+                if (!$temp->save()) {
+                    throw new Exception();
+                }
+            }
+        }
+    }
+
+    /**
+     * @throws \yii\base\Exception
+     */
+    private function processPassword(): void
+    {
+        if ($this->password1) {
+            $this->user->password = \Yii::$app->security->generatePasswordHash($this->password1);
+        }
+
+        if (!$this->user->save()) {
+            throw new Exception();
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function processContacts(): void
+    {
+        $this->user->phone = preg_replace('/[\D]/', '', $this->phone);
+        $this->user->skype = $this->skype;
+        $this->user->telegram = $this->telegram;
+        $this->user->not_show_profile = $this->notShowProfile === '1' ? 'Y' : 'N';
+        $this->user->show_contacts = $this->showContacts === '1' ? 'Y' : 'N';
+
+        if (!$this->user->save()) {
+            throw new Exception();
+        }
+    }
+
+    private function processMainData(): void
+    {
         $this->user->name = $this->name;
         $this->user->city_id = $this->cityId;
         $this->user->email = $this->email;
         $this->user->birthday = (new \DateTime($this->birthday))->format('Y-m-d');
         $this->user->description = $this->description;
 
+        if (!$this->user->save()) {
+            throw new Exception();
+        }
+    }
+
+    private function processSpecializations(): void
+    {
         $arCat = $this->user->getUserCategory()->where(['active' => 'Y'])->select('category_id')->asArray()->all();
         $fromDBCat = ArrayHelper::getColumn($arCat, 'category_id');
         $fromRequestCat = $this->category ?: [];
@@ -305,70 +333,78 @@ class Account extends Model
                 $temp->user_id = $this->user->id;
                 $temp->category_id = $categoryId;
                 $temp->active = 'Y';
-                if (!$temp->validate()) {
-                    $transaction->rollBack();
-                    return $temp->errors;
-                }
-                $temp->save();
-            }
-        }
-
-        $array = $this->user->getUserNotification()->where(['active' => 'Y'])->select('value_name_id')->asArray()->all();
-        $fromDB = ArrayHelper::getColumn($array, 'value_name_id');
-
-        $fromRequest = $this->notification;
-        $toActivateOrAdd = array_diff($fromRequest, $fromDB);
-        $toDeactivate = array_diff($fromDB, $fromRequest);
-
-        foreach ($toDeactivate as $categoryId) {
-            SelectedNotification::updateAll(['active' => 'N'], ['user_id' => $this->user->id, 'value_name_id' => $categoryId]);
-        }
-
-        foreach ($toActivateOrAdd as $notificationId) {
-            $affectedRowsCount = SelectedNotification::updateAll(
-                [
-                    'active' => 'Y',
-                ],
-                [
-                    'user_id' => $this->user->id,
-                    'value_name_id' => $notificationId,
-                ]
-            );
-
-            if (!$affectedRowsCount) {
-                $temp = new SelectedNotification();
-                $temp->user_id = $this->user->id;
-                $temp->value_name_id = $notificationId;
-                $temp->active = 'Y';
-                $temp->save();
-                if (!$temp->validate()) {
-                    $transaction->rollBack();
-                    return $temp->errors;
+                if (!$temp->save()) {
+                    throw new Exception();
                 }
             }
         }
+    }
 
-        if ($this->password1) {
-            if ($this->password1 !== $this->password2) {
-                $transaction->rollBack();
-                return 'Пароли не совпадают';
+    /**
+     * @throws \yii\base\Exception
+     */
+    private function saveAvatar()
+    {
+        if ($avatarUrl = UploadedFile::getInstanceByName('Account[avatarUrl]')) {
+            $user = $this->user;
+
+            if ($user->avatar_url) {
+                unlink(\Yii::getAlias('@webroot/uploads/') . $user->avatar_url);
             }
-            $this->user->password = \Yii::$app->security->generatePasswordHash($this->password1);
+
+            $filenameRandom = \Yii::$app->getSecurity()->generateRandomString() . '.' . $avatarUrl->getExtension();
+            $storagePath = \Yii::getAlias('@webroot/uploads/') . $filenameRandom;
+
+            $avatarUrl->saveAs($storagePath);
+            Image::resize($storagePath, 156, 156)
+                ->save($storagePath, ['quality' => 80]);
+
+            $user->avatar_url = $filenameRandom;
+
+            if (!$user->save()) {
+                throw new Exception();
+            }
         }
-        $this->user->phone = preg_replace('/[\D]/', '', $this->phone);
-        $this->user->skype = $this->skype;
-        $this->user->telegram = $this->telegram;
+    }
 
-        $this->user->not_show_profile = $this->notShowProfile === '1' ? 'Y' : 'N';
+    private function saveWorksFiles(): void
+    {
+        if ($files = UploadedFile::getInstancesByName('files')) {
+            if (count($files) > 6) {
+                $files = array_slice($files, 0, 6);
+            }
 
-        $this->user->show_contacts = $this->showContacts === '1' ? 'Y' : 'N';
+            $photos = $this->user->photoWorks;
 
-        if (!$this->user->validate()) {
-            $transaction->rollBack();
-            return $this->user->errors;
+            $diff = (count($photos) + count($files) - 6);
+            $delPhotos = [];
+            if ($diff > 0) {
+                /**
+                 * @var PhotoWork[] $delPhotos
+                 */
+                $delPhotos = array_slice($photos, 0, $diff);
+            }
+
+            foreach ($files as $file) {
+                $photoWork = new PhotoWork();
+                $filenameRandom = \Yii::$app->getSecurity()->generateRandomString() . '.' . $file->getExtension();
+                $storagePath = \Yii::getAlias('@webroot/uploads/') . $filenameRandom;
+                $file->saveAs($storagePath);
+                Image::resize($storagePath, 1100, 800)
+                    ->save($storagePath, ['quality' => 80]);
+
+                $photoWork->user_id = $this->user->id;
+                $photoWork->url_photo = $filenameRandom;
+
+                if (!$photoWork->save()) {
+                    throw new Exception();
+                }
+            }
+
+            foreach ($delPhotos as $oldPhoto) {
+                unlink(\Yii::getAlias('@webroot/uploads/') . $oldPhoto->url_photo);
+                $oldPhoto->delete();
+            }
         }
-        $this->user->save();
-        $transaction->commit();
-        return 'success';
     }
 }

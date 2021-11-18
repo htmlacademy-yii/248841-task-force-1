@@ -12,17 +12,22 @@ class VerifyEmailFormTest extends \Codeception\Test\Unit
      */
     protected $tester;
 
-
+    /**
+     *
+     */
     public function _before()
     {
         $this->tester->haveFixtures([
             'user' => [
-                'class' => UserFixture::className(),
+                'class' => UserFixture::class,
                 'dataFile' => codecept_data_dir() . 'user.php'
             ]
         ]);
     }
 
+    /**
+     *
+     */
     public function testVerifyWrongToken()
     {
         $this->tester->expectException('\yii\base\InvalidArgumentException', function() {
@@ -34,6 +39,9 @@ class VerifyEmailFormTest extends \Codeception\Test\Unit
         });
     }
 
+    /**
+     *
+     */
     public function testAlreadyActivatedToken()
     {
         $this->tester->expectException('\yii\base\InvalidArgumentException', function() {
@@ -41,6 +49,9 @@ class VerifyEmailFormTest extends \Codeception\Test\Unit
         });
     }
 
+    /**
+     *
+     */
     public function testVerifyCorrectToken()
     {
         $model = new VerifyEmailForm('4ch0qbfhvWwkcuWqjN8SWRq72SOw1KYT_1548675330');

@@ -5,6 +5,9 @@ use frontend\tests\FunctionalTester;
 
 class AboutCest
 {
+    /**
+     * @param FunctionalTester $I
+     */
     public function checkAbout(FunctionalTester $I)
     {
         $I->amOnRoute('site/about');

@@ -11,6 +11,9 @@ use yii\web\NotFoundHttpException;
 
 class UsersController extends SecuredController
 {
+    /**
+     * @return array
+     */
     public function behaviors()
     {
 
@@ -29,6 +32,9 @@ class UsersController extends SecuredController
         return $rules;
     }
 
+    /**
+     * @return string
+     */
     public function actionIndex()
     {
         $formFilter = new UsersFilter();

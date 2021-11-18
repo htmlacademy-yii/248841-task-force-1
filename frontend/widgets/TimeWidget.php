@@ -11,6 +11,10 @@ class TimeWidget extends Widget
     /** @var string */
     public $lastWord;
 
+    /**
+     * @return string
+     * @throws \Exception
+     */
     public function run()
     {
         $diffTime = (new \DateTime())->diff(new \DateTime($this->lastTime));

@@ -138,22 +138,20 @@ AppAsset::register($this);
                         <h3>Новые события</h3>
                         <p class="lightbulb__new-task lightbulb__new-task--message">
                             Новое сообщение в чате
-                            <a href="#" class="link-regular">«Помочь с курсовой»</a>
+                            <a href="<?= Url::to(['/img/academy-logo.png'])?>" class="link-regular">«Помочь с курсовой»</a>
                         </p>
                         <p class="lightbulb__new-task lightbulb__new-task--executor">
                             Выбран исполнитель для
-                            <a href="#" class="link-regular">«Помочь с курсовой»</a>
+                            <a href="<?= Url::to([''])?>" class="link-regular">«Помочь с курсовой»</a>
                         </p>
                         <p class="lightbulb__new-task lightbulb__new-task--close">
                             Завершено задание
-                            <a href="#" class="link-regular">«Помочь с курсовой»</a>
+                            <a href="<?= Url::to([''])?>" class="link-regular">«Помочь с курсовой»</a>
                         </p>
                     </div>
                     <div class="header__account">
                         <a class="header__account-photo">
-                            <img src="<?= Yii::$app->user->identity->avatar_url?'/uploads/'.Yii::$app->user->identity->avatar_url: '#'?>"
-                                 width="43" height="44"
-                                 alt="Аватар пользователя">
+                            <?= Html::img(Yii::$app->user->identity->avatar_url?'/uploads/'.Yii::$app->user->identity->avatar_url: '#', ['width' => 43, 'height' => 44, 'alt' => 'Аватар пользователя'])?>
                         </a>
                         <span class="header__account-name">
                             <?= Yii::$app->user->identity->name?>
@@ -162,13 +160,13 @@ AppAsset::register($this);
                     <div class="account__pop-up">
                         <ul class="account__pop-up-list">
                             <li>
-                                <a href="/my-tasks/index">Мои задания</a>
+                                <a href="<?= Url::to(['/my-tasks/index'])?>">Мои задания</a>
                             </li>
                             <li>
-                                <a href="/account">Настройки</a>
+                                <a href="<?= Url::to(['/account'])?>">Настройки</a>
                             </li>
                             <li>
-                                <a href="/users/logout">Выход</a>
+                                <a href="<?= Url::to(['/users/logout'])?>">Выход</a>
                             </li>
                         </ul>
                     </div>
@@ -226,10 +224,7 @@ AppAsset::register($this);
                 </div>
                 <div class="page-footer__copyright">
                     <a>
-                        <img class="copyright-logo"
-                             src="/img/academy-logo.png"
-                             width="185" height="63"
-                             alt="Логотип HTML Academy">
+                        <?= Html::img('/img/academy-logo.png', ['class' => 'copyright-logo', 'width' => 185, 'height' => 63, 'alt' => 'Логотип HTML Academy'])?>
                     </a>
                 </div>
             </div>

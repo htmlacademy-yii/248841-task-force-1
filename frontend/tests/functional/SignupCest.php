@@ -8,12 +8,17 @@ class SignupCest
 {
     protected $formId = '#form-signup';
 
-
+    /**
+     * @param FunctionalTester $I
+     */
     public function _before(FunctionalTester $I)
     {
         $I->amOnRoute('site/signup');
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function signupWithEmptyFields(FunctionalTester $I)
     {
         $I->see('Signup', 'h1');
@@ -25,6 +30,9 @@ class SignupCest
 
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function signupWithWrongEmail(FunctionalTester $I)
     {
         $I->submitForm(
@@ -39,6 +47,9 @@ class SignupCest
         $I->see('Email is not a valid email address.', '.help-block');
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function signupSuccessfully(FunctionalTester $I)
     {
         $I->submitForm($this->formId, [

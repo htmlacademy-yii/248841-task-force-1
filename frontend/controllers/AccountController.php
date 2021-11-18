@@ -4,16 +4,11 @@
 namespace frontend\controllers;
 
 
-use common\models\User;
 use frontend\models\Account;
 use frontend\models\PhotoWork;
-use frontend\models\Users;
-use phpDocumentor\Reflection\Types\False_;
 use yii\bootstrap\ActiveForm;
-use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
-use yii\web\UploadedFile;
 
 class AccountController extends SecuredController
 {
@@ -26,15 +21,16 @@ class AccountController extends SecuredController
     {
         $model = new Account();
         if (\Yii::$app->request->getIsPost() && \Yii::$app->request->isAjax) {
-
             $model->load(\Yii::$app->request->post());
             if ($model->validate()) {
-                if (boolval($_FILES) && !$model->saveFiles()) {
-                    return new ServerErrorHttpException('Ошибка сохранения файлов!');
-                }
+                /*if (boolval($_FILES) && !$model->saveFiles()) {
+                    throw new ServerErrorHttpException('Ошибка сохранения файлов!');
+                }*/
 
                 \Yii::$app->response->format = Response::FORMAT_JSON;
-                return $model->saveAccount();
+                $model->saveAccount();
+
+                return null;
             }
 
             \Yii::$app->response->format = Response::FORMAT_JSON;
@@ -43,7 +39,7 @@ class AccountController extends SecuredController
         if (\Yii::$app->request->getIsGet() && \Yii::$app->request->get('imgDel') > 0) {
             $idPhoto = \Yii::$app->request->get('imgDel');
             foreach ($model->photoWorks as $key => $photoWork) {
-                if ($photoWork['id'] == $idPhoto){
+                if ((int)$photoWork['id'] === (int)$idPhoto) {
                     unlink(\Yii::getAlias('@webroot/uploads/') . $photoWork['url_photo']);
                     unset($model->photoWorks[$key]);
                 }

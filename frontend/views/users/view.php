@@ -3,6 +3,7 @@
 use frontend\helpers\WordHelper;
 use frontend\widgets\{TimeWidget, StarsReviews};
 use yii\bootstrap\Html;
+use yii\helpers\Url;
 
 /**
  * @var $user \frontend\models\Users
@@ -24,7 +25,7 @@ use yii\bootstrap\Html;
             </div>
             <div class="content-view__headline user__card-bookmark user__card-bookmark--current">
                 <span>Был на сайте <?= TimeWidget::widget(['lastTime' => $user->last_visit, 'lastWord' => 'назад']) ?></span>
-                <a href="#"><b></b></a>
+                <a href="<?= Url::to([''])?>"><b></b></a>
             </div>
         </div>
         <div class="content-view__description">
@@ -35,20 +36,20 @@ use yii\bootstrap\Html;
                 <h3 class="content-view__h3">Специализации</h3>
                 <div class="link-specialization">
                     <? foreach ($user->category as $category) : ?>
-                        <a href="/users/?UsersFilter[category][]=<?= $category->id; ?>" class="link-regular"><?= $category->name; ?></a>
+                        <a href="<?= Url::to(['/users/', 'UsersFilter[category][]' => $category->id])?>" class="link-regular"><?= $category->name; ?></a>
                     <? endforeach; ?>
                 </div>
                 <h3 class="content-view__h3">Контакты</h3>
                 <div class="user__card-link">
-                    <a class="user__card-link--tel link-regular" href="#"><?= $user->phone; ?></a>
-                    <a class="user__card-link--email link-regular" href="#"><?= $user->email; ?></a>
-                    <a class="user__card-link--skype link-regular" href="#"><?= $user->skype; ?></a>
+                    <a class="user__card-link--tel link-regular" href="<?= Url::to([''])?>"><?= $user->phone; ?></a>
+                    <a class="user__card-link--email link-regular" href="<?= Url::to([''])?>"><?= $user->email; ?></a>
+                    <a class="user__card-link--skype link-regular" href="<?= Url::to([''])?>"><?= $user->skype; ?></a>
                 </div>
             </div>
             <div class="user__card-photo">
                 <h3 class="content-view__h3">Фото работ</h3>
                 <? foreach ($user->photoWorks as $photoWorks) : ?>
-                    <a href="<?= Yii::getAlias('@web/uploads/') . $photoWorks->url_photo ?>"><?= Html::img('@web/uploads/' . $photoWorks->url_photo,
+                    <a href="<?= Url::to([Yii::getAlias('@web/uploads/') . $photoWorks->url_photo])?>"><?= Html::img('@web/uploads/' . $photoWorks->url_photo,
                             ['width' => 85, 'height' => 86, 'alt' => 'Фото работы']); ?></a>
                 <? endforeach; ?>
             </div>
@@ -59,12 +60,12 @@ use yii\bootstrap\Html;
         <div class="content-view__feedback-wrapper reviews-wrapper">
             <? foreach ($user->responses as $response) : ?>
                 <div class="feedback-card__reviews">
-                    <p class="link-task link">Задание <a href="/tasks/view/<?= $response->task->id ?>" class="link-regular">«<?= $response->task->title ?>»</a></p>
+                    <p class="link-task link">Задание <a href="<?= Url::to(['/tasks/view/' . $response->task->id])?>" class="link-regular">«<?= $response->task->title ?>»</a></p>
                     <div class="card__review">
-                        <a href="<?= Yii::getAlias('@web/uploads/') . $response->task->employer->avatar_url ?>"><?= Html::img('@web/uploads/' . $response->task->employer->avatar_url,
+                        <a href="<?= Url::to([Yii::getAlias('@web/uploads/') . $response->task->employer->avatar_url]) ?>"><?= Html::img('@web/uploads/' . $response->task->employer->avatar_url,
                                 ['width' => 55, 'height' => 54]); ?></a>
                         <div class="feedback-card__reviews-content">
-                            <p class="link-name link"><a href="/users/<?= $response->task->employer->id ?>" class="link-regular"><?= $response->task->employer->name ?></a></p>
+                            <p class="link-name link"><a href="<?= Url::to(['/users/' . $response->task->employer->id])?>" class="link-regular"><?= $response->task->employer->name ?></a></p>
                             <p class="review-text">
                                 <?= $response->description ?>
                             </p>

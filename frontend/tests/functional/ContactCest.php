@@ -7,16 +7,25 @@ use frontend\tests\FunctionalTester;
 
 class ContactCest
 {
+    /**
+     * @param FunctionalTester $I
+     */
     public function _before(FunctionalTester $I)
     {
         $I->amOnPage(['site/contact']);
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function checkContact(FunctionalTester $I)
     {
         $I->see('Contact', 'h1');
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function checkContactSubmitNoData(FunctionalTester $I)
     {
         $I->submitForm('#contact-form', []);
@@ -28,6 +37,9 @@ class ContactCest
         $I->seeValidationError('The verification code is incorrect');
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function checkContactSubmitNotCorrectEmail(FunctionalTester $I)
     {
         $I->submitForm('#contact-form', [
@@ -44,6 +56,9 @@ class ContactCest
         $I->dontSeeValidationError('The verification code is incorrect');
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function checkContactSubmitCorrectData(FunctionalTester $I)
     {
         $I->submitForm('#contact-form', [

@@ -51,8 +51,6 @@ class Task
     const NEXT_ACTION = [
         self::STATUS_NEW => [
             Answer::class,
-//            Cancel::class,
-//            Accept::class
         ],
         self::STATUS_IN_WORK => [
             Decline::class,
@@ -62,12 +60,6 @@ class Task
 
     protected $idTask = null;
     protected $idStatus = null;
-
-//    public function __construct(int $idTask, int $idStatus)
-//    {
-//        $this->idTask = $idTask;
-//        $this->idStatus = $idStatus;
-//    }
 
     /**
      * @param string $action

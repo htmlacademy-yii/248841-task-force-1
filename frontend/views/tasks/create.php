@@ -84,7 +84,7 @@ CreateAsset::register($this);
                     'class' => 'field-container create__price-time--wrapper',
                 ],
                 'template' => "{label}\n{input}\n" . Html::tag('span', 'Укажите крайний срок исполнения')
-            ])->widget(DatePicker::classname(), [
+            ])->widget(DatePicker::class, [
                 'language' => 'ru',
                 'options' => [
                     'class' => 'input-middle input input-date',

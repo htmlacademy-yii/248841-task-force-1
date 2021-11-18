@@ -55,7 +55,7 @@ class Events extends \yii\db\ActiveRecord
      */
     public function getNotifications()
     {
-        return $this->hasMany(Notification::className(), ['event_id' => 'id']);
+        return $this->hasMany(Notification::class, ['event_id' => 'id']);
     }
 
 }

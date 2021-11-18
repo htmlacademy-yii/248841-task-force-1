@@ -108,8 +108,8 @@ MyTaskAsset::register($this);
 
             <div class="new-task__card">
                 <div class="new-task__title">
-                    <a href="/tasks/view/<?= $task->id; ?>" class="link-regular"><h2><?= $task->title; ?></h2></a>
-                    <a class="new-task__type link-regular" href="/tasks/?TaskFilter[category][]=<?= $task->category->id; ?>"><p><?= $task->category->name; ?></p></a>
+                    <a href="<?= Url::to(['/tasks/view/' . $task->id])?>" class="link-regular"><h2><?= $task->title; ?></h2></a>
+                    <a class="new-task__type link-regular" href="<?= Url::to(['/tasks/','TaskFilter[category][]' => $task->category->id])?>"><p><?= $task->category->name; ?></p></a>
                 </div>
                 <div class="task-status done-status"><?= (\Lobochkin\TaskForce\Task::STATUS_NAME)[$task->status] ?></div>
                 <p class="new-task_description">
@@ -118,8 +118,8 @@ MyTaskAsset::register($this);
                 <div class="feedback-card__top ">
                     <?= $task->implementer->avatar_url ? Html::img('@web/uploads/' . $task->implementer->avatar_url, ['width' => 36, 'height' => 36, 'alt' => 'Аватар заказчика']) : '' ?>
                     <div class="feedback-card__top--name my-list__bottom">
-                        <p class="link-name"><a href="/users/view/<?= $task->implementer->id; ?>" class="link-regular"><?= $task->implementer->name; ?></a></p>
-                        <a href="/tasks/view/<?= $task->id; ?>" class="my-list__bottom-chat  my-list__bottom-chat--new"><b>3</b></a>
+                        <p class="link-name"><a href="<?= Url::to(['/users/view/' . $task->implementer->id])?>" class="link-regular"><?= $task->implementer->name; ?></a></p>
+                        <a href="<?= Url::to(['/tasks/view/' . $task->id])?>" class="my-list__bottom-chat  my-list__bottom-chat--new"><b>3</b></a>
 
                         <?= StarsReviews::widget(['rating' => $task->implementer->averageRate]) ?>
                     </div>

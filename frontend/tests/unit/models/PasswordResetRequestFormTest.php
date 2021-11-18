@@ -14,17 +14,22 @@ class PasswordResetRequestFormTest extends \Codeception\Test\Unit
      */
     protected $tester;
 
-
+    /**
+     *
+     */
     public function _before()
     {
         $this->tester->haveFixtures([
             'user' => [
-                'class' => UserFixture::className(),
+                'class' => UserFixture::class,
                 'dataFile' => codecept_data_dir() . 'user.php'
             ]
         ]);
     }
 
+    /**
+     *
+     */
     public function testSendMessageWithWrongEmailAddress()
     {
         $model = new PasswordResetRequestForm();
@@ -32,6 +37,9 @@ class PasswordResetRequestFormTest extends \Codeception\Test\Unit
         expect_not($model->sendEmail());
     }
 
+    /**
+     *
+     */
     public function testNotSendEmailsToInactiveUser()
     {
         $user = $this->tester->grabFixture('user', 1);
@@ -40,6 +48,9 @@ class PasswordResetRequestFormTest extends \Codeception\Test\Unit
         expect_not($model->sendEmail());
     }
 
+    /**
+     *
+     */
     public function testSendEmailSuccessfully()
     {
         $userFixture = $this->tester->grabFixture('user', 0);

@@ -67,7 +67,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
             [['phone'], 'string', 'max' => 12],
             [['avatar_url'], 'string', 'max' => 255],
             [['email'], 'unique'],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
+            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::class, 'targetAttribute' => ['city_id' => 'id']],
         ];
     }
 
@@ -103,7 +103,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getChats()
     {
-        return $this->hasMany(Chat::className(), ['user_id' => 'id']);
+        return $this->hasMany(Chat::class, ['user_id' => 'id']);
     }
 
 
@@ -114,7 +114,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getCity()
     {
-        return $this->hasOne(City::className(), ['id' => 'city_id']);
+        return $this->hasOne(City::class, ['id' => 'city_id']);
     }
 
     /**
@@ -124,7 +124,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getFavourites()
     {
-        return $this->hasMany(Favourites::className(), ['favourite_id' => 'id']);
+        return $this->hasMany(Favourites::class, ['favourite_id' => 'id']);
     }
 
     /**
@@ -134,7 +134,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getFavourites0()
     {
-        return $this->hasMany(Favourites::className(), ['user_id' => 'id']);
+        return $this->hasMany(Favourites::class, ['user_id' => 'id']);
     }
 
     /**
@@ -144,7 +144,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getNotifications()
     {
-        return $this->hasMany(Notification::className(), ['recipient_id' => 'id']);
+        return $this->hasMany(Notification::class, ['recipient_id' => 'id']);
     }
 
     /**
@@ -154,7 +154,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getPhotoWorks()
     {
-        return $this->hasMany(PhotoWork::className(), ['user_id' => 'id']);
+        return $this->hasMany(PhotoWork::class, ['user_id' => 'id']);
     }
 
     /**
@@ -164,7 +164,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getResponses()
     {
-        return $this->hasMany(Response::className(), ['user_id' => 'id']);
+        return $this->hasMany(Response::class, ['user_id' => 'id']);
     }
 
     /**
@@ -174,7 +174,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getSelectedNotifications()
     {
-        return $this->hasMany(SelectedNotification::className(), ['user_id' => 'id']);
+        return $this->hasMany(SelectedNotification::class, ['user_id' => 'id']);
     }
 
     /**
@@ -184,7 +184,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getTasks()
     {
-        return $this->hasMany(Task::className(), ['employer_id' => 'id']);
+        return $this->hasMany(Task::class, ['employer_id' => 'id']);
     }
 
     /**
@@ -194,7 +194,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getTasks0()
     {
-        return $this->hasMany(Task::className(), ['implementer_id' => 'id']);
+        return $this->hasMany(Task::class, ['implementer_id' => 'id']);
     }
 
     /**
@@ -203,7 +203,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getUserCategory()
     {
-        return $this->hasMany(UserCategory::className(), ['user_id' => 'id']);
+        return $this->hasMany(UserCategory::class, ['user_id' => 'id']);
     }
     /**
      * Gets query for [[SelectedNotification]].
@@ -211,7 +211,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getUserNotification()
     {
-        return $this->hasMany(SelectedNotification::className(), ['user_id' => 'id']);
+        return $this->hasMany(SelectedNotification::class, ['user_id' => 'id']);
     }
 
 
@@ -221,7 +221,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getCategory()
     {
-        return $this->hasMany(Category::className(), ['id' => 'category_id'])
+        return $this->hasMany(Category::class, ['id' => 'category_id'])
             ->viaTable('user_category', ['user_id' => 'id']);
     }
 
@@ -249,7 +249,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getAnswers()
     {
-        return $this->hasMany(Answers::className(), ['user_id' => 'id']);
+        return $this->hasMany(Answers::class, ['user_id' => 'id']);
     }
 
     /**
