@@ -23,10 +23,6 @@ class AccountController extends SecuredController
         if (\Yii::$app->request->getIsPost() && \Yii::$app->request->isAjax) {
             $model->load(\Yii::$app->request->post());
             if ($model->validate()) {
-                /*if (boolval($_FILES) && !$model->saveFiles()) {
-                    throw new ServerErrorHttpException('Ошибка сохранения файлов!');
-                }*/
-
                 \Yii::$app->response->format = Response::FORMAT_JSON;
                 $model->saveAccount();
 
