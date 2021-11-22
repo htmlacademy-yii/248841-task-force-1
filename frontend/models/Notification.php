@@ -35,8 +35,8 @@ class Notification extends \yii\db\ActiveRecord
             [['event_id', 'recipient_id', 'text'], 'required'],
             [['event_id', 'recipient_id'], 'integer'],
             [['text'], 'string'],
-            [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Events::className(), 'targetAttribute' => ['event_id' => 'id']],
-            [['recipient_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['recipient_id' => 'id']],
+            [['event_id'], 'exist', 'skipOnError' => true, 'targetClass' => Events::class, 'targetAttribute' => ['event_id' => 'id']],
+            [['recipient_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['recipient_id' => 'id']],
         ];
     }
 
@@ -60,7 +60,7 @@ class Notification extends \yii\db\ActiveRecord
      */
     public function getEvent()
     {
-        return $this->hasOne(Events::className(), ['id' => 'event_id']);
+        return $this->hasOne(Events::class, ['id' => 'event_id']);
     }
 
     /**
@@ -70,7 +70,7 @@ class Notification extends \yii\db\ActiveRecord
      */
     public function getRecipient()
     {
-        return $this->hasOne(Users::className(), ['id' => 'recipient_id']);
+        return $this->hasOne(Users::class, ['id' => 'recipient_id']);
     }
 
 }

@@ -55,13 +55,16 @@ class Category extends \yii\db\ActiveRecord
      */
     public function getTasks()
     {
-        return $this->hasMany(Task::className(), ['category_id' => 'id']);
+        return $this->hasMany(Task::class, ['category_id' => 'id']);
     }
 
-
+    /**
+     * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
+     */
     public function getUser()
     {
-        return $this->hasMany(Users::className(), ['id' => 'user_id'])
+        return $this->hasMany(Users::class, ['id' => 'user_id'])
             ->viaTable('user_category', ['category_id' => 'id']);
     }
 

@@ -135,37 +135,14 @@ AppAsset::register($this);
                     </p>
                 </div>
                 <div class="page-footer__links">
-                    <ul class="links__list">
-                        <li class="links__item">
-                            <a href="browse.html">Задания</a>
-                        </li>
-                        <li class="links__item">
-                            <a href="account.html">Мой профиль</a>
-                        </li>
-                        <li class="links__item">
-                            <a href="users.html">Исполнители</a>
-                        </li>
-                        <li class="links__item">
-                            <a href="signup.html">Регистрация</a>
-                        </li>
-                        <li class="links__item">
-                            <a href="create.html">Создать задание</a>
-                        </li>
-                        <li class="links__item">
-                            <a href="">Справка</a>
-                        </li>
-                    </ul>
                 </div>
                 <div class="page-footer__copyright">
                     <a>
-                        <img class="copyright-logo"
-                             src="/img/academy-logo.png"
-                             width="185" height="63"
-                             alt="Логотип HTML Academy">
+                        <?= Html::img('/img/academy-logo.png', ['class' => 'copyright-logo', 'width' => 185, 'height' => 63, 'alt' => 'Логотип HTML Academy'])?>
                     </a>
                 </div>
                     <div class="clipart-woman">
-                        <img src="/img/clipart-woman.png" width="238" height="450">
+                        <?= Html::img('/img/clipart-woman.png', ['width' => 238, 'height' => 450])?>
                     </div>
                     <div class="clipart-message">
                         <div class="clipart-message-text">

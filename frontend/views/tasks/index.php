@@ -5,6 +5,7 @@ use frontend\models\TaskFilter;
 use frontend\widgets\TimeWidget;
 use yii\data\ActiveDataProvider;
 use yii\bootstrap\{ActiveForm, Html};
+use yii\helpers\Url;
 
 
 /** @var $provider ActiveDataProvider
@@ -20,8 +21,8 @@ use yii\bootstrap\{ActiveForm, Html};
         foreach ($provider->getModels() as $task) : ?>
             <div class="new-task__card">
                 <div class="new-task__title">
-                    <a href="/tasks/view/<?= $task->id; ?>" class="link-regular"><h2><?= $task->title; ?></h2></a>
-                    <a class="new-task__type link-regular" href="?TaskFilter[category][]=<?= $task->category->id; ?>"><p><?= $task->category->name; ?></p></a>
+                    <a href="<?= Url::to(['/tasks/view/' . $task->id])?>" class="link-regular"><h2><?= $task->title; ?></h2></a>
+                    <a class="new-task__type link-regular" href="<?= Url::to(['', 'TaskFilter[category][]' => $task->category->id])?>"><p><?= $task->category->name; ?></p></a>
                 </div>
                 <div class="new-task__icon new-task__icon--<?= $task->category->icon; ?>"></div>
                 <p class="new-task_description">
@@ -35,12 +36,12 @@ use yii\bootstrap\{ActiveForm, Html};
     </div>
     <div class="new-task__pagination">
         <ul class="new-task__pagination-list">
-            <li class="pagination__item"><a href="#"></a></li>
+            <li class="pagination__item"><a href="<?= Url::to([''])?>"></a></li>
             <li class="pagination__item pagination__item--current">
                 <a>1</a></li>
-            <li class="pagination__item"><a href="#">2</a></li>
-            <li class="pagination__item"><a href="#">3</a></li>
-            <li class="pagination__item"><a href="#"></a></li>
+            <li class="pagination__item"><a href="<?= Url::to([''])?>">2</a></li>
+            <li class="pagination__item"><a href="<?= Url::to([''])?>">3</a></li>
+            <li class="pagination__item"><a href="<?= Url::to([''])?>"></a></li>
         </ul>
     </div>
 </section>

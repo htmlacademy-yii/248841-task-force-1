@@ -38,7 +38,7 @@ var dropzone = new Dropzone('.create__file', {
 
           e.preventDefault();
           e.stopPropagation();
-          if (dzClosure.files.length == 0) {
+          if (dzClosure.files.length === 0) {
             let form = document.querySelector('form#account');
             let formData = new FormData(form);
 
@@ -50,13 +50,7 @@ var dropzone = new Dropzone('.create__file', {
               processData: false,
               contentType: false,
               success: function(responseText) {
-                $('.preloader-conteiner').removeClass('active');
-                if (responseText == 'success') {
-                  location.reload();
-                } else {
-                  alert('При сохранении формы возникли ошибки!');
-
-                }
+                location.reload();
               },
               error: function(jqXHR, errMsg) {
                 $('.preloader-conteiner').removeClass('active');
@@ -117,14 +111,12 @@ var dropzone = new Dropzone('.create__file', {
     this.on('successmultiple', function(file, responseText) {
       this.removeAllFiles();
       $('.preloader-conteiner').removeClass('active');
-      if (responseText == 'success') {
-        location.reload();
-      } else {
-        alert('При сохранении формы возникли ошибки!');
-
-      }
+      location.reload();
     });
 
+    this.on('error', function () {
+      alert('An error occurred while uploading files');
+    });
   },
 });
 

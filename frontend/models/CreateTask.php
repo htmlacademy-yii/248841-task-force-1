@@ -44,6 +44,9 @@ class CreateTask extends Model
      */
     public $address;
 
+    /**
+     * @return array
+     */
     public function rules()
     {
         return [
@@ -53,7 +56,7 @@ class CreateTask extends Model
             [['title'], 'string', 'min' => 10],
             [['address'], 'string'],
             [['title', 'description', 'price', 'category', 'deadline', 'location', 'files', 'address'], 'safe'],
-            [['category'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category' => 'id']],
+            [['category'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category' => 'id']],
             ['price', 'number', 'min' => '0']
         ];
     }

@@ -27,7 +27,7 @@ class MessagesController extends Controller
         $rules = parent::behaviors();
 
         $rules['verbs'] = [
-            'class' => VerbFilter::className(),
+            'class' => VerbFilter::class,
             'actions' => [
                 'getTaskMessages' => ['get', 'ajax'],
                 'addTaskMessages' => ['post', 'ajax'],

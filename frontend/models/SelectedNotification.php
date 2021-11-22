@@ -33,8 +33,8 @@ class SelectedNotification extends \yii\db\ActiveRecord
         return [
             [['value_name_id', 'user_id'], 'required'],
             [['value_name_id', 'user_id'], 'integer'],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['value_name_id'], 'exist', 'skipOnError' => true, 'targetClass' => ValueNotification::className(), 'targetAttribute' => ['value_name_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']],
+            [['value_name_id'], 'exist', 'skipOnError' => true, 'targetClass' => ValueNotification::class, 'targetAttribute' => ['value_name_id' => 'id']],
         ];
     }
 
@@ -58,7 +58,7 @@ class SelectedNotification extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(Users::className(), ['id' => 'user_id']);
+        return $this->hasOne(Users::class, ['id' => 'user_id']);
     }
 
     /**
@@ -68,6 +68,6 @@ class SelectedNotification extends \yii\db\ActiveRecord
      */
     public function getValueName()
     {
-        return $this->hasOne(ValueNotification::className(), ['id' => 'value_name_id']);
+        return $this->hasOne(ValueNotification::class, ['id' => 'value_name_id']);
     }
 }

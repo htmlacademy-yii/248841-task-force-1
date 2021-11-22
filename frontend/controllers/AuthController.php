@@ -39,7 +39,7 @@ class AuthController extends Controller
     {
         return [
             'ulogin-auth' => [
-                'class' => AuthAction::className(),
+                'class' => AuthAction::class,
                 'successCallback' => [$this, 'uloginSuccessCallback'],
                 'errorCallback' => function ($data) {
                     \Yii::error($data['error']);
@@ -50,31 +50,33 @@ class AuthController extends Controller
 
     public function uloginSuccessCallback($attributes = false)
     {
-        if ($attributes) {
-            $user = Users::findOne(['email' => $attributes['email']]);
-            if ($user) {
-                \Yii::$app->user->login($user);
-            } else {
-                $user = new Users();
-                $user->email = $attributes['email'];
-                $user->name = $attributes['first_name'] . $attributes['last_name'];
-                $user->password = Yii::$app->security->generateRandomString(8);
-
-                if (strlen(trim($attributes['city'])) > 0) {
-                    $city = City::findOne(['name' => $attributes['city']]);
-
-                    if (!$city) {
-                        $newCity = new City();
-                        $newCity->name = $attributes['city'];
-                        $newCity->save();
-                        $user->city_id = $newCity->id;
-                    } else {
-                        $user->city_id = $city->id;
-                    }
-                }
-                $user->save(true);
-            }
+        if (!$attributes) {
+            return $this->goHome();
         }
+        $user = Users::findOne(['email' => $attributes['email']]);
+        if ($user) {
+            \Yii::$app->user->login($user);
+        } else {
+            $user = new Users();
+            $user->email = $attributes['email'];
+            $user->name = $attributes['first_name'] . $attributes['last_name'];
+            $user->password = Yii::$app->security->generateRandomString(8);
+
+            if (strlen(trim($attributes['city'])) > 0) {
+                $city = City::findOne(['name' => $attributes['city']]);
+
+                if (!$city) {
+                    $newCity = new City();
+                    $newCity->name = $attributes['city'];
+                    $newCity->save();
+                    $user->city_id = $newCity->id;
+                } else {
+                    $user->city_id = $city->id;
+                }
+            }
+            $user->save(true);
+        }
+
         return $this->goHome();
     }
 }

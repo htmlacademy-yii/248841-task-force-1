@@ -13,7 +13,7 @@ class TaskPermission
      * @param int $taskId
      * @return bool
      */
-    public static function canShowAnswer(int $identityId,int $taskId)
+    public static function canShowAnswer(int $identityId,int $taskId): bool
     {
         return Task::find()->innerJoin('answers', 'answers.task_id = task.id AND answers.user_id = :identityId',[':identityId' => $identityId])->where(['task.id' => $taskId])->exists();
     }

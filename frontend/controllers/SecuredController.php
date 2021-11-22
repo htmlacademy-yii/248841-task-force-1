@@ -10,6 +10,9 @@ use yii\web\Controller;
 
 class SecuredController extends Controller
 {
+    /**
+     * @return array
+     */
     public function behaviors()
     {
         return [

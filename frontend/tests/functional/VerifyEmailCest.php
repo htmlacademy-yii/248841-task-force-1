@@ -18,12 +18,15 @@ class VerifyEmailCest
     {
         return [
             'user' => [
-                'class' => UserFixture::className(),
+                'class' => UserFixture::class,
                 'dataFile' => codecept_data_dir() . 'user.php',
             ],
         ];
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function checkEmptyToken(FunctionalTester $I)
     {
         $I->amOnRoute('site/verify-email', ['token' => '']);
@@ -31,6 +34,9 @@ class VerifyEmailCest
         $I->canSee('Verify email token cannot be blank.');
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function checkInvalidToken(FunctionalTester $I)
     {
         $I->amOnRoute('site/verify-email', ['token' => 'wrong_token']);
@@ -38,6 +44,9 @@ class VerifyEmailCest
         $I->canSee('Wrong verify email token.');
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function checkNoToken(FunctionalTester $I)
     {
         $I->amOnRoute('site/verify-email');
@@ -45,6 +54,9 @@ class VerifyEmailCest
         $I->canSee('Missing required parameters: token');
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function checkAlreadyActivatedToken(FunctionalTester $I)
     {
         $I->amOnRoute('site/verify-email', ['token' => 'already_used_token_1548675330']);
@@ -52,6 +64,9 @@ class VerifyEmailCest
         $I->canSee('Wrong verify email token.');
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function checkSuccessVerification(FunctionalTester $I)
     {
         $I->amOnRoute('site/verify-email', ['token' => '4ch0qbfhvWwkcuWqjN8SWRq72SOw1KYT_1548675330']);

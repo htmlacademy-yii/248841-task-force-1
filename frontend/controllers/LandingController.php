@@ -15,7 +15,9 @@ use yii\web\Response;
 
 class LandingController extends Controller
 {
-
+    /**
+     * @return array
+     */
     public function behaviors()
     {
         return [
@@ -37,6 +39,9 @@ class LandingController extends Controller
         ];
     }
 
+    /**
+     * @return array|string|Response
+     */
     public function actionIndex()
     {
         $this->layout = 'landing';

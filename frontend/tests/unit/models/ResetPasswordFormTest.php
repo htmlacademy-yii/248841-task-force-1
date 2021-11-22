@@ -12,17 +12,22 @@ class ResetPasswordFormTest extends \Codeception\Test\Unit
      */
     protected $tester;
 
-
+    /**
+     *
+     */
     public function _before()
     {
         $this->tester->haveFixtures([
             'user' => [
-                'class' => UserFixture::className(),
+                'class' => UserFixture::class,
                 'dataFile' => codecept_data_dir() . 'user.php'
             ],
         ]);
     }
 
+    /**
+     *
+     */
     public function testResetWrongToken()
     {
         $this->tester->expectException('\yii\base\InvalidArgumentException', function() {
@@ -34,6 +39,9 @@ class ResetPasswordFormTest extends \Codeception\Test\Unit
         });
     }
 
+    /**
+     *
+     */
     public function testResetCorrectToken()
     {
         $user = $this->tester->grabFixture('user', 0);

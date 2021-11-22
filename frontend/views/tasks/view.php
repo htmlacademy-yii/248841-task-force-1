@@ -10,6 +10,7 @@ use frontend\models\Task;
 use frontend\widgets\{TimeWidget, StarsReviews};
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
+use yii\helpers\Url;
 use yii\web\View;
 use yii\widgets\Pjax;
 
@@ -32,7 +33,7 @@ ApiYandexAsset::register($this);
                     <div class="content-view__headline">
                         <h1><?= $task->title; ?></h1>
                         <span>Размещено в категории
-                                    <a href="/tasks/?TaskFilter[category][]=<?= $task->category->id; ?>" class="link-regular"><?= $task->category->name; ?></a>
+                                    <a href="<?= Url::to(['/tasks/', 'TaskFilter[category][]' => $task->category->id])?>" class="link-regular"><?= $task->category->name; ?></a>
                                     <?= TimeWidget::widget(['lastTime' => $task->date_create, 'lastWord' => 'назад']) ?></span>
                     </div>
                     <b class="new-task__price new-task__price--<?= $task->category->icon ?> content-view-price"><?= $task->price ?><b> ₽</b></b>
@@ -47,7 +48,7 @@ ApiYandexAsset::register($this);
                 <div class="content-view__attach">
                     <h3 class="content-view__h3">Вложения</h3>
                     <? foreach ($task->filesTasks as $file): ?>
-                        <a href="/tasks/file/<?= $file->url_file ?>"><?= $file->name_file ?></a>
+                        <a href="<?= Url::to(['/uploads/' . $file->url_file])?>"><?= $file->name_file ?></a>
                     <?php endforeach; ?>
                 </div>
                 <div class="content-view__location">
@@ -62,8 +63,7 @@ ApiYandexAsset::register($this);
                     <? else: ?>
                     <div class="content-view__location-wrapper">
                         <div class="content-view__map">
-                            <a href="#"><img src="/img/no_address.jpg" width="378" height="378"
-                                             alt="Без адреса"></a>
+                            <a href="<?= Url::to([''])?>"><?= Html::img('/img/no_address.jpg', ['width' => 378, 'height' => 378, 'alt' => 'Без адреса'])?></a>
                         </div>
                         <div class="content-view__address">
                             <span class="address__town">Заказчик не указал адрес</span>
@@ -98,7 +98,7 @@ ApiYandexAsset::register($this);
         </div>
         <?
         Pjax::begin(['id' => 'content-view__feedback']);
-        if (($task->employer_id == \Yii::$app->user->identity->getId() || TaskPermission::canShowAnswer(\Yii::$app->user->identity->getId(), $task->id)) && count($task->answers) > 0):?>
+        if (((int)$task->employer_id === (int)\Yii::$app->user->identity->getId() || TaskPermission::canShowAnswer(\Yii::$app->user->identity->getId(), $task->id)) && count($task->answers) > 0):?>
             <div class="content-view__feedback">
                 <h2>Отклики <span>(<?= count($task->answers) ?>)</span></h2>
                 <div class="content-view__feedback-wrapper">
@@ -109,16 +109,16 @@ ApiYandexAsset::register($this);
                     $answers = $task->answers;
                     if ($task->employer_id != \Yii::$app->user->identity->getId()) {
                         $answers = array_filter($answers, function ($v) {
-                            return \Yii::$app->user->identity->getId() == $v->user_id;
+                            return (int)\Yii::$app->user->identity->getId() === (int)$v->user_id;
                         });
                     }
                     foreach ($answers as $answer) :?>
                         <div class="content-view__feedback-card">
                             <div class="feedback-card__top">
-                                <a href="/users/view/<?= $answer->user->id ?>"><?= $answer->user->avatar_url ? Html::img('@web/uploads/' . $answer->user->avatar_url,
+                                <a href="<?= Url::to(['/users/view/' . $answer->user->id])?>"><?= $answer->user->avatar_url ? Html::img('@web/uploads/' . $answer->user->avatar_url,
                                         ['width' => 55, 'height' => 55, 'alt' => 'Аватар']) : ''; ?></a>
                                 <div class="feedback-card__top--name">
-                                    <p><a href="/users/view/<?= $answer->user->id ?>" class="link-regular"><?= $answer->user->name; ?></a></p>
+                                    <p><a href="<?= Url::to(['/users/view/' . $answer->user->id])?>" class="link-regular"><?= $answer->user->name; ?></a></p>
                                     <?= StarsReviews::widget(['rating' => $answer->user->averageRate]) ?>
                                 </div>
                                 <span class="new-task__time"><?= TimeWidget::widget(['lastTime' => $answer->date_create, 'lastWord' => 'назад']) ?></span>
@@ -129,7 +129,7 @@ ApiYandexAsset::register($this);
                                 </p>
                                 <span><?= $answer->price ?> ₽</span>
                             </div>
-                            <? if ($task->employer_id == \Yii::$app->user->identity->getId() && !$answer->status && $task->status === \Lobochkin\TaskForce\Task::STATUS_NEW): ?>
+                            <? if ((int)$task->employer_id === (int)\Yii::$app->user->identity->getId() && !$answer->status && $task->status === \Lobochkin\TaskForce\Task::STATUS_NEW): ?>
                                 <div class="feedback-card__actions">
                         <span class="button__small-color response-button button"
                               data-action="<?= \frontend\models\Answers::ACCEPT ?>" data-id="<?= $answer->id ?>">Подтвердить</span>
@@ -159,7 +159,7 @@ ApiYandexAsset::register($this);
                 </div>
                 <p class="info-customer"><span><?= WordHelper::getPluralWord(count($task->employer->tasks), ['задание', 'задания', 'заданий']); ?></span><span
                             class="last-"><?= TimeWidget::widget(['lastTime' => $task->employer->date_create, 'lastWord' => '']) ?> на сайте</span></p>
-                <a href="#" class="link-regular">Смотреть профиль</a>
+                <a href="<?= Url::to([''])?>" class="link-regular">Смотреть профиль</a>
             </div>
         </div>
             <div id="chat-container">

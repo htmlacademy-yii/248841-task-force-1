@@ -13,6 +13,9 @@ use yii\filters\VerbFilter;
 
 class MyTasksController extends SecuredController
 {
+    /**
+     * @return string
+     */
     public function actionIndex()
     {
         $get = \Yii::$app->request->get('status');

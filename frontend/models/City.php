@@ -52,7 +52,7 @@ class City extends \yii\db\ActiveRecord
      */
     public function getUsers()
     {
-        return $this->hasMany(Users::className(), ['city_id' => 'id']);
+        return $this->hasMany(Users::class, ['city_id' => 'id']);
     }
 
     public static function getCityList()

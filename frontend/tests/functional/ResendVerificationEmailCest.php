@@ -21,17 +21,24 @@ class ResendVerificationEmailCest
     {
         return [
             'user' => [
-                'class' => UserFixture::className(),
+                'class' => UserFixture::class,
                 'dataFile' => codecept_data_dir() . 'user.php',
             ],
         ];
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function _before(FunctionalTester $I)
     {
         $I->amOnRoute('/site/resend-verification-email');
     }
 
+    /**
+     * @param $email
+     * @return array
+     */
     protected function formParams($email)
     {
         return [
@@ -39,36 +46,54 @@ class ResendVerificationEmailCest
         ];
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function checkPage(FunctionalTester $I)
     {
         $I->see('Resend verification email', 'h1');
         $I->see('Please fill out your email. A verification email will be sent there.');
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function checkEmptyField(FunctionalTester $I)
     {
         $I->submitForm($this->formId, $this->formParams(''));
         $I->seeValidationError('Email cannot be blank.');
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function checkWrongEmailFormat(FunctionalTester $I)
     {
         $I->submitForm($this->formId, $this->formParams('abcd.com'));
         $I->seeValidationError('Email is not a valid email address.');
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function checkWrongEmail(FunctionalTester $I)
     {
         $I->submitForm($this->formId, $this->formParams('wrong@email.com'));
         $I->seeValidationError('There is no user with this email address.');
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function checkAlreadyVerifiedEmail(FunctionalTester $I)
     {
         $I->submitForm($this->formId, $this->formParams('test2@mail.com'));
         $I->seeValidationError('There is no user with this email address.');
     }
 
+    /**
+     * @param FunctionalTester $I
+     */
     public function checkSendSuccessfully(FunctionalTester $I)
     {
         $I->submitForm($this->formId, $this->formParams('test@mail.com'));

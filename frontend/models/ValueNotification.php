@@ -16,7 +16,7 @@ use yii\helpers\ArrayHelper;
 class ValueNotification extends \yii\db\ActiveRecord
 {
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public static function tableName()
     {
@@ -24,7 +24,7 @@ class ValueNotification extends \yii\db\ActiveRecord
     }
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
     public function rules()
     {
@@ -35,7 +35,7 @@ class ValueNotification extends \yii\db\ActiveRecord
     }
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
     public function attributeLabels()
     {
@@ -52,9 +52,12 @@ class ValueNotification extends \yii\db\ActiveRecord
      */
     public function getSelectedNotifications()
     {
-        return $this->hasMany(SelectedNotification::className(), ['value_name_id' => 'id']);
+        return $this->hasMany(SelectedNotification::class, ['value_name_id' => 'id']);
     }
 
+    /**
+     * @return array
+     */
     public static function getNotifList()
     {
 

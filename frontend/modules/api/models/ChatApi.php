@@ -5,6 +5,9 @@ use frontend\models\Chat;
 
 class ChatApi extends Chat
 {
+    /**
+     * @return array|false
+     */
  public function fields()
  {
      return [

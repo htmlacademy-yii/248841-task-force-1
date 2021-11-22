@@ -63,7 +63,7 @@ AppAsset::register($this);
                     <a href="#" class="header__account-enter open-modal" data-for="enter-form">
                         <span>Вход</span></a>
                     или
-                    <a href="/auth" class="header__account-registration">
+                    <a href="<?= Url::to(['/auth'])?>" class="header__account-registration">
                         Регистрация
                     </a>
                 </div>
@@ -77,7 +77,7 @@ AppAsset::register($this);
                     <p>Сломался кран на кухне? Надо отправить документы? Нет времени самому гулять с собакой?
                         У нас вы быстро найдёте исполнителя для любой жизненной ситуации?<br>
                         Быстро, безопасно и с гарантией. Просто, как раз, два, три. </p>
-                    <a href="/auth" class="button">Создать аккаунт</a>
+                    <a href="<?= Url::to(['/auth'])?>" class="button">Создать аккаунт</a>
                 </div>
                 <div class="landing-center">
                     <div class="landing-instruction">
@@ -175,33 +175,10 @@ AppAsset::register($this);
                     </p>
                 </div>
                 <div class="page-footer__links">
-                    <ul class="links__list">
-                        <li class="links__item">
-                            <a href="">Задания</a>
-                        </li>
-                        <li class="links__item">
-                            <a href="">Мой профиль</a>
-                        </li>
-                        <li class="links__item">
-                            <a href="">Исполнители</a>
-                        </li>
-                        <li class="links__item">
-                            <a href="">Регистрация</a>
-                        </li>
-                        <li class="links__item">
-                            <a href="">Создать задание</a>
-                        </li>
-                        <li class="links__item">
-                            <a href="">Справка</a>
-                        </li>
-                    </ul>
                 </div>
                 <div class="page-footer__copyright">
-                    <a href="https://htmlacademy.ru">
-                        <img class="copyright-logo"
-                             src="/img/academy-logo.png"
-                             width="185" height="63"
-                             alt="Логотип HTML Academy">
+                    <a href="<?= Url::to(['https://htmlacademy.ru'])?>">
+                        <?= Html::img('/img/academy-logo.png', ['class' => 'copyright-logo', 'width' => 185, 'height' => 63, 'alt' => 'Логотип HTML Academy'])?>
                     </a>
                 </div>
             </div>
@@ -209,7 +186,7 @@ AppAsset::register($this);
 
     </div>
     <div class="overlay"></div>
-    <script src="/js/main.js"></script>
+    <script src="<?= Url::to(['/js/main.js'])?>"></script>
     <?php $this->endBody() ?>
     </body>
     </html>
