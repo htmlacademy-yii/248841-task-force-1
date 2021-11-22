@@ -7,7 +7,7 @@
 </p>
 
 <p>
-Базу данных разворачивать из dump.sql корня сайта 
+Для запуска проекта необходимо выполнить composer install, потом php init, дальше развернуть дамп базы
 </p>
 
 Documentation is at [docs/guide/README.md](docs/guide/README.md).
